@@ -193,7 +193,7 @@ blendLayer.material.blendEquation = 50
     });
 
     Axios.get(
-      "http://api.weatherapi.com/v1/current.json?key=d7df60db6422414b9d1153848200912&q=Edinburgh"
+      "https://api.weatherapi.com/v1/current.json?key=d7df60db6422414b9d1153848200912&q=Edinburgh"
     ).then((response) => {
       console.log(response.data);
 
