@@ -102384,6 +102384,9 @@ console.log('its gets here')
       const loaderTemp = new three.FontLoader();
       let temp = response.data.main.temp;
  temp = temp -273.15
+ temp = Math.round(temp / 10) * 10
+ console.log(temp)
+ 
       loaderTemp.load(
         "./assets/fonts/Bebas Neue_Regular (1).json",
         function (font) {
