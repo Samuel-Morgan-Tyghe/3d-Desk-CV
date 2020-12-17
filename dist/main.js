@@ -102230,8 +102230,8 @@ scene.add(spotLight);
 
 
 
-var texture = new three.TextureLoader().load("/dist/assets/img/open.webp");
-var texture2 = new three.TextureLoader().load("/dist/assets/img/blink.webp");
+var texture = new three.TextureLoader().load("./assets/img/open.webp");
+var texture2 = new three.TextureLoader().load("./assets/img/blink.webp");
 const paintingGeometry = new three.PlaneBufferGeometry(1, 1, 1);
 const paintingMaterial = new three.MeshLambertMaterial({ map: texture });
 // console.log(paintingMaterial);
@@ -102251,7 +102251,7 @@ scene.add(painting);
 
 const loader2 = new three.FontLoader();
 
-loader2.load("/dist/assets/fonts/alarm clock_Regular.json", function (font) {
+loader2.load("./assets/fonts/alarm clock_Regular.json", function (font) {
   var currentTime = moment_default()().format("HH:mm");
 
   const geometry = new three.TextBufferGeometry(currentTime, {
@@ -102278,7 +102278,7 @@ loader.load(
   "./assets/models/DeskScene3.7.glb",
   function (gltf) { 
 
-    var art = new three.TextureLoader().load("/dist/assets/img/Palantiri.webp");
+    var art = new three.TextureLoader().load("./assets/img/Palantiri.webp");
     const artMat = new three.MeshBasicMaterial({ map: art });
 
     var palantirPlace = gltf.scene.getObjectByName("palantirPlace", true);
@@ -102315,7 +102315,7 @@ loader.load(
     );
     console.log(gradientGraphicArt)
 
-    var blendTexture = new three.TextureLoader().load("/dist/assets/img/gradient repeat1Blend.webp");
+    var blendTexture = new three.TextureLoader().load("./assets/img/gradient repeat1Blend.webp");
 const blendGeometry = new three.PlaneBufferGeometry(1,1,1);
 const blendMaterial = new three.MeshLambertMaterial({ map: blendTexture });
 const blendLayer = new three.Mesh(blendGeometry, blendMaterial);
@@ -102341,7 +102341,7 @@ blendLayer.material.blendEquation = 50
 
 
 
-    // var gradientArt = new THREE.TextureLoader().load("/dist/assets/img/gradient repeat1.webp");
+    // var gradientArt = new THREE.TextureLoader().load("/assets/img/gradient repeat1.webp");
     // const gradientArtMaterial = new THREE.MeshBasicMaterial({ map: gradientArt });
     gradientGraphicArt.material.map.rotation  = (0.45)
     console.log(gradientGraphicArt)
@@ -102358,14 +102358,15 @@ blendLayer.material.blendEquation = 50
       z: 0,
       ease: Power1.easeInOut,
     });
-
+    // "https://api.weatherapi.com/v1/current.json?key=d7df60db6422414b9d1153848200912&q=Edinburgh"
+console.log('its gets here')
     axios_default().get(
-      "http://api.weatherapi.com/v1/current.json?key=d7df60db6422414b9d1153848200912&q=Edinburgh"
+      "https://api.openweathermap.org/data/2.5/weather?q=Edinburgh&appid=ab57b33912fbd3d3015d3f296505d3a8"
     ).then((response) => {
       console.log(response.data);
 
-      let icon = response.data.current.condition.icon;
-
+      let icon = response.data.weather[0].icon;
+     icon = 'http://openweathermap.org/img/wn/'+ icon+ '@2x.png'
       var weatherIcon = new three.TextureLoader().load(icon);
 
       const weatherGeometry = new three.PlaneBufferGeometry(1, 1, 1);
@@ -102381,10 +102382,10 @@ blendLayer.material.blendEquation = 50
       scene.add(weather);
 
       const loaderTemp = new three.FontLoader();
-      let temp = response.data.current.feelslike_c;
-
+      let temp = response.data.main.temp;
+ temp = temp -273.15
       loaderTemp.load(
-        "/dist/assets/fonts/Bebas Neue_Regular (1).json",
+        "./assets/fonts/Bebas Neue_Regular (1).json",
         function (font) {
           const tempTextGeometry = new three.TextBufferGeometry(
             temp.toString() + "°C",
@@ -102428,7 +102429,7 @@ controls.update;
 // console.log(scene.children[1]);
 // console.log(scene.children[2]);
 // console.log(scene.children[3]);
-// var screenTexture = new THREE.TextureLoader().load("/dist/assets/img/open.webp");
+// var screenTexture = new THREE.TextureLoader().load("/assets/img/open.webp");
 // const screenGeometry = new THREE.PlaneBufferGeometry(1, 1, 1);
 // const screenMaterial = new THREE.MeshBasicMaterial({ map: screenTexture });
 // const screen = new THREE.Mesh(screenGeometry, screenMaterial);
@@ -102539,14 +102540,7 @@ function onMouseMove(event) {
   }
 }
 
-function getTemp() {
-  Axios.get(
-    "http://api.weatherapi.com/v1/current.json?key=d7df60db6422414b9d1153848200912&q=Edinburgh"
-  ).then((response) => {
-    console.log(response.data.current.feelslike_c);
-    return response;
-  });
-}
+
 
 // function onMouseOut(event) {
 //   event.preventDefault();
