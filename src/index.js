@@ -63,8 +63,8 @@ scene.add(spotLight);
 
 
 
-var texture = new THREE.TextureLoader().load("/dist/assets/img/open.webp");
-var texture2 = new THREE.TextureLoader().load("/dist/assets/img/blink.webp");
+var texture = new THREE.TextureLoader().load("./dist/assets/img/open.webp");
+var texture2 = new THREE.TextureLoader().load("./dist/assets/img/blink.webp");
 const paintingGeometry = new THREE.PlaneBufferGeometry(1, 1, 1);
 const paintingMaterial = new THREE.MeshLambertMaterial({ map: texture });
 // console.log(paintingMaterial);
@@ -84,7 +84,7 @@ scene.add(painting);
 
 const loader2 = new THREE.FontLoader();
 
-loader2.load("/dist/assets/fonts/alarm clock_Regular.json", function (font) {
+loader2.load("./dist/assets/fonts/alarm clock_Regular.json", function (font) {
   var currentTime = moment().format("HH:mm");
 
   const geometry = new THREE.TextBufferGeometry(currentTime, {
@@ -111,7 +111,7 @@ loader.load(
   "./assets/models/DeskScene3.7.glb",
   function (gltf) { 
 
-    var art = new THREE.TextureLoader().load("/dist/assets/img/Palantiri.webp");
+    var art = new THREE.TextureLoader().load("./dist/assets/img/Palantiri.webp");
     const artMat = new THREE.MeshBasicMaterial({ map: art });
 
     var palantirPlace = gltf.scene.getObjectByName("palantirPlace", true);
@@ -148,7 +148,7 @@ loader.load(
     );
     console.log(gradientGraphicArt)
 
-    var blendTexture = new THREE.TextureLoader().load("/dist/assets/img/gradient repeat1Blend.webp");
+    var blendTexture = new THREE.TextureLoader().load("./dist/assets/img/gradient repeat1Blend.webp");
 const blendGeometry = new THREE.PlaneBufferGeometry(1,1,1);
 const blendMaterial = new THREE.MeshLambertMaterial({ map: blendTexture });
 const blendLayer = new THREE.Mesh(blendGeometry, blendMaterial);
@@ -217,7 +217,7 @@ blendLayer.material.blendEquation = 50
       let temp = response.data.current.feelslike_c;
 
       loaderTemp.load(
-        "/dist/assets/fonts/Bebas Neue_Regular (1).json",
+        "./dist/assets/fonts/Bebas Neue_Regular (1).json",
         function (font) {
           const tempTextGeometry = new THREE.TextBufferGeometry(
             temp.toString() + "°C",
