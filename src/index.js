@@ -199,7 +199,7 @@ console.log('its gets here')
       console.log(response.data);
 
       let icon = response.data.weather[0].icon;
-     icon = 'http://openweathermap.org/img/wn/'+ icon+ '@2x.png'
+     icon = 'https://openweathermap.org/img/wn/'+ icon+ '@2x.png'
       var weatherIcon = new THREE.TextureLoader().load(icon);
 
       const weatherGeometry = new THREE.PlaneBufferGeometry(1, 1, 1);
