@@ -102361,12 +102361,12 @@ blendLayer.material.blendEquation = 50
     // "https://api.weatherapi.com/v1/current.json?key=d7df60db6422414b9d1153848200912&q=Edinburgh"
 console.log('its gets here')
     axios_default().get(
-      "https://api.openweathermap.org/data/2.5/weather?q=Edinburgh&appid=ab57b33912fbd3d3015d3f296505d3a8"
+      "https://crossorigin.me/https://api.openweathermap.org/data/2.5/weather?q=Edinburgh&appid=ab57b33912fbd3d3015d3f296505d3a8"
     ).then((response) => {
       console.log(response.data);
 
       let icon = response.data.weather[0].icon;
-     icon = 'https://openweathermap.org/img/wn/'+ icon+ '@2x.png'
+     icon = 'https://crossorigin.me/https://openweathermap.org/img/wn/'+ icon+ '@2x.png'
       var weatherIcon = new three.TextureLoader().load(icon);
 
       const weatherGeometry = new three.PlaneBufferGeometry(1, 1, 1);
