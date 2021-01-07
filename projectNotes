@@ -1,0 +1,46 @@
+vaporwave colors
+
+yellow mesh outlines
+neon glowing
+stripes pattern on highlight
+
+record player
+
+dashed lines outlines 
+https://threejs.org/examples/#webgl_lines_dashed
+-futuristic noen light color dashes on hoveover
+https://threejs.org/docs/#api/en/geometries/EdgesGeometry
+https://github.com/mrdoob/three.js/blob/master/examples/webgl_helpers.html
+
+post processing neon lights
+https://threejs.org/examples/#webgl_postprocessing_unreal_bloom
+https://threejs.org/examples/#webgl_postprocessing_unreal_bloom_selective
+
+all post processing effects 
+https://threejs.org/docs/#examples/en/postprocessing/EffectComposer
+
+yellow wireframe walls /floor /rug
+
+inspo:
+https://www.pinterest.co.uk/pin/206461964154132205/?autologin=true
+https://www.google.com/search?q=vaporwave+bedroom&safe=strict&sxsrf=ALeKk03VU64JxUuqqJdZRhMEI-ligH3zAA:1609249266077&source=lnms&tbm=isch&sa=X&ved=2ahUKEwiM5u_WqPPtAhV3UBUIHUlHAgUQ_AUoAXoECBIQAw&biw=1440&bih=798#imgrc=H3n2sKnlI7pilM
+https://dribbble.com/tags/vaporwave?page=14
+
+
+interior design:
+
+lighting, ( warm lights , highlighitng objects)
+https://www.youtube.com/watch?v=ENc-0dufe_c&ab_channel=D.Signers ( 2:41 )
+ceiling light strips 
+floor wall desk lamps
+
+ambient light is 3x weaker than spotlight
+
+composition
+color
+wallpaper / texture
+
+
+tips:
+obj.position.copy()
+.getWorldPosition()
