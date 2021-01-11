@@ -55,13 +55,13 @@ container2.appendChild(renderer2.domElement);
 // document.querySelector('#css').appendChild( renderer2.domElement );
 
 const scene = new THREE.Scene();
-// console.log(scene);
+// //
 let root = new THREE.Object3D();
 scene.add(root);
 const cssScene = new THREE.Scene();
 cssScene.scale.set(0.0005, 0.0005, 0.0005);
 
-// console.log(scene);
+// //
 
 // scene.background = new Color(0xf3aab1);
 ////////////////////////////////
@@ -69,13 +69,13 @@ cssScene.scale.set(0.0005, 0.0005, 0.0005);
 var Element = function (id, objectCopy) {
   const obj = new THREE.Object3D();
 
-  // console.log(objectCopy);
+  // //
   var div = document.createElement("div");
   div.style.width = "1080px";
   div.style.height = "893px";
   div.style.backgroundColor = "red";
   // div.style.backfacevisibility= "hidden";
-  // console.log(div);
+  // //
 
   var iframe = document.createElement("iframe");
   iframe.style.width = "1080px";
@@ -86,17 +86,18 @@ var Element = function (id, objectCopy) {
   // iframe.style.backfacevisibility= "hidden";
 
   div.appendChild(iframe);
-  // console.log(iframe);
+  // //
 
   var css3dObject = new CSS3DObject(div);
-  css3dObject.position.set(-70, 725, -100);
+  css3dObject.position.set(-70, 725, -90);
   css3dObject.rotation.copy(objectCopy.rotation);
   css3dObject.rotateY(THREE.Math.degToRad(180));
   css3dObject.scale.set(0.265, 0.21, 0.1);
-  console.log(css3dObject);
+  //
 
   obj.css3dObject = css3dObject;
-  obj.add(css3dObject);
+  // obj.add(css3dObject);
+
   // css3dObject.scale.set(0.001,0.001,1);
   var material = new THREE.MeshPhongMaterial({
     opacity: 1,
@@ -155,7 +156,7 @@ let light3 = new THREE.PointLight(0xc774e8, 0.3);
 light3.position.set(0, 100, -500);
 let light4 = new THREE.PointLight(0x09026b, 0.6);
 light4.position.set(-500, 300, 0);
-// // console.log(light1);
+// // //
 // light1.castShadow = true;
 // light2.castShadow = true;
 // light3.castShadow = true;
@@ -218,7 +219,7 @@ palantirSpotLight.castShadow = true;
 scene.add(palantirSpotLight);
 
 const monitorLight1 = new THREE.RectAreaLight(0xffffff, 5, 0.29, 0.19);
-console.log(monitorLight1);
+//
 const monitorLight2 = new THREE.RectAreaLight(0xffffff, 5, 0.29, 0.19);
 
 scene.add(monitorLight1);
@@ -242,7 +243,7 @@ scene.add(rectlight);
 const rectlightHelper = new RectAreaLightHelper(rectlight);
 
 rectlight.add(rectlightHelper);
-// console.log(rectlight);
+// //
 
 //Flicker corner Light
 // let colorCycle = new TimelineMax({ repeat: -1 });
@@ -300,9 +301,8 @@ scene.add(cylinderShadow);
 ////////////////////////////////////////////////////////
 // add Model
 loader.load(
-  "./assets/models/scene.glb",
+  "./assets/models/DeskScene3.8.glb",
   function (gltf) {
-    // console.log(gltf);
     /////
     // loop and add shadows
     gltf.scene.traverse(function (child) {
@@ -327,6 +327,9 @@ loader.load(
     rug.material.roughness = 0;
     var monitor_screen = gltf.scene.getObjectByName("monitor_screen1", true);
     monitor_screen.visible = false;
+    let art_1 = gltf.scene.getObjectByName("art_1", true);
+    art_1.visible = false;
+    painting.position.copy(art_1.getWorldPosition());
 
     monitorLight1.position.copy(monitor_screen.getWorldPosition());
     monitorLight1.quaternion.copy(monitor_screen.getWorldQuaternion());
@@ -338,8 +341,8 @@ loader.load(
     const iframeObj = new Element("SJOz3qjfQXU", monitorLight1);
     iframeObj.scale.set(0.001, 0.001, 0.001);
     root.add(iframeObj);
-    // console.log(cssScene);
-    // console.log("cssScene^");
+    // //
+    // //
 
     var monitor_screen2 = gltf.scene.getObjectByName("monitor_screen2", true);
     monitor_screen2.visible = false;
@@ -362,7 +365,7 @@ loader.load(
     //   scale: 2,
     // });
 
-    // // // console.log(lineMat);
+    // // // //
     // const line = new THREE.LineSegments(edges, lineMat);
 
     // line.scale.x = desk.scale.x + 0.1;
@@ -374,7 +377,7 @@ loader.load(
     // line.computeLineDistances();
     // scene.add(line);
 
-    // // console.log(line);
+    // // //
     //////////////
     //  desk outline as a wire mesh
     // var wireDeskMaterial = new THREE.MeshStandardMaterial({
@@ -393,10 +396,34 @@ loader.load(
     // deskWire.position.x = desk.position.x;
     // deskWire.position.y = desk.position.y;
     // deskWire.position.z = desk.position.z;
-    // // // console.log(deskWire);
+    // // // //
     // scene.add(deskWire);
 
     ///////////////////////////////////////////////////
+
+    var keyboardLights = gltf.scene.getObjectByName("keyLights", true);
+
+    keyboardLights.traverse(function (child) {
+      if (child.isMesh) {
+        child.material.dispose();
+        child.material = new THREE.MeshStandardMaterial({
+          emissive: Math.random() * 0xffffff,
+        });
+      }
+    });
+
+    function lightChanging() {
+      keyboardLights.traverse(function (child) {
+        if (child.isMesh) {
+          child.material.emissive.setHex(Math.random() * 0xffffff);
+        }
+      });
+    }
+
+    lightChanging();
+    setInterval(lightChanging, 3 * 1000);
+
+    ///////////////////////////////
 
     var palantirPlace = gltf.scene.getObjectByName("palantirPlace", true);
 
@@ -409,10 +436,10 @@ loader.load(
 
     var art = new THREE.TextureLoader().load("./assets/img/Palantiri.webp");
     const artMat = new THREE.MeshLambertMaterial({ map: art });
-    // // console.log(palantirPlace);
+    // // //
     palantirPlace.material = artMat;
     palantirPlace.scale.set(0.2, 0.2, 0.2);
-    // // console.log(palantirPlace);
+    // // //
     palantirPlace.material.transparent = true;
     // palantirPlace.rotation.set(1.57, 2.11, -3.14);
 
@@ -439,7 +466,7 @@ loader.load(
       "gradientGraphicArt",
       true
     );
-    // // console.log(gradientGraphicArt);
+    // // //
 
     var blendTexture = new THREE.TextureLoader().load(
       "./assets/img/gradient repeat1Blend.webp"
@@ -449,7 +476,7 @@ loader.load(
     const blendLayer = new THREE.Mesh(blendGeometry, blendMaterial);
     blendLayer.material.transparent = true;
     blendLayer.material.blending = THREE.MultiplyBlending;
-    // // console.log(THREE);
+    // // //
     blendLayer.position.set(
       gradientGraphicArt.position.x,
       gradientGraphicArt.position.y,
@@ -476,7 +503,7 @@ loader.load(
     // var gradientArt = new THREE.TextureLoader().load("/assets/img/gradient repeat1.webp");
     // const gradientArtMaterial = new THREE.MeshBasicMaterial({ map: gradientArt });
     gradientGraphicArt.material.map.rotation = 0.45;
-    // // console.log(gradientGraphicArt);
+    // // //
     scene.tl3 = new TimelineMax({ repeat: -1 }).delay(3);
     scene.tl3.to(gradientGraphicArt.material.map.offset, 6, {
       x: 0,
@@ -491,11 +518,18 @@ loader.load(
       ease: Power1.easeInOut,
     });
     // "https://api.weatherapi.com/v1/current.json?key=d7df60db6422414b9d1153848200912&q=Edinburgh"
-    // // console.log("its gets here");
+    // // //
     Axios.get(
       "https://api.openweathermap.org/data/2.5/weather?q=Edinburgh&appid=ab57b33912fbd3d3015d3f296505d3a8"
     ).then((response) => {
-      // // console.log(response.data);
+      // // //
+      let weatherPlane = gltf.scene.getObjectByName("WeatherPlane", true);
+      weatherPlane.visible = false;
+      let weatherIconPlane = gltf.scene.getObjectByName(
+        "WeatherIconPlane",
+        true
+      );
+      weatherIconPlane.visible = false;
 
       let icon = response.data.weather[0].icon;
       icon = "https://openweathermap.org/img/wn/" + icon + "@2x.png";
@@ -508,7 +542,10 @@ loader.load(
       weatherMaterial.transparent = true;
       const weather = new THREE.Mesh(weatherGeometry, weatherMaterial);
       weather.scale.set(0.058, 0.058, 1);
-      weather.position.set(-0.25, 0.58, 0.06);
+      weather.position.copy(weatherIconPlane.getWorldPosition());
+      weather.position.x = weather.position.x + 0.01;
+      weather.position.y = weather.position.y + 0.03;
+      weather.position.z = weather.position.z + 0.01;
       weather.rotation.set(0, 0.45, 0.2);
       weather.name = "weather";
       scene.add(weather);
@@ -532,9 +569,14 @@ loader.load(
 
           const tempMaterial = new THREE.MeshBasicMaterial({ color: 0xb01717 });
           const tempMesh = new THREE.Mesh(tempTextGeometry, tempMaterial);
-          tempMesh.position.set(-0.27, 0.515, 0.088);
+          // tempMesh.position.set(-0.27, 0.515, 0.088);
+          tempMesh.position.copy(weatherPlane.getWorldPosition());
+          tempMesh.position.x = tempMesh.position.x - 0.025;
+          tempMesh.position.y = tempMesh.position.y - 0.01;
+          tempMesh.position.z = tempMesh.position.z + 0.015;
+
           // tempMesh.scale.set(0.09, 0.09, 1);
-          // // console.log(gltf.scene);
+          // // //
           // tempMesh.rotation.set(-35, 1, 1);
           tempMesh.rotation.set(-0.45, 0.45, 0.2);
           //  alarmClockText.rotation.set(100, 100.25, 100.35);
@@ -543,6 +585,54 @@ loader.load(
         }
       );
     });
+
+    ////////////////////////////////////////////////////////
+
+    const loader2 = new THREE.FontLoader();
+
+    function fn60sec() {
+      // runs every 60 sec and runs on init.
+
+      loader2.load("./assets/fonts/alarm clock_Regular.json", function (font) {
+        var currentTime = moment().format("HH:mm");
+
+        const geometry = new THREE.TextBufferGeometry(currentTime, {
+          font: font,
+          size: 0.24,
+          height: 0.01,
+          // curveSegments: 12,
+          // bevelEnabled: true,
+          // bevelThickness: 10,
+          // bevelSize: 8,
+          // bevelOffset: 0,
+          // bevelSegments: 5
+        });
+
+        const material = new THREE.MeshBasicMaterial({ color: 0xb01717 });
+        const alarmClockText = new THREE.Mesh(geometry, material);
+        alarmClockText.position.set(0.315, 0.51, -0.08);
+        let clockPlane = gltf.scene.getObjectByName("ClockPlane", true);
+        alarmClockText.position.copy(clockPlane.getWorldPosition());
+        // alarmClockText.position.z = alarmClockText.position.z + 0.01;
+        alarmClockText.position.y = alarmClockText.position.y + 0.01;
+        alarmClockText.position.x = alarmClockText.position.x - 0.05;
+
+        alarmClockText.scale.set(0.09, 0.09, 1);
+        alarmClockText.rotation.set(100, 100.25, 100.35);
+        alarmClockText.name = "alarmClockText";
+        scene.add(alarmClockText);
+      });
+
+      if (notfirstTimeBoolean) {
+        let alarmClockTexttemp = scene.getObjectByName("alarmClockText", true);
+        alarmClockTexttemp.geometry.dispose();
+        alarmClockTexttemp.material.dispose();
+        scene.remove(alarmClockTexttemp);
+      }
+      notfirstTimeBoolean = true;
+    }
+    fn60sec();
+    setInterval(fn60sec, 60 * 1000);
     scene.add(gltf.scene);
   },
   undefined,
@@ -569,7 +659,7 @@ weatherAppTextLoader.load(
       weatherAppTextMaterial
     );
     weatherAppText.scale.set(0.1, 0.1, 1);
-    weatherAppText.position.set(-0.33, 0.61, 0.07);
+    weatherAppText.position.set(-0.48, 0.65, -0.07);
     weatherAppText.rotation.set(0, 0.45, 0);
     weatherAppText.name = "Weather App";
     weatherAppText.visible = false;
@@ -689,47 +779,6 @@ scene.add(painting);
 // });
 
 //
-////////////////////////////////////////////////////////
-
-const loader2 = new THREE.FontLoader();
-
-function fn60sec() {
-  // runs every 60 sec and runs on init.
-
-  loader2.load("./assets/fonts/alarm clock_Regular.json", function (font) {
-    var currentTime = moment().format("HH:mm");
-
-    const geometry = new THREE.TextBufferGeometry(currentTime, {
-      font: font,
-      size: 0.24,
-      height: 0.01,
-      // curveSegments: 12,
-      // bevelEnabled: true,
-      // bevelThickness: 10,
-      // bevelSize: 8,
-      // bevelOffset: 0,
-      // bevelSegments: 5
-    });
-
-    const material = new THREE.MeshBasicMaterial({ color: 0xb01717 });
-    const alarmClockText = new THREE.Mesh(geometry, material);
-    alarmClockText.position.set(0.315, 0.51, -0.08);
-    alarmClockText.scale.set(0.09, 0.09, 1);
-    alarmClockText.rotation.set(100, 100.25, 100.35);
-    alarmClockText.name = "alarmClockText";
-    scene.add(alarmClockText);
-  });
-
-  if (notfirstTimeBoolean) {
-    let alarmClockTexttemp = scene.getObjectByName("alarmClockText", true);
-    alarmClockTexttemp.geometry.dispose();
-    alarmClockTexttemp.material.dispose();
-    scene.remove(alarmClockTexttemp);
-  }
-  notfirstTimeBoolean = true;
-}
-fn60sec();
-setInterval(fn60sec, 60 * 1000);
 
 var bbox = new THREE.Box3().setFromObject(scene);
 let targetReset = bbox.getCenter();
@@ -776,7 +825,7 @@ function onMouseClick(event) {
 
   for (var i = 0; i < intersects.length; i++) {
     if (intersects[i].object.name == "painting") {
-      // // console.log(scene);
+      // // //
       var bbox = new THREE.Box3().setFromObject(
         scene.getObjectByName("painting", true)
       );
@@ -813,9 +862,9 @@ function onMouseClick(event) {
         0
       );
     }
-    // // console.log(intersects);
+    // // //
     if (intersects[i].object.parent.name == "monitor") {
-      // // console.log(scene);
+      // // //
       var bbox = new THREE.Box3().setFromObject(
         scene.getObjectByName("monitor", true)
       );
@@ -851,7 +900,7 @@ function onMouseClick(event) {
       );
     }
     if (intersects[i].object.parent.name == "monitor_1") {
-      // // console.log(scene);
+      // // //
       var bbox = new THREE.Box3().setFromObject(
         scene.getObjectByName("monitor_1", true)
       );
@@ -887,7 +936,7 @@ function onMouseClick(event) {
       );
     }
     if (intersects[i].object.parent.name == "whiteboard") {
-      // // console.log(scene);
+      // // //
       var bbox = new THREE.Box3().setFromObject(
         scene.getObjectByName("whiteboard", true)
       );
@@ -942,7 +991,7 @@ function onMouseMove(event) {
       }
       if (INTERSECTED != intersects[i].object) {
         if (intersects[i].object.name == "painting") {
-          // // console.log(animationToggle);
+          // // //
           if (animationToggle) animationToggle = false;
           scene.tlH = new TimelineMax();
 

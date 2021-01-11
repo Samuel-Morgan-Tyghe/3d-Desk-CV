@@ -57,7 +57,7 @@ var texture = new THREE.TextureLoader().load("/dist/assets/img/open.webp");
 var texture2 = new THREE.TextureLoader().load("/dist/assets/img/blink.webp");
 const paintingGeometry = new THREE.PlaneBufferGeometry(1, 1, 1);
 const paintingMaterial = new THREE.MeshLambertMaterial({ map: texture });
-console.log(paintingMaterial);
+
 const painting = new THREE.Mesh(paintingGeometry, paintingMaterial);
 painting.position.set(0.527, 0.938, -0.311);
 painting.scale.set(0.35, 0.53, 1);
@@ -151,7 +151,7 @@ function onMouseClick(event) {
 
   var intersects = raycaster.intersectObjects(scene.children, true);
   for (var i = 0; i < intersects.length; i++) {
-    // console.log(intersects[i].point)
+    //
     if (intersects[i].object.name == "painting") {
       camera.position.set(0.55, 1.2, 0.6);
       controls.target.set(0.55, 1.15, 0.4);
@@ -179,7 +179,7 @@ function onMouseMove(event) {
         if (INTERSECTED)
           INTERSECTED.material.emissive.setHex(INTERSECTED.currentMaterial);
         INTERSECTED = intersects[0].object;
-        console.log(INTERSECTED);
+
         INTERSECTED.currentMaterial = INTERSECTED.material.emissive.getHex();
         INTERSECTED.material.emissive.setHex(0xffffff);
         INTERSECTED.material.emissiveIntensity = 0.1;
@@ -209,7 +209,7 @@ function onMouseMove(event) {
 
 //   for (var i = 0; i < intersects.length; i++) {
 //     if (intersects[i].object.name == "painting") {
-//       console.log("Mouse out");
+//
 
 //       intersects[i].object.material.color.set(0xffffff);
 //     }

@@ -57,7 +57,7 @@ var texture2 = new THREE.TextureLoader().load("/dist/assets/img/blink.webp");
 const paintingGeometry = new THREE.PlaneBufferGeometry(1, 1, 1);
 const paintingMaterial = new THREE.MeshLambertMaterial({ map: texture });
 paintingMaterial.emissive.setHex(0xfff111);
-console.log(paintingMaterial);
+
 const painting = new THREE.Mesh(paintingGeometry, paintingMaterial);
 painting.position.set(0.527, 0.938, -0.311);
 painting.scale.set(0.35, 0.53, 1);
@@ -151,7 +151,7 @@ function onMouseClick(event) {
 
   var intersects = raycaster.intersectObjects(scene.children, true);
   for (var i = 0; i < intersects.length; i++) {
-    // console.log(intersects[i].point)
+    //
     if (intersects[i].object.name == "painting") {
       camera.position.set(0.55, 1.2, 0.6);
       controls.target.set(0.55, 1.15, 0.4);
@@ -182,9 +182,7 @@ function onMouseMove(event) {
           INTERSECTED.material.emissive.setHex(INTERSECTED.currentMaterial);
         // store reference to closest object as current intersection object
         INTERSECTED = intersects[0].object;
-        console.log(1);
-        console.log(INTERSECTED);
-        console.log(intersects[0].object);
+
         // store color of closest object (for later restoration)
         INTERSECTED.currentMaterial = INTERSECTED.material.emissive.getHex();
         // set a new color for closest object
@@ -220,7 +218,7 @@ function onMouseMove(event) {
 
 //   for (var i = 0; i < intersects.length; i++) {
 //     if (intersects[i].object.name == "painting") {
-//       console.log("Mouse out");
+//
 
 //       intersects[i].object.material.color.set(0xffffff);
 //     }
