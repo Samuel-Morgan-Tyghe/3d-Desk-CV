@@ -10,15 +10,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "gsap": "^3.5.1",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
-    "postprocessing": "^6.18.0",
-    "three": "^0.123.0"
+    "postprocessing": "^6.19.0",
+    "three": "^0.124.0",
+    "threex": "^1.0.0"
   },
   "devDependencies": {
-    "webpack": "^5.10.1",
-    "webpack-cli": "^4.2.0"
+    "webpack": "^5.12.2",
+    "webpack-cli": "^4.3.1"
   }
 }

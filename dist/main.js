@@ -248,6 +248,9 @@ axios.all = function all(promises) {
 };
 axios.spread = __webpack_require__(713);
 
+// Expose isAxiosError
+axios.isAxiosError = __webpack_require__(268);
+
 module.exports = axios;
 
 // Allow use of default import syntax in TypeScript
@@ -1179,6 +1182,25 @@ module.exports = function isAbsoluteURL(url) {
 
 /***/ }),
 
+/***/ 268:
+/***/ ((module) => {
+
+"use strict";
+
+
+/**
+ * Determines whether the payload is an error thrown by Axios
+ *
+ * @param {*} payload The value to test
+ * @returns {boolean} True if the payload is an error thrown by Axios, otherwise false
+ */
+module.exports = function isAxiosError(payload) {
+  return (typeof payload === 'object') && (payload.isAxiosError === true);
+};
+
+
+/***/ }),
+
 /***/ 985:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -1727,6 +1749,90 @@ module.exports = {
   stripBOM: stripBOM
 };
 
+
+/***/ }),
+
+/***/ 733:
+/***/ (() => {
+
+var THREEx = THREEx || {}
+THREEx.HtmlMixerHelpers	= THREEx.HtmlMixerHelpers	|| {}
+
+/**
+ * create domElement for a iframe to insert in a THREEx.HtmlmixedPlane 
+ * 
+ * @param  {String} url  the url for the iframe
+ */
+THREEx.HtmlMixerHelpers.createIframeDomElement	= function(url){
+	// create the iframe element
+	var domElement	= document.createElement('iframe')
+	domElement.src	= url
+	domElement.style.border	= 'none'
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		IOS workaround for iframe
+	//////////////////////////////////////////////////////////////////////////////////
+	var onIos	= navigator.platform.match(/iP(hone|od|ad)/) !== null ? true : false
+	if( onIos ){
+		// - see the following post for explaination on this workaround
+		// - http://dev.magnolia-cms.com/blog/2012/05/strategies-for-the-iframe-on-the-ipad-problem/
+		domElement.style.width	= '100%'
+		domElement.style.height	= '100%'
+		var container	= document.createElement('div')
+		container.appendChild(domElement)
+		container.style.overflow	= 'scroll'
+		container.style.webkitOverflowScrolling	= 'touch'
+		return container
+	}
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Comment								//
+	//////////////////////////////////////////////////////////////////////////////////
+	return domElement
+}
+
+
+/**
+ * set the iframe.src in a mixerPlane.
+ * - Usefull as it handle IOS specificite
+ */
+THREEx.HtmlMixerHelpers.setIframeSrc	= function(mixerPlane, url){
+	// handle THREEx.HtmlMultipleMixer.Plane 
+	if( THREEx.HtmlMultipleMixer && mixerPlane instanceof THREEx.HtmlMultipleMixer.Plane ){
+		mixerPlane.planes.forEach(function(plane){
+			THREEx.HtmlMixerHelpers.setIframeSrc(plane, url)
+		})
+		return
+	}
+
+	// sanity check
+	console.assert(mixerPlane instanceof THREEx.HtmlMixer.Plane )
+	// get the domElement
+	var domElement	= mixerPlane.domElement
+	// handle IOS special case
+	var onIos	= navigator.platform.match(/iP(hone|od|ad)/) !== null ? true : false
+	if( onIos ){
+		var domElement	= mixerPlane.domElement.firstChild
+	}
+
+
+	// sanity check
+	console.assert( domElement instanceof HTMLIFrameElement )
+
+	// actually set the iframe.src
+	domElement.src	= url
+}
+
+
+/**
+ * create domElement for a image to insert in a THREEx.HtmlmixedPlane 
+ * 
+ * @param  {String} url  the url for the iframe
+ */
+THREEx.HtmlMixerHelpers.createImageDomElement	= function(url){
+	var domElement	= document.createElement('img')
+	domElement.src	= url
+	return domElement
+}
 
 /***/ }),
 
@@ -45695,7 +45801,7 @@ module.exports = {
 var three = __webpack_require__(384);
 ;// CONCATENATED MODULE: ./node_modules/three/build/three.module.js
 // threejs.org/license
-const REVISION = '123';
+const REVISION = '124';
 const MOUSE = { LEFT: 0, MIDDLE: 1, RIGHT: 2, ROTATE: 0, DOLLY: 1, PAN: 2 };
 const TOUCH = { ROTATE: 0, PAN: 1, DOLLY_PAN: 2, DOLLY_ROTATE: 3 };
 const CullFaceNone = 0;
@@ -45893,8 +45999,8 @@ const StaticCopyUsage = 35046;
 const DynamicCopyUsage = 35050;
 const StreamCopyUsage = 35042;
 
-const GLSL1 = "100";
-const GLSL3 = "300 es";
+const GLSL1 = '100';
+const GLSL3 = '300 es';
 
 /**
  * https://github.com/mrdoob/eventdispatcher.js/
@@ -46912,6 +47018,8 @@ class Matrix3 {
 			0, 0, 1
 		);
 
+		return this;
+
 	}
 
 	scale( sx, sy ) {
@@ -47379,7 +47487,7 @@ Texture.prototype = Object.assign( Object.create( EventDispatcher.prototype ), {
 
 } );
 
-Object.defineProperty( Texture.prototype, "needsUpdate", {
+Object.defineProperty( Texture.prototype, 'needsUpdate', {
 
 	set: function ( value ) {
 
@@ -52318,12 +52426,12 @@ Object3D.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 		if ( object === this ) {
 
-			console.error( "THREE.Object3D.add: object can't be added as a child of itself.", object );
+			console.error( 'THREE.Object3D.add: object can\'t be added as a child of itself.', object );
 			return this;
 
 		}
 
-		if ( ( object && object.isObject3D ) ) {
+		if ( object && object.isObject3D ) {
 
 			if ( object.parent !== null ) {
 
@@ -52338,7 +52446,7 @@ Object3D.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 		} else {
 
-			console.error( "THREE.Object3D.add: object not an instance of THREE.Object3D.", object );
+			console.error( 'THREE.Object3D.add: object not an instance of THREE.Object3D.', object );
 
 		}
 
@@ -53631,27 +53739,27 @@ class Color {
 				case 'rgb':
 				case 'rgba':
 
-					if ( color = /^(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(,\s*([0-9]*\.?[0-9]+)\s*)?$/.exec( components ) ) {
+					if ( color = /^(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*(\d*\.?\d+)\s*)?$/.exec( components ) ) {
 
 						// rgb(255,0,0) rgba(255,0,0,0.5)
 						this.r = Math.min( 255, parseInt( color[ 1 ], 10 ) ) / 255;
 						this.g = Math.min( 255, parseInt( color[ 2 ], 10 ) ) / 255;
 						this.b = Math.min( 255, parseInt( color[ 3 ], 10 ) ) / 255;
 
-						handleAlpha( color[ 5 ] );
+						handleAlpha( color[ 4 ] );
 
 						return this;
 
 					}
 
-					if ( color = /^(\d+)\%\s*,\s*(\d+)\%\s*,\s*(\d+)\%\s*(,\s*([0-9]*\.?[0-9]+)\s*)?$/.exec( components ) ) {
+					if ( color = /^(\d+)\%\s*,\s*(\d+)\%\s*,\s*(\d+)\%\s*(?:,\s*(\d*\.?\d+)\s*)?$/.exec( components ) ) {
 
 						// rgb(100%,0%,0%) rgba(100%,0%,0%,0.5)
 						this.r = Math.min( 100, parseInt( color[ 1 ], 10 ) ) / 100;
 						this.g = Math.min( 100, parseInt( color[ 2 ], 10 ) ) / 100;
 						this.b = Math.min( 100, parseInt( color[ 3 ], 10 ) ) / 100;
 
-						handleAlpha( color[ 5 ] );
+						handleAlpha( color[ 4 ] );
 
 						return this;
 
@@ -53662,14 +53770,14 @@ class Color {
 				case 'hsl':
 				case 'hsla':
 
-					if ( color = /^([0-9]*\.?[0-9]+)\s*,\s*(\d+)\%\s*,\s*(\d+)\%\s*(,\s*([0-9]*\.?[0-9]+)\s*)?$/.exec( components ) ) {
+					if ( color = /^(\d*\.?\d+)\s*,\s*(\d+)\%\s*,\s*(\d+)\%\s*(?:,\s*(\d*\.?\d+)\s*)?$/.exec( components ) ) {
 
 						// hsl(120,50%,50%) hsla(120,50%,50%,0.5)
 						const h = parseFloat( color[ 1 ] ) / 360;
 						const s = parseInt( color[ 2 ], 10 ) / 100;
 						const l = parseInt( color[ 3 ], 10 ) / 100;
 
-						handleAlpha( color[ 5 ] );
+						handleAlpha( color[ 4 ] );
 
 						return this.setHSL( h, s, l );
 
@@ -53679,7 +53787,7 @@ class Color {
 
 			}
 
-		} else if ( m = /^\#([A-Fa-f0-9]+)$/.exec( style ) ) {
+		} else if ( m = /^\#([A-Fa-f\d]+)$/.exec( style ) ) {
 
 			// hex color
 
@@ -54200,7 +54308,7 @@ Material.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 			if ( newValue === undefined ) {
 
-				console.warn( "THREE.Material: '" + key + "' parameter is undefined." );
+				console.warn( 'THREE.Material: \'' + key + '\' parameter is undefined.' );
 				continue;
 
 			}
@@ -54218,7 +54326,7 @@ Material.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 			if ( currentValue === undefined ) {
 
-				console.warn( "THREE." + this.type + ": '" + key + "' is not a property of this material." );
+				console.warn( 'THREE.' + this.type + ': \'' + key + '\' is not a property of this material.' );
 				continue;
 
 			}
@@ -56737,14 +56845,14 @@ const _uvC = new Vector2();
 const _intersectionPoint = new Vector3();
 const _intersectionPointWorld = new Vector3();
 
-function Mesh( geometry, material ) {
+function Mesh( geometry = new BufferGeometry(), material = new MeshBasicMaterial() ) {
 
 	Object3D.call( this );
 
 	this.type = 'Mesh';
 
-	this.geometry = geometry !== undefined ? geometry : new BufferGeometry();
-	this.material = material !== undefined ? material : new MeshBasicMaterial();
+	this.geometry = geometry;
+	this.material = material;
 
 	this.updateMorphTargets();
 
@@ -60758,7 +60866,6 @@ function WebGLCubeMaps( renderer ) {
 
 						const currentRenderList = renderer.getRenderList();
 						const currentRenderTarget = renderer.getRenderTarget();
-						const currentRenderState = renderer.getRenderState();
 
 						const renderTarget = new WebGLCubeRenderTarget( image.height / 2 );
 						renderTarget.fromEquirectangularTexture( renderer, texture );
@@ -60766,7 +60873,6 @@ function WebGLCubeMaps( renderer ) {
 
 						renderer.setRenderTarget( currentRenderTarget );
 						renderer.setRenderList( currentRenderList );
-						renderer.setRenderState( currentRenderState );
 
 						texture.addEventListener( 'dispose', onTextureDispose );
 
@@ -61407,6 +61513,12 @@ function WebGLObjects( gl, geometries, attributes, info ) {
 
 		if ( object.isInstancedMesh ) {
 
+			if ( object.hasEventListener( 'dispose', onInstancedMeshDispose ) === false ) {
+
+				object.addEventListener( 'dispose', onInstancedMeshDispose );
+
+			}
+
 			attributes.update( object.instanceMatrix, 34962 );
 
 			if ( object.instanceColor !== null ) {
@@ -61424,6 +61536,18 @@ function WebGLObjects( gl, geometries, attributes, info ) {
 	function dispose() {
 
 		updateMap = new WeakMap();
+
+	}
+
+	function onInstancedMeshDispose( event ) {
+
+		const instancedMesh = event.target;
+
+		instancedMesh.removeEventListener( 'dispose', onInstancedMeshDispose );
+
+		attributes.remove( instancedMesh.instanceMatrix );
+
+		if ( instancedMesh.instanceColor !== null ) attributes.remove( instancedMesh.instanceColor );
 
 	}
 
@@ -62235,7 +62359,7 @@ StructuredUniform.prototype.setValue = function ( gl, value, textures ) {
 
 // Parser - builds up the property tree from the path strings
 
-const RePathPart = /([\w\d_]+)(\])?(\[|\.)?/g;
+const RePathPart = /(\w+)(\])?(\[|\.)?/g;
 
 // extracts
 // 	- the identifier (member name or array index)
@@ -62641,19 +62765,19 @@ function loopReplacer( match, start, end, snippet ) {
 
 function generatePrecision( parameters ) {
 
-	let precisionstring = "precision " + parameters.precision + " float;\nprecision " + parameters.precision + " int;";
+	let precisionstring = 'precision ' + parameters.precision + ' float;\nprecision ' + parameters.precision + ' int;';
 
-	if ( parameters.precision === "highp" ) {
+	if ( parameters.precision === 'highp' ) {
 
-		precisionstring += "\n#define HIGH_PRECISION";
+		precisionstring += '\n#define HIGH_PRECISION';
 
-	} else if ( parameters.precision === "mediump" ) {
+	} else if ( parameters.precision === 'mediump' ) {
 
-		precisionstring += "\n#define MEDIUM_PRECISION";
+		precisionstring += '\n#define MEDIUM_PRECISION';
 
-	} else if ( parameters.precision === "lowp" ) {
+	} else if ( parameters.precision === 'lowp' ) {
 
-		precisionstring += "\n#define LOW_PRECISION";
+		precisionstring += '\n#define LOW_PRECISION';
 
 	}
 
@@ -62783,7 +62907,7 @@ function WebGLProgram( renderer, cacheKey, parameters, bindingStates ) {
 	const program = gl.createProgram();
 
 	let prefixVertex, prefixFragment;
-	let versionString = parameters.glslVersion ? '#version ' + parameters.glslVersion + "\n" : '';
+	let versionString = parameters.glslVersion ? '#version ' + parameters.glslVersion + '\n' : '';
 
 	if ( parameters.isRawShaderMaterial ) {
 
@@ -63262,19 +63386,19 @@ function WebGLPrograms( renderer, cubemaps, extensions, capabilities, bindingSta
 	};
 
 	const parameterNames = [
-		"precision", "isWebGL2", "supportsVertexTextures", "outputEncoding", "instancing", "instancingColor",
-		"map", "mapEncoding", "matcap", "matcapEncoding", "envMap", "envMapMode", "envMapEncoding", "envMapCubeUV",
-		"lightMap", "lightMapEncoding", "aoMap", "emissiveMap", "emissiveMapEncoding", "bumpMap", "normalMap", "objectSpaceNormalMap", "tangentSpaceNormalMap", "clearcoatMap", "clearcoatRoughnessMap", "clearcoatNormalMap", "displacementMap", "specularMap",
-		"roughnessMap", "metalnessMap", "gradientMap",
-		"alphaMap", "combine", "vertexColors", "vertexTangents", "vertexUvs", "uvsVertexOnly", "fog", "useFog", "fogExp2",
-		"flatShading", "sizeAttenuation", "logarithmicDepthBuffer", "skinning",
-		"maxBones", "useVertexTexture", "morphTargets", "morphNormals",
-		"maxMorphTargets", "maxMorphNormals", "premultipliedAlpha",
-		"numDirLights", "numPointLights", "numSpotLights", "numHemiLights", "numRectAreaLights",
-		"numDirLightShadows", "numPointLightShadows", "numSpotLightShadows",
-		"shadowMapEnabled", "shadowMapType", "toneMapping", 'physicallyCorrectLights',
-		"alphaTest", "doubleSided", "flipSided", "numClippingPlanes", "numClipIntersection", "depthPacking", "dithering",
-		"sheen", "transmissionMap"
+		'precision', 'isWebGL2', 'supportsVertexTextures', 'outputEncoding', 'instancing', 'instancingColor',
+		'map', 'mapEncoding', 'matcap', 'matcapEncoding', 'envMap', 'envMapMode', 'envMapEncoding', 'envMapCubeUV',
+		'lightMap', 'lightMapEncoding', 'aoMap', 'emissiveMap', 'emissiveMapEncoding', 'bumpMap', 'normalMap', 'objectSpaceNormalMap', 'tangentSpaceNormalMap', 'clearcoatMap', 'clearcoatRoughnessMap', 'clearcoatNormalMap', 'displacementMap', 'specularMap',
+		'roughnessMap', 'metalnessMap', 'gradientMap',
+		'alphaMap', 'combine', 'vertexColors', 'vertexTangents', 'vertexUvs', 'uvsVertexOnly', 'fog', 'useFog', 'fogExp2',
+		'flatShading', 'sizeAttenuation', 'logarithmicDepthBuffer', 'skinning',
+		'maxBones', 'useVertexTexture', 'morphTargets', 'morphNormals',
+		'maxMorphTargets', 'maxMorphNormals', 'premultipliedAlpha',
+		'numDirLights', 'numPointLights', 'numSpotLights', 'numHemiLights', 'numRectAreaLights',
+		'numDirLightShadows', 'numPointLightShadows', 'numSpotLightShadows',
+		'shadowMapEnabled', 'shadowMapType', 'toneMapping', 'physicallyCorrectLights',
+		'alphaTest', 'doubleSided', 'flipSided', 'numClippingPlanes', 'numClipIntersection', 'depthPacking', 'dithering',
+		'sheen', 'transmissionMap'
 	];
 
 	function getMaxBones( object ) {
@@ -63317,18 +63441,18 @@ function WebGLPrograms( renderer, cubemaps, extensions, capabilities, bindingSta
 
 		let encoding;
 
-		if ( ! map ) {
-
-			encoding = LinearEncoding;
-
-		} else if ( map.isTexture ) {
+		if ( map && map.isTexture ) {
 
 			encoding = map.encoding;
 
-		} else if ( map.isWebGLRenderTarget ) {
+		} else if ( map && map.isWebGLRenderTarget ) {
 
-			console.warn( "THREE.WebGLPrograms.getTextureEncodingFromMap: don't use render targets as textures. Use their .texture property instead." );
+			console.warn( 'THREE.WebGLPrograms.getTextureEncodingFromMap: don\'t use render targets as textures. Use their .texture property instead.' );
 			encoding = map.texture.encoding;
+
+		} else {
+
+			encoding = LinearEncoding;
 
 		}
 
@@ -64087,7 +64211,7 @@ function WebGLLights( extensions, capabilities ) {
 	const matrix4 = new Matrix4();
 	const matrix42 = new Matrix4();
 
-	function setup( lights, shadows, camera ) {
+	function setup( lights ) {
 
 		let r = 0, g = 0, b = 0;
 
@@ -64102,8 +64226,6 @@ function WebGLLights( extensions, capabilities ) {
 		let numDirectionalShadows = 0;
 		let numPointShadows = 0;
 		let numSpotShadows = 0;
-
-		const viewMatrix = camera.matrixWorldInverse;
 
 		lights.sort( shadowCastingLightsFirst );
 
@@ -64136,10 +64258,6 @@ function WebGLLights( extensions, capabilities ) {
 				const uniforms = cache.get( light );
 
 				uniforms.color.copy( light.color ).multiplyScalar( light.intensity );
-				uniforms.direction.setFromMatrixPosition( light.matrixWorld );
-				vector3.setFromMatrixPosition( light.target.matrixWorld );
-				uniforms.direction.sub( vector3 );
-				uniforms.direction.transformDirection( viewMatrix );
 
 				if ( light.castShadow ) {
 
@@ -64169,15 +64287,9 @@ function WebGLLights( extensions, capabilities ) {
 				const uniforms = cache.get( light );
 
 				uniforms.position.setFromMatrixPosition( light.matrixWorld );
-				uniforms.position.applyMatrix4( viewMatrix );
 
 				uniforms.color.copy( color ).multiplyScalar( intensity );
 				uniforms.distance = distance;
-
-				uniforms.direction.setFromMatrixPosition( light.matrixWorld );
-				vector3.setFromMatrixPosition( light.target.matrixWorld );
-				uniforms.direction.sub( vector3 );
-				uniforms.direction.transformDirection( viewMatrix );
 
 				uniforms.coneCos = Math.cos( light.angle );
 				uniforms.penumbraCos = Math.cos( light.angle * ( 1 - light.penumbra ) );
@@ -64216,23 +64328,8 @@ function WebGLLights( extensions, capabilities ) {
 				// (b) intensity is the brightness of the light
 				uniforms.color.copy( color ).multiplyScalar( intensity );
 
-				uniforms.position.setFromMatrixPosition( light.matrixWorld );
-				uniforms.position.applyMatrix4( viewMatrix );
-
-				// extract local rotation of light to derive width/height half vectors
-				matrix42.identity();
-				matrix4.copy( light.matrixWorld );
-				matrix4.premultiply( viewMatrix );
-				matrix42.extractRotation( matrix4 );
-
 				uniforms.halfWidth.set( light.width * 0.5, 0.0, 0.0 );
 				uniforms.halfHeight.set( 0.0, light.height * 0.5, 0.0 );
-
-				uniforms.halfWidth.applyMatrix4( matrix42 );
-				uniforms.halfHeight.applyMatrix4( matrix42 );
-
-				// TODO (abelnation): RectAreaLight distance?
-				// uniforms.distance = distance;
 
 				state.rectArea[ rectAreaLength ] = uniforms;
 
@@ -64241,9 +64338,6 @@ function WebGLLights( extensions, capabilities ) {
 			} else if ( light.isPointLight ) {
 
 				const uniforms = cache.get( light );
-
-				uniforms.position.setFromMatrixPosition( light.matrixWorld );
-				uniforms.position.applyMatrix4( viewMatrix );
 
 				uniforms.color.copy( light.color ).multiplyScalar( light.intensity );
 				uniforms.distance = light.distance;
@@ -64277,10 +64371,6 @@ function WebGLLights( extensions, capabilities ) {
 			} else if ( light.isHemisphereLight ) {
 
 				const uniforms = cache.get( light );
-
-				uniforms.direction.setFromMatrixPosition( light.matrixWorld );
-				uniforms.direction.transformDirection( viewMatrix );
-				uniforms.direction.normalize();
 
 				uniforms.skyColor.copy( light.color ).multiplyScalar( intensity );
 				uniforms.groundColor.copy( light.groundColor ).multiplyScalar( intensity );
@@ -64373,8 +64463,94 @@ function WebGLLights( extensions, capabilities ) {
 
 	}
 
+	function setupView( lights, camera ) {
+
+		let directionalLength = 0;
+		let pointLength = 0;
+		let spotLength = 0;
+		let rectAreaLength = 0;
+		let hemiLength = 0;
+
+		const viewMatrix = camera.matrixWorldInverse;
+
+		for ( let i = 0, l = lights.length; i < l; i ++ ) {
+
+			const light = lights[ i ];
+
+			if ( light.isDirectionalLight ) {
+
+				const uniforms = state.directional[ directionalLength ];
+
+				uniforms.direction.setFromMatrixPosition( light.matrixWorld );
+				vector3.setFromMatrixPosition( light.target.matrixWorld );
+				uniforms.direction.sub( vector3 );
+				uniforms.direction.transformDirection( viewMatrix );
+
+				directionalLength ++;
+
+			} else if ( light.isSpotLight ) {
+
+				const uniforms = state.spot[ spotLength ];
+
+				uniforms.position.setFromMatrixPosition( light.matrixWorld );
+				uniforms.position.applyMatrix4( viewMatrix );
+
+				uniforms.direction.setFromMatrixPosition( light.matrixWorld );
+				vector3.setFromMatrixPosition( light.target.matrixWorld );
+				uniforms.direction.sub( vector3 );
+				uniforms.direction.transformDirection( viewMatrix );
+
+				spotLength ++;
+
+			} else if ( light.isRectAreaLight ) {
+
+				const uniforms = state.rectArea[ rectAreaLength ];
+
+				uniforms.position.setFromMatrixPosition( light.matrixWorld );
+				uniforms.position.applyMatrix4( viewMatrix );
+
+				// extract local rotation of light to derive width/height half vectors
+				matrix42.identity();
+				matrix4.copy( light.matrixWorld );
+				matrix4.premultiply( viewMatrix );
+				matrix42.extractRotation( matrix4 );
+
+				uniforms.halfWidth.set( light.width * 0.5, 0.0, 0.0 );
+				uniforms.halfHeight.set( 0.0, light.height * 0.5, 0.0 );
+
+				uniforms.halfWidth.applyMatrix4( matrix42 );
+				uniforms.halfHeight.applyMatrix4( matrix42 );
+
+				rectAreaLength ++;
+
+			} else if ( light.isPointLight ) {
+
+				const uniforms = state.point[ pointLength ];
+
+				uniforms.position.setFromMatrixPosition( light.matrixWorld );
+				uniforms.position.applyMatrix4( viewMatrix );
+
+				pointLength ++;
+
+			} else if ( light.isHemisphereLight ) {
+
+				const uniforms = state.hemi[ hemiLength ];
+
+				uniforms.direction.setFromMatrixPosition( light.matrixWorld );
+				uniforms.direction.transformDirection( viewMatrix );
+				uniforms.direction.normalize();
+
+				hemiLength ++;
+
+			}
+
+		}
+
+	}
+
 	return {
 		setup: setup,
+		setupView: setupView,
 		state: state
 	};
 
@@ -64406,9 +64582,15 @@ function WebGLRenderState( extensions, capabilities ) {
 
 	}
 
-	function setupLights( camera ) {
+	function setupLights() {
 
-		lights.setup( lightsArray, shadowsArray, camera );
+		lights.setup( lightsArray );
+
+	}
+
+	function setupLightsView( camera ) {
+
+		lights.setupView( lightsArray, camera );
 
 	}
 
@@ -64423,6 +64605,7 @@ function WebGLRenderState( extensions, capabilities ) {
 		init: init,
 		state: state,
 		setupLights: setupLights,
+		setupLightsView: setupLightsView,
 
 		pushLight: pushLight,
 		pushShadow: pushShadow
@@ -64434,26 +64617,26 @@ function WebGLRenderStates( extensions, capabilities ) {
 
 	let renderStates = new WeakMap();
 
-	function get( scene, camera ) {
+	function get( scene, renderCallDepth = 0 ) {
 
 		let renderState;
 
 		if ( renderStates.has( scene ) === false ) {
 
 			renderState = new WebGLRenderState( extensions, capabilities );
-			renderStates.set( scene, new WeakMap() );
-			renderStates.get( scene ).set( camera, renderState );
+			renderStates.set( scene, [] );
+			renderStates.get( scene ).push( renderState );
 
 		} else {
 
-			if ( renderStates.get( scene ).has( camera ) === false ) {
+			if ( renderCallDepth >= renderStates.get( scene ).length ) {
 
 				renderState = new WebGLRenderState( extensions, capabilities );
-				renderStates.get( scene ).set( camera, renderState );
+				renderStates.get( scene ).push( renderState );
 
 			} else {
 
-				renderState = renderStates.get( scene ).get( camera );
+				renderState = renderStates.get( scene )[ renderCallDepth ];
 
 			}
 
@@ -64627,7 +64810,7 @@ MeshDistanceMaterial.prototype.copy = function ( source ) {
 
 };
 
-var vsm_frag = "uniform sampler2D shadow_pass;\nuniform vec2 resolution;\nuniform float radius;\n#include <packing>\nvoid main() {\n\tfloat mean = 0.0;\n\tfloat squared_mean = 0.0;\n\tfloat depth = unpackRGBAToDepth( texture2D( shadow_pass, ( gl_FragCoord.xy ) / resolution ) );\n\tfor ( float i = -1.0; i < 1.0 ; i += SAMPLE_RATE) {\n\t\t#ifdef HORIZONAL_PASS\n\t\t\tvec2 distribution = unpackRGBATo2Half( texture2D( shadow_pass, ( gl_FragCoord.xy + vec2( i, 0.0 ) * radius ) / resolution ) );\n\t\t\tmean += distribution.x;\n\t\t\tsquared_mean += distribution.y * distribution.y + distribution.x * distribution.x;\n\t\t#else\n\t\t\tfloat depth = unpackRGBAToDepth( texture2D( shadow_pass, ( gl_FragCoord.xy + vec2( 0.0, i ) * radius ) / resolution ) );\n\t\t\tmean += depth;\n\t\t\tsquared_mean += depth * depth;\n\t\t#endif\n\t}\n\tmean = mean * HALF_SAMPLE_RATE;\n\tsquared_mean = squared_mean * HALF_SAMPLE_RATE;\n\tfloat std_dev = sqrt( squared_mean - mean * mean );\n\tgl_FragColor = pack2HalfToRGBA( vec2( mean, std_dev ) );\n}";
+var vsm_frag = "uniform sampler2D shadow_pass;\nuniform vec2 resolution;\nuniform float radius;\n#include <packing>\nvoid main() {\n\tfloat mean = 0.0;\n\tfloat squared_mean = 0.0;\n\tfloat depth = unpackRGBAToDepth( texture2D( shadow_pass, ( gl_FragCoord.xy ) / resolution ) );\n\tfor ( float i = -1.0; i < 1.0 ; i += SAMPLE_RATE) {\n\t\t#ifdef HORIZONTAL_PASS\n\t\t\tvec2 distribution = unpackRGBATo2Half( texture2D( shadow_pass, ( gl_FragCoord.xy + vec2( i, 0.0 ) * radius ) / resolution ) );\n\t\t\tmean += distribution.x;\n\t\t\tsquared_mean += distribution.y * distribution.y + distribution.x * distribution.x;\n\t\t#else\n\t\t\tfloat depth = unpackRGBAToDepth( texture2D( shadow_pass, ( gl_FragCoord.xy + vec2( 0.0, i ) * radius ) / resolution ) );\n\t\t\tmean += depth;\n\t\t\tsquared_mean += depth * depth;\n\t\t#endif\n\t}\n\tmean = mean * HALF_SAMPLE_RATE;\n\tsquared_mean = squared_mean * HALF_SAMPLE_RATE;\n\tfloat std_dev = sqrt( squared_mean - mean * mean );\n\tgl_FragColor = pack2HalfToRGBA( vec2( mean, std_dev ) );\n}";
 
 var vsm_vert = "void main() {\n\tgl_Position = vec4( position, 1.0 );\n}";
 
@@ -64666,12 +64849,12 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 
 	} );
 
-	const shadowMaterialHorizonal = shadowMaterialVertical.clone();
-	shadowMaterialHorizonal.defines.HORIZONAL_PASS = 1;
+	const shadowMaterialHorizontal = shadowMaterialVertical.clone();
+	shadowMaterialHorizontal.defines.HORIZONTAL_PASS = 1;
 
 	const fullScreenTri = new BufferGeometry();
 	fullScreenTri.setAttribute(
-		"position",
+		'position',
 		new BufferAttribute(
 			new Float32Array( [ - 1, - 1, 0.5, 3, - 1, 0.5, - 1, 3, 0.5 ] ),
 			3
@@ -64757,7 +64940,7 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 				const pars = { minFilter: LinearFilter, magFilter: LinearFilter, format: RGBAFormat };
 
 				shadow.map = new WebGLRenderTarget( _shadowMapSize.x, _shadowMapSize.y, pars );
-				shadow.map.texture.name = light.name + ".shadowMap";
+				shadow.map.texture.name = light.name + '.shadowMap';
 
 				shadow.mapPass = new WebGLRenderTarget( _shadowMapSize.x, _shadowMapSize.y, pars );
 
@@ -64770,7 +64953,7 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 				const pars = { minFilter: NearestFilter, magFilter: NearestFilter, format: RGBAFormat };
 
 				shadow.map = new WebGLRenderTarget( _shadowMapSize.x, _shadowMapSize.y, pars );
-				shadow.map.texture.name = light.name + ".shadowMap";
+				shadow.map.texture.name = light.name + '.shadowMap';
 
 				shadow.camera.updateProjectionMatrix();
 
@@ -64833,14 +65016,14 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 		_renderer.clear();
 		_renderer.renderBufferDirect( camera, null, geometry, shadowMaterialVertical, fullScreenMesh, null );
 
-		// horizonal pass
+		// horizontal pass
 
-		shadowMaterialHorizonal.uniforms.shadow_pass.value = shadow.mapPass.texture;
-		shadowMaterialHorizonal.uniforms.resolution.value = shadow.mapSize;
-		shadowMaterialHorizonal.uniforms.radius.value = shadow.radius;
+		shadowMaterialHorizontal.uniforms.shadow_pass.value = shadow.mapPass.texture;
+		shadowMaterialHorizontal.uniforms.resolution.value = shadow.mapSize;
+		shadowMaterialHorizontal.uniforms.radius.value = shadow.radius;
 		_renderer.setRenderTarget( shadow.map );
 		_renderer.clear();
-		_renderer.renderBufferDirect( camera, null, geometry, shadowMaterialHorizonal, fullScreenMesh, null );
+		_renderer.renderBufferDirect( camera, null, geometry, shadowMaterialHorizontal, fullScreenMesh, null );
 
 	}
 
@@ -65406,12 +65589,12 @@ function WebGLState( gl, extensions, capabilities ) {
 
 	if ( glVersion.indexOf( 'WebGL' ) !== - 1 ) {
 
-		version = parseFloat( /^WebGL\ ([0-9])/.exec( glVersion )[ 1 ] );
+		version = parseFloat( /^WebGL (\d)/.exec( glVersion )[ 1 ] );
 		lineWidthAvailable = ( version >= 1.0 );
 
 	} else if ( glVersion.indexOf( 'OpenGL ES' ) !== - 1 ) {
 
-		version = parseFloat( /^OpenGL\ ES\ ([0-9])/.exec( glVersion )[ 1 ] );
+		version = parseFloat( /^OpenGL ES (\d)/.exec( glVersion )[ 1 ] );
 		lineWidthAvailable = ( version >= 2.0 );
 
 	}
@@ -66030,7 +66213,7 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 	try {
 
 		useOffscreenCanvas = typeof OffscreenCanvas !== 'undefined'
-			&& ( new OffscreenCanvas( 1, 1 ).getContext( "2d" ) ) !== null;
+			&& ( new OffscreenCanvas( 1, 1 ).getContext( '2d' ) ) !== null;
 
 	} catch ( err ) {
 
@@ -67226,7 +67409,7 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 
 			if ( warnedTexture2D === false ) {
 
-				console.warn( "THREE.WebGLTextures.safeSetTexture2D: don't use render targets as textures. Use their .texture property instead." );
+				console.warn( 'THREE.WebGLTextures.safeSetTexture2D: don\'t use render targets as textures. Use their .texture property instead.' );
 				warnedTexture2D = true;
 
 			}
@@ -67245,7 +67428,7 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 
 			if ( warnedTextureCube === false ) {
 
-				console.warn( "THREE.WebGLTextures.safeSetTextureCube: don't use cube render targets as textures. Use their .texture property instead." );
+				console.warn( 'THREE.WebGLTextures.safeSetTextureCube: don\'t use cube render targets as textures. Use their .texture property instead.' );
 				warnedTextureCube = true;
 
 			}
@@ -67673,7 +67856,7 @@ Object.assign( WebXRController.prototype, {
 
 							hand.inputState.pinching = false;
 							this.dispatchEvent( {
-								type: "pinchend",
+								type: 'pinchend',
 								handedness: inputSource.handedness,
 								target: this
 							} );
@@ -67682,7 +67865,7 @@ Object.assign( WebXRController.prototype, {
 
 							hand.inputState.pinching = true;
 							this.dispatchEvent( {
-								type: "pinchstart",
+								type: 'pinchstart',
 								handedness: inputSource.handedness,
 								target: this
 							} );
@@ -68952,6 +69135,11 @@ function WebGLRenderer( parameters ) {
 	let currentRenderList = null;
 	let currentRenderState = null;
 
+	// render() can be called from within a callback triggered by another render.
+	// We track this so that the nested render call gets its state isolated from the parent render call.
+
+	const renderStateStack = [];
+
 	// public properties
 
 	this.domElement = _canvas;
@@ -69018,7 +69206,6 @@ function WebGLRenderer( parameters ) {
 	let _currentMaterialId = - 1;
 
 	let _currentCamera = null;
-	let _currentArrayCamera = null;
 
 	const _currentViewport = new Vector4();
 	const _currentScissor = new Vector4();
@@ -69418,9 +69605,17 @@ function WebGLRenderer( parameters ) {
 
 	// Clearing
 
-	this.getClearColor = function () {
+	this.getClearColor = function ( target ) {
 
-		return background.getClearColor();
+		if ( target === undefined ) {
+
+			console.warn( 'WebGLRenderer: .getClearColor() now requires a Color as an argument' );
+
+			target = new Color();
+
+		}
+
+		return target.copy( background.getClearColor() );
 
 	};
 
@@ -69764,7 +69959,7 @@ function WebGLRenderer( parameters ) {
 
 	this.compile = function ( scene, camera ) {
 
-		currentRenderState = renderStates.get( scene, camera );
+		currentRenderState = renderStates.get( scene );
 		currentRenderState.init();
 
 		scene.traverseVisible( function ( object ) {
@@ -69783,7 +69978,7 @@ function WebGLRenderer( parameters ) {
 
 		} );
 
-		currentRenderState.setupLights( camera );
+		currentRenderState.setupLights();
 
 		const compiled = new WeakMap();
 
@@ -69898,8 +70093,10 @@ function WebGLRenderer( parameters ) {
 		//
 		if ( scene.isScene === true ) scene.onBeforeRender( _this, scene, camera, renderTarget || _currentRenderTarget );
 
-		currentRenderState = renderStates.get( scene, camera );
+		currentRenderState = renderStates.get( scene, renderStateStack.length );
 		currentRenderState.init();
+
+		renderStateStack.push( currentRenderState );
 
 		_projScreenMatrix.multiplyMatrices( camera.projectionMatrix, camera.matrixWorldInverse );
 		_frustum.setFromProjectionMatrix( _projScreenMatrix );
@@ -69928,7 +70125,8 @@ function WebGLRenderer( parameters ) {
 
 		shadowMap.render( shadowsArray, scene, camera );
 
-		currentRenderState.setupLights( camera );
+		currentRenderState.setupLights();
+		currentRenderState.setupLightsView( camera );
 
 		if ( _clippingEnabled === true ) clipping.endShadows();
 
@@ -69982,8 +70180,18 @@ function WebGLRenderer( parameters ) {
 
 		// _gl.finish();
 
+		renderStateStack.pop();
+		if ( renderStateStack.length > 0 ) {
+
+			currentRenderState = renderStateStack[ renderStateStack.length - 1 ];
+
+		} else {
+
+			currentRenderState = null;
+
+		}
+
 		currentRenderList = null;
-		currentRenderState = null;
 
 	};
 
@@ -70127,8 +70335,6 @@ function WebGLRenderer( parameters ) {
 
 			if ( camera.isArrayCamera ) {
 
-				_currentArrayCamera = camera;
-
 				const cameras = camera.cameras;
 
 				for ( let j = 0, jl = cameras.length; j < jl; j ++ ) {
@@ -70139,7 +70345,7 @@ function WebGLRenderer( parameters ) {
 
 						state.viewport( _currentViewport.copy( camera2.viewport ) );
 
-						currentRenderState.setupLights( camera2 );
+						currentRenderState.setupLightsView( camera2 );
 
 						renderObject( object, scene, camera2, geometry, material, group );
 
@@ -70148,8 +70354,6 @@ function WebGLRenderer( parameters ) {
 				}
 
 			} else {
-
-				_currentArrayCamera = null;
 
 				renderObject( object, scene, camera, geometry, material, group );
 
@@ -70162,7 +70366,6 @@ function WebGLRenderer( parameters ) {
 	function renderObject( object, scene, camera, geometry, material, group ) {
 
 		object.onBeforeRender( _this, scene, camera, geometry, material, group );
-		currentRenderState = renderStates.get( scene, _currentArrayCamera || camera );
 
 		object.modelViewMatrix.multiplyMatrices( camera.matrixWorldInverse, object.matrixWorld );
 		object.normalMatrix.getNormalMatrix( object.modelViewMatrix );
@@ -70184,7 +70387,6 @@ function WebGLRenderer( parameters ) {
 		}
 
 		object.onAfterRender( _this, scene, camera, geometry, material, group );
-		currentRenderState = renderStates.get( scene, _currentArrayCamera || camera );
 
 	}
 
@@ -70643,18 +70845,6 @@ function WebGLRenderer( parameters ) {
 
 	};
 
-	this.getRenderState = function () {
-
-		return currentRenderState;
-
-	};
-
-	this.setRenderState = function ( renderState ) {
-
-		currentRenderState = renderState;
-
-	};
-
 	this.getRenderTarget = function () {
 
 		return _currentRenderTarget;
@@ -70868,6 +71058,13 @@ function WebGLRenderer( parameters ) {
 		textures.setTexture2D( texture, 0 );
 
 		state.unbindTexture();
+
+	};
+
+	this.resetState = function () {
+
+		state.reset();
+		bindingStates.reset();
 
 	};
 
@@ -71840,6 +72037,14 @@ LOD.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 } );
 
+const _basePosition = new Vector3();
+
+const _skinIndex = new Vector4();
+const _skinWeight = new Vector4();
+
+const _vector$7 = new Vector3();
+const _matrix$1 = new Matrix4();
+
 function SkinnedMesh( geometry, material ) {
 
 	if ( geometry && geometry.isGeometry ) {
@@ -71954,49 +72159,37 @@ SkinnedMesh.prototype = Object.assign( Object.create( Mesh.prototype ), {
 
 	},
 
-	boneTransform: ( function () {
+	boneTransform: function ( index, target ) {
 
-		const basePosition = new Vector3();
+		const skeleton = this.skeleton;
+		const geometry = this.geometry;
 
-		const skinIndex = new Vector4();
-		const skinWeight = new Vector4();
+		_skinIndex.fromBufferAttribute( geometry.attributes.skinIndex, index );
+		_skinWeight.fromBufferAttribute( geometry.attributes.skinWeight, index );
 
-		const vector = new Vector3();
-		const matrix = new Matrix4();
+		_basePosition.fromBufferAttribute( geometry.attributes.position, index ).applyMatrix4( this.bindMatrix );
 
-		return function ( index, target ) {
+		target.set( 0, 0, 0 );
 
-			const skeleton = this.skeleton;
-			const geometry = this.geometry;
+		for ( let i = 0; i < 4; i ++ ) {
 
-			skinIndex.fromBufferAttribute( geometry.attributes.skinIndex, index );
-			skinWeight.fromBufferAttribute( geometry.attributes.skinWeight, index );
+			const weight = _skinWeight.getComponent( i );
 
-			basePosition.fromBufferAttribute( geometry.attributes.position, index ).applyMatrix4( this.bindMatrix );
+			if ( weight !== 0 ) {
 
-			target.set( 0, 0, 0 );
+				const boneIndex = _skinIndex.getComponent( i );
 
-			for ( let i = 0; i < 4; i ++ ) {
+				_matrix$1.multiplyMatrices( skeleton.bones[ boneIndex ].matrixWorld, skeleton.boneInverses[ boneIndex ] );
 
-				const weight = skinWeight.getComponent( i );
-
-				if ( weight !== 0 ) {
-
-					const boneIndex = skinIndex.getComponent( i );
-
-					matrix.multiplyMatrices( skeleton.bones[ boneIndex ].matrixWorld, skeleton.boneInverses[ boneIndex ] );
-
-					target.addScaledVector( vector.copy( basePosition ).applyMatrix4( matrix ), weight );
-
-				}
+				target.addScaledVector( _vector$7.copy( _basePosition ).applyMatrix4( _matrix$1 ), weight );
 
 			}
 
-			return target.applyMatrix4( this.bindMatrixInverse );
+		}
 
-		};
+		return target.applyMatrix4( this.bindMatrixInverse );
 
-	}() )
+	}
 
 } );
 
@@ -72370,6 +72563,12 @@ InstancedMesh.prototype = Object.assign( Object.create( Mesh.prototype ), {
 
 	updateMorphTargets: function () {
 
+	},
+
+	dispose: function () {
+
+		this.dispatchEvent( { type: 'dispose' } );
+
 	}
 
 } );
@@ -72430,20 +72629,14 @@ const _inverseMatrix$1 = new Matrix4();
 const _ray$1 = new Ray();
 const _sphere$2 = new Sphere();
 
-function Line( geometry, material, mode ) {
-
-	if ( mode === 1 ) {
-
-		console.error( 'THREE.Line: parameter THREE.LinePieces no longer supported. Use THREE.LineSegments instead.' );
-
-	}
+function Line( geometry = new BufferGeometry(), material = new LineBasicMaterial() ) {
 
 	Object3D.call( this );
 
 	this.type = 'Line';
 
-	this.geometry = geometry !== undefined ? geometry : new BufferGeometry();
-	this.material = material !== undefined ? material : new LineBasicMaterial();
+	this.geometry = geometry;
+	this.material = material;
 
 	this.updateMorphTargets();
 
@@ -72858,14 +73051,14 @@ const _ray$2 = new Ray();
 const _sphere$3 = new Sphere();
 const _position$1 = new Vector3();
 
-function Points( geometry, material ) {
+function Points( geometry = new BufferGeometry(), material = new PointsMaterial() ) {
 
 	Object3D.call( this );
 
 	this.type = 'Points';
 
-	this.geometry = geometry !== undefined ? geometry : new BufferGeometry();
-	this.material = material !== undefined ? material : new PointsMaterial();
+	this.geometry = geometry;
+	this.material = material;
 
 	this.updateMorphTargets();
 
@@ -76531,7 +76724,7 @@ class ExtrudeBufferGeometry extends BufferGeometry {
 
 			function scalePt2( pt, vec, size ) {
 
-				if ( ! vec ) console.error( "THREE.ExtrudeGeometry: vec does not exist" );
+				if ( ! vec ) console.error( 'THREE.ExtrudeGeometry: vec does not exist' );
 
 				return vec.clone().multiplyScalar( size ).add( pt );
 
@@ -80929,8 +81122,8 @@ Object.assign( KeyframeTrack.prototype, {
 
 		if ( factoryMethod === undefined ) {
 
-			const message = "unsupported interpolation for " +
-				this.ValueTypeName + " keyframe track named " + this.name;
+			const message = 'unsupported interpolation for ' +
+				this.ValueTypeName + ' keyframe track named ' + this.name;
 
 			if ( this.createInterpolant === undefined ) {
 
@@ -81461,12 +81654,12 @@ VectorKeyframeTrack.prototype = Object.assign( Object.create( KeyframeTrack.prot
 
 } );
 
-function AnimationClip( name, duration, tracks, blendMode ) {
+function AnimationClip( name, duration = - 1, tracks, blendMode = NormalAnimationBlendMode ) {
 
 	this.name = name;
 	this.tracks = tracks;
-	this.duration = ( duration !== undefined ) ? duration : - 1;
-	this.blendMode = ( blendMode !== undefined ) ? blendMode : NormalAnimationBlendMode;
+	this.duration = duration;
+	this.blendMode = blendMode;
 
 	this.uuid = MathUtils.generateUUID();
 
@@ -82548,7 +82741,6 @@ CompressedTextureLoader.prototype = Object.assign( Object.create( Loader.prototy
 		const images = [];
 
 		const texture = new CompressedTexture();
-		texture.image = images;
 
 		const loader = new FileLoader( this.manager );
 		loader.setPath( this.path );
@@ -82575,9 +82767,9 @@ CompressedTextureLoader.prototype = Object.assign( Object.create( Loader.prototy
 
 				if ( loaded === 6 ) {
 
-					if ( texDatas.mipmapCount === 1 )
-						texture.minFilter = LinearFilter;
+					if ( texDatas.mipmapCount === 1 ) texture.minFilter = LinearFilter;
 
+					texture.image = images;
 					texture.format = texDatas.format;
 					texture.needsUpdate = true;
 
@@ -82623,6 +82815,8 @@ CompressedTextureLoader.prototype = Object.assign( Object.create( Loader.prototy
 						}
 
 					}
+
+					texture.image = images;
 
 				} else {
 
@@ -85348,7 +85542,7 @@ PointLight.prototype = Object.assign( Object.create( Light.prototype ), {
 
 } );
 
-function OrthographicCamera( left, right, top, bottom, near, far ) {
+function OrthographicCamera( left = - 1, right = 1, top = 1, bottom = - 1, near = 0.1, far = 2000 ) {
 
 	Camera.call( this );
 
@@ -85357,13 +85551,13 @@ function OrthographicCamera( left, right, top, bottom, near, far ) {
 	this.zoom = 1;
 	this.view = null;
 
-	this.left = ( left !== undefined ) ? left : - 1;
-	this.right = ( right !== undefined ) ? right : 1;
-	this.top = ( top !== undefined ) ? top : 1;
-	this.bottom = ( bottom !== undefined ) ? bottom : - 1;
+	this.left = left;
+	this.right = right;
+	this.top = top;
+	this.bottom = bottom;
 
-	this.near = ( near !== undefined ) ? near : 0.1;
-	this.far = ( far !== undefined ) ? far : 2000;
+	this.near = near;
+	this.far = far;
 
 	this.updateProjectionMatrix();
 
@@ -87428,7 +87622,7 @@ class ObjectLoader extends (/* unused pure expression or super */ null && (Loade
 
 			case 'Line':
 
-				object = new Line( getGeometry( data.geometry ), getMaterial( data.material ), data.mode );
+				object = new Line( getGeometry( data.geometry ), getMaterial( data.material ) );
 
 				break;
 
@@ -89715,7 +89909,7 @@ Object.assign( PropertyBinding, {
 
 	findNode: function ( root, nodeName ) {
 
-		if ( ! nodeName || nodeName === "" || nodeName === "." || nodeName === - 1 || nodeName === root.name || nodeName === root.uuid ) {
+		if ( ! nodeName || nodeName === '' || nodeName === '.' || nodeName === - 1 || nodeName === root.name || nodeName === root.uuid ) {
 
 			return root;
 
@@ -90118,7 +90312,7 @@ Object.assign( PropertyBinding.prototype, { // prototype, continued
 
 			// access a sub element of the property array (only primitives are supported right now)
 
-			if ( propertyName === "morphTargetInfluences" ) {
+			if ( propertyName === 'morphTargetInfluences' ) {
 
 				// potential optimization, skip this if propertyIndex is already an integer, and convert the integer string to a true integer.
 
@@ -92247,13 +92441,13 @@ Object.assign( Raycaster.prototype, {
 
 	setFromCamera: function ( coords, camera ) {
 
-		if ( ( camera && camera.isPerspectiveCamera ) ) {
+		if ( camera && camera.isPerspectiveCamera ) {
 
 			this.ray.origin.setFromMatrixPosition( camera.matrixWorld );
 			this.ray.direction.set( coords.x, coords.y, 0.5 ).unproject( camera ).sub( this.ray.origin ).normalize();
 			this.camera = camera;
 
-		} else if ( ( camera && camera.isOrthographicCamera ) ) {
+		} else if ( camera && camera.isOrthographicCamera ) {
 
 			this.ray.origin.set( coords.x, coords.y, ( camera.near + camera.far ) / ( camera.near - camera.far ) ).unproject( camera ); // set origin in plane of camera
 			this.ray.direction.set( 0, 0, - 1 ).transformDirection( camera.matrixWorld );
@@ -92261,7 +92455,7 @@ Object.assign( Raycaster.prototype, {
 
 		} else {
 
-			console.error( 'THREE.Raycaster: Unsupported camera type.' );
+			console.error( 'THREE.Raycaster: Unsupported camera type: ' + camera.type );
 
 		}
 
@@ -92447,7 +92641,7 @@ class Cylindrical {
 
 }
 
-const _vector$7 = /*@__PURE__*/ new Vector2();
+const _vector$8 = /*@__PURE__*/ new Vector2();
 
 class Box2 {
 
@@ -92485,7 +92679,7 @@ class Box2 {
 
 	setFromCenterAndSize( center, size ) {
 
-		const halfSize = _vector$7.copy( size ).multiplyScalar( 0.5 );
+		const halfSize = _vector$8.copy( size ).multiplyScalar( 0.5 );
 		this.min.copy( center ).sub( halfSize );
 		this.max.copy( center ).add( halfSize );
 
@@ -92635,7 +92829,7 @@ class Box2 {
 
 	distanceToPoint( point ) {
 
-		const clampedPoint = _vector$7.copy( point ).clamp( this.min, this.max );
+		const clampedPoint = _vector$8.copy( point ).clamp( this.min, this.max );
 		return clampedPoint.sub( point ).length();
 
 	}
@@ -92840,7 +93034,7 @@ ImmediateRenderObject.prototype.constructor = ImmediateRenderObject;
 
 ImmediateRenderObject.prototype.isImmediateRenderObject = true;
 
-const _vector$8 = /*@__PURE__*/ new Vector3();
+const _vector$9 = /*@__PURE__*/ new Vector3();
 
 class SpotLightHelper extends (/* unused pure expression or super */ null && (Object3D)) {
 
@@ -92904,9 +93098,9 @@ class SpotLightHelper extends (/* unused pure expression or super */ null && (Ob
 
 		this.cone.scale.set( coneWidth, coneWidth, coneLength );
 
-		_vector$8.setFromMatrixPosition( this.light.target.matrixWorld );
+		_vector$9.setFromMatrixPosition( this.light.target.matrixWorld );
 
-		this.cone.lookAt( _vector$8 );
+		this.cone.lookAt( _vector$9 );
 
 		if ( this.color !== undefined ) {
 
@@ -92922,7 +93116,7 @@ class SpotLightHelper extends (/* unused pure expression or super */ null && (Ob
 
 }
 
-const _vector$9 = /*@__PURE__*/ new Vector3();
+const _vector$a = /*@__PURE__*/ new Vector3();
 const _boneMatrix = /*@__PURE__*/ new Matrix4();
 const _matrixWorldInv = /*@__PURE__*/ new Matrix4();
 
@@ -92990,12 +93184,12 @@ class SkeletonHelper extends LineSegments {
 			if ( bone.parent && bone.parent.isBone ) {
 
 				_boneMatrix.multiplyMatrices( _matrixWorldInv, bone.matrixWorld );
-				_vector$9.setFromMatrixPosition( _boneMatrix );
-				position.setXYZ( j, _vector$9.x, _vector$9.y, _vector$9.z );
+				_vector$a.setFromMatrixPosition( _boneMatrix );
+				position.setXYZ( j, _vector$a.x, _vector$a.y, _vector$a.z );
 
 				_boneMatrix.multiplyMatrices( _matrixWorldInv, bone.parent.matrixWorld );
-				_vector$9.setFromMatrixPosition( _boneMatrix );
-				position.setXYZ( j + 1, _vector$9.x, _vector$9.y, _vector$9.z );
+				_vector$a.setFromMatrixPosition( _boneMatrix );
+				position.setXYZ( j + 1, _vector$a.x, _vector$a.y, _vector$a.z );
 
 				j += 2;
 
@@ -93117,7 +93311,7 @@ class PointLightHelper extends (/* unused pure expression or super */ null && (M
 
 }
 
-const _vector$a = /*@__PURE__*/ new Vector3();
+const _vector$b = /*@__PURE__*/ new Vector3();
 const _color1 = /*@__PURE__*/ new Color();
 const _color2 = /*@__PURE__*/ new Color();
 
@@ -93185,7 +93379,7 @@ class HemisphereLightHelper extends (/* unused pure expression or super */ null 
 
 		}
 
-		mesh.lookAt( _vector$a.setFromMatrixPosition( this.light.matrixWorld ).negate() );
+		mesh.lookAt( _vector$b.setFromMatrixPosition( this.light.matrixWorld ).negate() );
 
 	}
 
@@ -93388,7 +93582,7 @@ class DirectionalLightHelper extends (/* unused pure expression or super */ null
 
 }
 
-const _vector$b = /*@__PURE__*/ new Vector3();
+const _vector$c = /*@__PURE__*/ new Vector3();
 const _camera = /*@__PURE__*/ new Camera();
 
 /**
@@ -93564,7 +93758,7 @@ class CameraHelper extends (/* unused pure expression or super */ null && (LineS
 
 function setPoint( point, pointMap, geometry, camera, x, y, z ) {
 
-	_vector$b.set( x, y, z ).unproject( camera );
+	_vector$c.set( x, y, z ).unproject( camera );
 
 	const points = pointMap[ point ];
 
@@ -93574,7 +93768,7 @@ function setPoint( point, pointMap, geometry, camera, x, y, z ) {
 
 		for ( let i = 0, l = points.length; i < l; i ++ ) {
 
-			position.setXYZ( points[ i ], _vector$b.x, _vector$b.y, _vector$b.z );
+			position.setXYZ( points[ i ], _vector$c.x, _vector$c.y, _vector$c.z );
 
 		}
 
@@ -93989,6 +94183,7 @@ const ENCODINGS = {
 
 const _flatCamera = /*@__PURE__*/ new OrthographicCamera();
 const { _lodPlanes, _sizeLods, _sigmas } = /*@__PURE__*/ _createPlanes();
+const _clearColor = /*@__PURE__*/ new Color();
 let _oldTarget = null;
 
 // Golden Ratio
@@ -94194,7 +94389,7 @@ class PMREMGenerator {
 
 		const outputEncoding = renderer.outputEncoding;
 		const toneMapping = renderer.toneMapping;
-		const clearColor = renderer.getClearColor();
+		renderer.getClearColor( _clearColor );
 		const clearAlpha = renderer.getClearAlpha();
 
 		renderer.toneMapping = NoToneMapping;
@@ -94243,7 +94438,7 @@ class PMREMGenerator {
 
 		renderer.toneMapping = toneMapping;
 		renderer.outputEncoding = outputEncoding;
-		renderer.setClearColor( clearColor, clearAlpha );
+		renderer.setClearColor( _clearColor, clearAlpha );
 
 	}
 
@@ -95382,7 +95577,7 @@ Object.assign( Matrix3.prototype, {
 
 	flattenToArrayOffset: function ( array, offset ) {
 
-		console.warn( "THREE.Matrix3: .flattenToArrayOffset() has been deprecated. Use .toArray() instead." );
+		console.warn( 'THREE.Matrix3: .flattenToArrayOffset() has been deprecated. Use .toArray() instead.' );
 		return this.toArray( array, offset );
 
 	},
@@ -95427,7 +95622,7 @@ Object.assign( Matrix4.prototype, {
 	},
 	flattenToArrayOffset: function ( array, offset ) {
 
-		console.warn( "THREE.Matrix4: .flattenToArrayOffset() has been deprecated. Use .toArray() instead." );
+		console.warn( 'THREE.Matrix4: .flattenToArrayOffset() has been deprecated. Use .toArray() instead.' );
 		return this.toArray( array, offset );
 
 	},
@@ -95917,8 +96112,8 @@ Object.defineProperty( Curve.prototype, '__arcLengthDivisions', {
 
 PerspectiveCamera.prototype.setLens = function ( focalLength, filmGauge ) {
 
-	console.warn( "THREE.PerspectiveCamera.setLens is deprecated. " +
-			"Use .setFocalLength and .filmGauge for a photographic setup." );
+	console.warn( 'THREE.PerspectiveCamera.setLens is deprecated. ' +
+			'Use .setFocalLength and .filmGauge for a photographic setup.' );
 
 	if ( filmGauge !== undefined ) this.filmGauge = filmGauge;
 	this.setFocalLength( focalLength );
@@ -98745,7 +98940,7 @@ var GLTFLoader = ( function () {
 				break;
 
 			default:
-				throw new Error( 'THREE.GLTFLoader: Unexpected light type, "' + lightDef.type + '".' );
+				throw new Error( 'THREE.GLTFLoader: Unexpected light type: ' + lightDef.type );
 
 		}
 
@@ -101131,11 +101326,13 @@ var GLTFLoader = ( function () {
 	/** When Object3D instances are targeted by animation, they need unique names. */
 	GLTFParser.prototype.createUniqueName = function ( originalName ) {
 
-		var name = PropertyBinding.sanitizeNodeName( originalName || '' );
+		var sanitizedName = PropertyBinding.sanitizeNodeName( originalName || '' );
+
+		var name = sanitizedName;
 
 		for ( var i = 1; this.nodeNamesUsed[ name ]; ++ i ) {
 
-			name = originalName + '_' + i;
+			name = sanitizedName + '_' + i;
 
 		}
 
@@ -102173,40 +102370,40 @@ var CopyShader = {
 
 	uniforms: {
 
-		"tDiffuse": { value: null },
-		"opacity": { value: 1.0 }
+		'tDiffuse': { value: null },
+		'opacity': { value: 1.0 }
 
 	},
 
 	vertexShader: [
 
-		"varying vec2 vUv;",
+		'varying vec2 vUv;',
 
-		"void main() {",
+		'void main() {',
 
-		"	vUv = uv;",
-		"	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+		'	vUv = uv;',
+		'	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
 
-		"}"
+		'}'
 
-	].join( "\n" ),
+	].join( '\n' ),
 
 	fragmentShader: [
 
-		"uniform float opacity;",
+		'uniform float opacity;',
 
-		"uniform sampler2D tDiffuse;",
+		'uniform sampler2D tDiffuse;',
 
-		"varying vec2 vUv;",
+		'varying vec2 vUv;',
 
-		"void main() {",
+		'void main() {',
 
-		"	vec4 texel = texture2D( tDiffuse, vUv );",
-		"	gl_FragColor = opacity * texel;",
+		'	vec4 texel = texture2D( tDiffuse, vUv );',
+		'	gl_FragColor = opacity * texel;',
 
-		"}"
+		'}'
 
-	].join( "\n" )
+	].join( '\n' )
 
 };
 
@@ -102306,7 +102503,7 @@ var ShaderPass = function ( shader, textureID ) {
 
 	Pass.call( this );
 
-	this.textureID = ( textureID !== undefined ) ? textureID : "tDiffuse";
+	this.textureID = ( textureID !== undefined ) ? textureID : 'tDiffuse';
 
 	if ( shader instanceof ShaderMaterial ) {
 
@@ -102794,6 +102991,7 @@ EffectComposer_Pass.FullScreenQuad = ( function () {
 ;// CONCATENATED MODULE: ./node_modules/three/examples/jsm/postprocessing/RenderPass.js
 
 
+
 var RenderPass = function ( scene, camera, overrideMaterial, clearColor, clearAlpha ) {
 
 	Pass.call( this );
@@ -102809,6 +103007,7 @@ var RenderPass = function ( scene, camera, overrideMaterial, clearColor, clearAl
 	this.clear = true;
 	this.clearDepth = false;
 	this.needsSwap = false;
+	this._oldClearColor = new Color();
 
 };
 
@@ -102821,7 +103020,7 @@ RenderPass.prototype = Object.assign( Object.create( Pass.prototype ), {
 		var oldAutoClear = renderer.autoClear;
 		renderer.autoClear = false;
 
-		var oldClearColor, oldClearAlpha, oldOverrideMaterial;
+		var oldClearAlpha, oldOverrideMaterial;
 
 		if ( this.overrideMaterial !== undefined ) {
 
@@ -102833,7 +103032,7 @@ RenderPass.prototype = Object.assign( Object.create( Pass.prototype ), {
 
 		if ( this.clearColor ) {
 
-			oldClearColor = renderer.getClearColor().getHex();
+			renderer.getClearColor( this._oldClearColor );
 			oldClearAlpha = renderer.getClearAlpha();
 
 			renderer.setClearColor( this.clearColor, this.clearAlpha );
@@ -102854,7 +103053,7 @@ RenderPass.prototype = Object.assign( Object.create( Pass.prototype ), {
 
 		if ( this.clearColor ) {
 
-			renderer.setClearColor( oldClearColor, oldClearAlpha );
+			renderer.setClearColor( this._oldClearColor, oldClearAlpha );
 
 		}
 
@@ -102882,59 +103081,59 @@ RenderPass.prototype = Object.assign( Object.create( Pass.prototype ), {
 
 var LuminosityHighPassShader = {
 
-	shaderID: "luminosityHighPass",
+	shaderID: 'luminosityHighPass',
 
 	uniforms: {
 
-		"tDiffuse": { value: null },
-		"luminosityThreshold": { value: 1.0 },
-		"smoothWidth": { value: 1.0 },
-		"defaultColor": { value: new Color( 0x000000 ) },
-		"defaultOpacity": { value: 0.0 }
+		'tDiffuse': { value: null },
+		'luminosityThreshold': { value: 1.0 },
+		'smoothWidth': { value: 1.0 },
+		'defaultColor': { value: new Color( 0x000000 ) },
+		'defaultOpacity': { value: 0.0 }
 
 	},
 
 	vertexShader: [
 
-		"varying vec2 vUv;",
+		'varying vec2 vUv;',
 
-		"void main() {",
+		'void main() {',
 
-		"	vUv = uv;",
+		'	vUv = uv;',
 
-		"	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+		'	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
 
-		"}"
+		'}'
 
-	].join( "\n" ),
+	].join( '\n' ),
 
 	fragmentShader: [
 
-		"uniform sampler2D tDiffuse;",
-		"uniform vec3 defaultColor;",
-		"uniform float defaultOpacity;",
-		"uniform float luminosityThreshold;",
-		"uniform float smoothWidth;",
+		'uniform sampler2D tDiffuse;',
+		'uniform vec3 defaultColor;',
+		'uniform float defaultOpacity;',
+		'uniform float luminosityThreshold;',
+		'uniform float smoothWidth;',
 
-		"varying vec2 vUv;",
+		'varying vec2 vUv;',
 
-		"void main() {",
+		'void main() {',
 
-		"	vec4 texel = texture2D( tDiffuse, vUv );",
+		'	vec4 texel = texture2D( tDiffuse, vUv );',
 
-		"	vec3 luma = vec3( 0.299, 0.587, 0.114 );",
+		'	vec3 luma = vec3( 0.299, 0.587, 0.114 );',
 
-		"	float v = dot( texel.xyz, luma );",
+		'	float v = dot( texel.xyz, luma );',
 
-		"	vec4 outputColor = vec4( defaultColor.rgb, defaultOpacity );",
+		'	vec4 outputColor = vec4( defaultColor.rgb, defaultOpacity );',
 
-		"	float alpha = smoothstep( luminosityThreshold, luminosityThreshold + smoothWidth, v );",
+		'	float alpha = smoothstep( luminosityThreshold, luminosityThreshold + smoothWidth, v );',
 
-		"	gl_FragColor = mix( outputColor, texel, alpha );",
+		'	gl_FragColor = mix( outputColor, texel, alpha );',
 
-		"}"
+		'}'
 
-	].join( "\n" )
+	].join( '\n' )
 
 };
 
@@ -102976,21 +103175,21 @@ var UnrealBloomPass = function ( resolution, strength, radius, threshold ) {
 	var resy = Math.round( this.resolution.y / 2 );
 
 	this.renderTargetBright = new WebGLRenderTarget( resx, resy, pars );
-	this.renderTargetBright.texture.name = "UnrealBloomPass.bright";
+	this.renderTargetBright.texture.name = 'UnrealBloomPass.bright';
 	this.renderTargetBright.texture.generateMipmaps = false;
 
 	for ( var i = 0; i < this.nMips; i ++ ) {
 
 		var renderTargetHorizonal = new WebGLRenderTarget( resx, resy, pars );
 
-		renderTargetHorizonal.texture.name = "UnrealBloomPass.h" + i;
+		renderTargetHorizonal.texture.name = 'UnrealBloomPass.h' + i;
 		renderTargetHorizonal.texture.generateMipmaps = false;
 
 		this.renderTargetsHorizontal.push( renderTargetHorizonal );
 
 		var renderTargetVertical = new WebGLRenderTarget( resx, resy, pars );
 
-		renderTargetVertical.texture.name = "UnrealBloomPass.v" + i;
+		renderTargetVertical.texture.name = 'UnrealBloomPass.v' + i;
 		renderTargetVertical.texture.generateMipmaps = false;
 
 		this.renderTargetsVertical.push( renderTargetVertical );
@@ -103004,13 +103203,13 @@ var UnrealBloomPass = function ( resolution, strength, radius, threshold ) {
 	// luminosity high pass material
 
 	if ( LuminosityHighPassShader === undefined )
-		console.error( "UnrealBloomPass relies on LuminosityHighPassShader" );
+		console.error( 'THREE.UnrealBloomPass relies on LuminosityHighPassShader' );
 
 	var highPassShader = LuminosityHighPassShader;
 	this.highPassUniforms = UniformsUtils.clone( highPassShader.uniforms );
 
-	this.highPassUniforms[ "luminosityThreshold" ].value = threshold;
-	this.highPassUniforms[ "smoothWidth" ].value = 0.01;
+	this.highPassUniforms[ 'luminosityThreshold' ].value = threshold;
+	this.highPassUniforms[ 'smoothWidth' ].value = 0.01;
 
 	this.materialHighPassFilter = new ShaderMaterial( {
 		uniforms: this.highPassUniforms,
@@ -103029,7 +103228,7 @@ var UnrealBloomPass = function ( resolution, strength, radius, threshold ) {
 
 		this.separableBlurMaterials.push( this.getSeperableBlurMaterial( kernelSizeArray[ i ] ) );
 
-		this.separableBlurMaterials[ i ].uniforms[ "texSize" ].value = new Vector2( resx, resy );
+		this.separableBlurMaterials[ i ].uniforms[ 'texSize' ].value = new Vector2( resx, resy );
 
 		resx = Math.round( resx / 2 );
 
@@ -103039,32 +103238,32 @@ var UnrealBloomPass = function ( resolution, strength, radius, threshold ) {
 
 	// Composite material
 	this.compositeMaterial = this.getCompositeMaterial( this.nMips );
-	this.compositeMaterial.uniforms[ "blurTexture1" ].value = this.renderTargetsVertical[ 0 ].texture;
-	this.compositeMaterial.uniforms[ "blurTexture2" ].value = this.renderTargetsVertical[ 1 ].texture;
-	this.compositeMaterial.uniforms[ "blurTexture3" ].value = this.renderTargetsVertical[ 2 ].texture;
-	this.compositeMaterial.uniforms[ "blurTexture4" ].value = this.renderTargetsVertical[ 3 ].texture;
-	this.compositeMaterial.uniforms[ "blurTexture5" ].value = this.renderTargetsVertical[ 4 ].texture;
-	this.compositeMaterial.uniforms[ "bloomStrength" ].value = strength;
-	this.compositeMaterial.uniforms[ "bloomRadius" ].value = 0.1;
+	this.compositeMaterial.uniforms[ 'blurTexture1' ].value = this.renderTargetsVertical[ 0 ].texture;
+	this.compositeMaterial.uniforms[ 'blurTexture2' ].value = this.renderTargetsVertical[ 1 ].texture;
+	this.compositeMaterial.uniforms[ 'blurTexture3' ].value = this.renderTargetsVertical[ 2 ].texture;
+	this.compositeMaterial.uniforms[ 'blurTexture4' ].value = this.renderTargetsVertical[ 3 ].texture;
+	this.compositeMaterial.uniforms[ 'blurTexture5' ].value = this.renderTargetsVertical[ 4 ].texture;
+	this.compositeMaterial.uniforms[ 'bloomStrength' ].value = strength;
+	this.compositeMaterial.uniforms[ 'bloomRadius' ].value = 0.1;
 	this.compositeMaterial.needsUpdate = true;
 
 	var bloomFactors = [ 1.0, 0.8, 0.6, 0.4, 0.2 ];
-	this.compositeMaterial.uniforms[ "bloomFactors" ].value = bloomFactors;
+	this.compositeMaterial.uniforms[ 'bloomFactors' ].value = bloomFactors;
 	this.bloomTintColors = [ new Vector3( 1, 1, 1 ), new Vector3( 1, 1, 1 ), new Vector3( 1, 1, 1 ),
 							 new Vector3( 1, 1, 1 ), new Vector3( 1, 1, 1 ) ];
-	this.compositeMaterial.uniforms[ "bloomTintColors" ].value = this.bloomTintColors;
+	this.compositeMaterial.uniforms[ 'bloomTintColors' ].value = this.bloomTintColors;
 
 	// copy material
 	if ( CopyShader === undefined ) {
 
-		console.error( "UnrealBloomPass relies on CopyShader" );
+		console.error( 'THREE.UnrealBloomPass relies on CopyShader' );
 
 	}
 
 	var copyShader = CopyShader;
 
 	this.copyUniforms = UniformsUtils.clone( copyShader.uniforms );
-	this.copyUniforms[ "opacity" ].value = 1.0;
+	this.copyUniforms[ 'opacity' ].value = 1.0;
 
 	this.materialCopy = new ShaderMaterial( {
 		uniforms: this.copyUniforms,
@@ -103079,7 +103278,7 @@ var UnrealBloomPass = function ( resolution, strength, radius, threshold ) {
 	this.enabled = true;
 	this.needsSwap = false;
 
-	this.oldClearColor = new Color();
+	this._oldClearColor = new Color();
 	this.oldClearAlpha = 1;
 
 	this.basic = new MeshBasicMaterial();
@@ -103122,7 +103321,7 @@ UnrealBloomPass.prototype = Object.assign( Object.create( Pass.prototype ), {
 			this.renderTargetsHorizontal[ i ].setSize( resx, resy );
 			this.renderTargetsVertical[ i ].setSize( resx, resy );
 
-			this.separableBlurMaterials[ i ].uniforms[ "texSize" ].value = new Vector2( resx, resy );
+			this.separableBlurMaterials[ i ].uniforms[ 'texSize' ].value = new Vector2( resx, resy );
 
 			resx = Math.round( resx / 2 );
 			resy = Math.round( resy / 2 );
@@ -103133,7 +103332,7 @@ UnrealBloomPass.prototype = Object.assign( Object.create( Pass.prototype ), {
 
 	render: function ( renderer, writeBuffer, readBuffer, deltaTime, maskActive ) {
 
-		this.oldClearColor.copy( renderer.getClearColor() );
+		renderer.getClearColor( this._oldClearColor );
 		this.oldClearAlpha = renderer.getClearAlpha();
 		var oldAutoClear = renderer.autoClear;
 		renderer.autoClear = false;
@@ -103157,8 +103356,8 @@ UnrealBloomPass.prototype = Object.assign( Object.create( Pass.prototype ), {
 
 		// 1. Extract Bright Areas
 
-		this.highPassUniforms[ "tDiffuse" ].value = readBuffer.texture;
-		this.highPassUniforms[ "luminosityThreshold" ].value = this.threshold;
+		this.highPassUniforms[ 'tDiffuse' ].value = readBuffer.texture;
+		this.highPassUniforms[ 'luminosityThreshold' ].value = this.threshold;
 		this.fsQuad.material = this.materialHighPassFilter;
 
 		renderer.setRenderTarget( this.renderTargetBright );
@@ -103173,14 +103372,14 @@ UnrealBloomPass.prototype = Object.assign( Object.create( Pass.prototype ), {
 
 			this.fsQuad.material = this.separableBlurMaterials[ i ];
 
-			this.separableBlurMaterials[ i ].uniforms[ "colorTexture" ].value = inputRenderTarget.texture;
-			this.separableBlurMaterials[ i ].uniforms[ "direction" ].value = UnrealBloomPass.BlurDirectionX;
+			this.separableBlurMaterials[ i ].uniforms[ 'colorTexture' ].value = inputRenderTarget.texture;
+			this.separableBlurMaterials[ i ].uniforms[ 'direction' ].value = UnrealBloomPass.BlurDirectionX;
 			renderer.setRenderTarget( this.renderTargetsHorizontal[ i ] );
 			renderer.clear();
 			this.fsQuad.render( renderer );
 
-			this.separableBlurMaterials[ i ].uniforms[ "colorTexture" ].value = this.renderTargetsHorizontal[ i ].texture;
-			this.separableBlurMaterials[ i ].uniforms[ "direction" ].value = UnrealBloomPass.BlurDirectionY;
+			this.separableBlurMaterials[ i ].uniforms[ 'colorTexture' ].value = this.renderTargetsHorizontal[ i ].texture;
+			this.separableBlurMaterials[ i ].uniforms[ 'direction' ].value = UnrealBloomPass.BlurDirectionY;
 			renderer.setRenderTarget( this.renderTargetsVertical[ i ] );
 			renderer.clear();
 			this.fsQuad.render( renderer );
@@ -103192,9 +103391,9 @@ UnrealBloomPass.prototype = Object.assign( Object.create( Pass.prototype ), {
 		// Composite All the mips
 
 		this.fsQuad.material = this.compositeMaterial;
-		this.compositeMaterial.uniforms[ "bloomStrength" ].value = this.strength;
-		this.compositeMaterial.uniforms[ "bloomRadius" ].value = this.radius;
-		this.compositeMaterial.uniforms[ "bloomTintColors" ].value = this.bloomTintColors;
+		this.compositeMaterial.uniforms[ 'bloomStrength' ].value = this.strength;
+		this.compositeMaterial.uniforms[ 'bloomRadius' ].value = this.radius;
+		this.compositeMaterial.uniforms[ 'bloomTintColors' ].value = this.bloomTintColors;
 
 		renderer.setRenderTarget( this.renderTargetsHorizontal[ 0 ] );
 		renderer.clear();
@@ -103203,7 +103402,7 @@ UnrealBloomPass.prototype = Object.assign( Object.create( Pass.prototype ), {
 		// Blend it additively over the input texture
 
 		this.fsQuad.material = this.materialCopy;
-		this.copyUniforms[ "tDiffuse" ].value = this.renderTargetsHorizontal[ 0 ].texture;
+		this.copyUniforms[ 'tDiffuse' ].value = this.renderTargetsHorizontal[ 0 ].texture;
 
 		if ( maskActive ) renderer.state.buffers.stencil.setTest( true );
 
@@ -103221,7 +103420,7 @@ UnrealBloomPass.prototype = Object.assign( Object.create( Pass.prototype ), {
 
 		// Restore renderer settings
 
-		renderer.setClearColor( this.oldClearColor, this.oldClearAlpha );
+		renderer.setClearColor( this._oldClearColor, this.oldClearAlpha );
 		renderer.autoClear = oldAutoClear;
 
 	},
@@ -103231,25 +103430,25 @@ UnrealBloomPass.prototype = Object.assign( Object.create( Pass.prototype ), {
 		return new ShaderMaterial( {
 
 			defines: {
-				"KERNEL_RADIUS": kernelRadius,
-				"SIGMA": kernelRadius
+				'KERNEL_RADIUS': kernelRadius,
+				'SIGMA': kernelRadius
 			},
 
 			uniforms: {
-				"colorTexture": { value: null },
-				"texSize": { value: new Vector2( 0.5, 0.5 ) },
-				"direction": { value: new Vector2( 0.5, 0.5 ) }
+				'colorTexture': { value: null },
+				'texSize': { value: new Vector2( 0.5, 0.5 ) },
+				'direction': { value: new Vector2( 0.5, 0.5 ) }
 			},
 
 			vertexShader:
-				"varying vec2 vUv;\n\
+				'varying vec2 vUv;\n\
 				void main() {\n\
 					vUv = uv;\n\
 					gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n\
-				}",
+				}',
 
 			fragmentShader:
-				"#include <common>\
+				'#include <common>\
 				varying vec2 vUv;\n\
 				uniform sampler2D colorTexture;\n\
 				uniform vec2 texSize;\
@@ -103273,7 +103472,7 @@ UnrealBloomPass.prototype = Object.assign( Object.create( Pass.prototype ), {
 						weightSum += 2.0 * w;\
 					}\
 					gl_FragColor = vec4(diffuseSum/weightSum, 1.0);\n\
-				}"
+				}'
 		} );
 
 	},
@@ -103283,31 +103482,31 @@ UnrealBloomPass.prototype = Object.assign( Object.create( Pass.prototype ), {
 		return new ShaderMaterial( {
 
 			defines: {
-				"NUM_MIPS": nMips
+				'NUM_MIPS': nMips
 			},
 
 			uniforms: {
-				"blurTexture1": { value: null },
-				"blurTexture2": { value: null },
-				"blurTexture3": { value: null },
-				"blurTexture4": { value: null },
-				"blurTexture5": { value: null },
-				"dirtTexture": { value: null },
-				"bloomStrength": { value: 1.0 },
-				"bloomFactors": { value: null },
-				"bloomTintColors": { value: null },
-				"bloomRadius": { value: 0.0 }
+				'blurTexture1': { value: null },
+				'blurTexture2': { value: null },
+				'blurTexture3': { value: null },
+				'blurTexture4': { value: null },
+				'blurTexture5': { value: null },
+				'dirtTexture': { value: null },
+				'bloomStrength': { value: 1.0 },
+				'bloomFactors': { value: null },
+				'bloomTintColors': { value: null },
+				'bloomRadius': { value: 0.0 }
 			},
 
 			vertexShader:
-				"varying vec2 vUv;\n\
+				'varying vec2 vUv;\n\
 				void main() {\n\
 					vUv = uv;\n\
 					gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n\
-				}",
+				}',
 
 			fragmentShader:
-				"varying vec2 vUv;\
+				'varying vec2 vUv;\
 				uniform sampler2D blurTexture1;\
 				uniform sampler2D blurTexture2;\
 				uniform sampler2D blurTexture3;\
@@ -103330,7 +103529,7 @@ UnrealBloomPass.prototype = Object.assign( Object.create( Pass.prototype ), {
 													 lerpBloomFactor(bloomFactors[2]) * vec4(bloomTintColors[2], 1.0) * texture2D(blurTexture3, vUv) + \
 													 lerpBloomFactor(bloomFactors[3]) * vec4(bloomTintColors[3], 1.0) * texture2D(blurTexture4, vUv) + \
 													 lerpBloomFactor(bloomFactors[4]) * vec4(bloomTintColors[4], 1.0) * texture2D(blurTexture5, vUv) );\
-				}"
+				}'
 		} );
 
 	}
@@ -105289,7 +105488,11 @@ LineMaterial.prototype.isLineMaterial = true;
 
 
 
+// EXTERNAL MODULE: ./src/THREEx.js
+var THREEx = __webpack_require__(733);
 ;// CONCATENATED MODULE: ./src/index.js
+
+
 
 
 
@@ -105342,13 +105545,13 @@ container2.appendChild(renderer2.domElement);
 // document.querySelector('#css').appendChild( renderer2.domElement );
 
 const scene = new three.Scene();
-console.log(scene);
+// console.log(scene);
 let root = new three.Object3D();
 scene.add(root);
 const cssScene = new three.Scene();
 cssScene.scale.set(0.0005, 0.0005, 0.0005);
 
-console.log(scene);
+// console.log(scene);
 
 // scene.background = new Color(0xf3aab1);
 ////////////////////////////////
@@ -105356,12 +105559,13 @@ console.log(scene);
 var src_Element = function (id, objectCopy) {
   const obj = new three.Object3D();
 
-  console.log(objectCopy);
+  // console.log(objectCopy);
   var div = document.createElement("div");
-  div.style.width = "300px";
-  div.style.height = "190px";
-  div.style.backgroundColor = "#000";
-  console.log(div);
+  div.style.width = "1080px";
+  div.style.height = "893px";
+  div.style.backgroundColor = "red";
+  // div.style.backfacevisibility= "hidden";
+  // console.log(div);
 
   var iframe = document.createElement("iframe");
   iframe.style.width = "1080px";
@@ -105369,14 +105573,17 @@ var src_Element = function (id, objectCopy) {
   iframe.style.border = "0px";
   iframe.src = "https://samuel-morgan-tyghe.github.io/Basic-Website-To-React";
   // iframe.src = ["https://www.youtube.com/embed/", id, "?rel=0"].join("");
+  // iframe.style.backfacevisibility= "hidden";
+
   div.appendChild(iframe);
-  console.log(iframe);
+  // console.log(iframe);
 
   var css3dObject = new CSS3DObject(div);
-  css3dObject.position.set(-90, 700, -70);
+  css3dObject.position.set(-70, 725, -100);
   css3dObject.rotation.copy(objectCopy.rotation);
   css3dObject.rotateY(three.Math.degToRad(180));
-  css3dObject.scale.set(0.1,0.1,0.1)
+  css3dObject.scale.set(0.265, 0.21, 0.1);
+  console.log(css3dObject);
 
   obj.css3dObject = css3dObject;
   obj.add(css3dObject);
@@ -105385,9 +105592,9 @@ var src_Element = function (id, objectCopy) {
     opacity: 1,
     color: new three.Color(0x111111),
     blending: three.NoBlending,
-    side: three.DoubleSide,
+    side: three.FrontSide,
   });
-  var geometry = new three.BoxGeometry(0.19, 0.3, 0.1);
+  var geometry = new three.BoxGeometry(1.9, 0.3, 0.1);
   var mesh = new three.Mesh(geometry, material);
   mesh.castShadow = true;
   mesh.receiveShadow = true;
@@ -105421,10 +105628,10 @@ const loader = new GLTFLoader();
 
 /////////////////////////
 
-const Alight = new three.AmbientLight(0xffffff, 0.3);
+// const Alight = new THREE.AmbientLight(0xffffff, 0.3);
 
-scene.add(Alight);
-root.add(Alight);
+// scene.add(Alight);
+// root.add(Alight);
 
 // let hemiLight = new THREE.HemisphereLight(0xffeeb1, 0x080820, 1);
 // scene.add(hemiLight);
@@ -105438,7 +105645,7 @@ let light3 = new three.PointLight(0xc774e8, 0.3);
 light3.position.set(0, 100, -500);
 let light4 = new three.PointLight(0x09026b, 0.6);
 light4.position.set(-500, 300, 0);
-// console.log(light1);
+// // console.log(light1);
 // light1.castShadow = true;
 // light2.castShadow = true;
 // light3.castShadow = true;
@@ -105501,6 +105708,7 @@ palantirSpotLight.castShadow = true;
 scene.add(palantirSpotLight);
 
 const monitorLight1 = new three.RectAreaLight(0xffffff, 5, 0.29, 0.19);
+console.log(monitorLight1);
 const monitorLight2 = new three.RectAreaLight(0xffffff, 5, 0.29, 0.19);
 
 scene.add(monitorLight1);
@@ -105524,7 +105732,7 @@ scene.add(rectlight);
 const rectlightHelper = new RectAreaLightHelper(rectlight);
 
 rectlight.add(rectlightHelper);
-console.log(rectlight);
+// console.log(rectlight);
 
 //Flicker corner Light
 // let colorCycle = new TimelineMax({ repeat: -1 });
@@ -105584,7 +105792,7 @@ scene.add(cylinderShadow);
 loader.load(
   "./assets/models/scene.glb",
   function (gltf) {
-    console.log(gltf);
+    // console.log(gltf);
     /////
     // loop and add shadows
     gltf.scene.traverse(function (child) {
@@ -105614,17 +105822,14 @@ loader.load(
     monitorLight1.quaternion.copy(monitor_screen.getWorldQuaternion());
     monitorLight1.rotateX(three.Math.degToRad(90));
 
-    
     // var group = new THREE.Group();
     // group.add(new Element("SJOz3qjfQXU", monitorLight1));
-
-    
 
     const iframeObj = new src_Element("SJOz3qjfQXU", monitorLight1);
     iframeObj.scale.set(0.001, 0.001, 0.001);
     root.add(iframeObj);
-    console.log(cssScene);
-    console.log("cssScene^");
+    // console.log(cssScene);
+    // console.log("cssScene^");
 
     var monitor_screen2 = gltf.scene.getObjectByName("monitor_screen2", true);
     monitor_screen2.visible = false;
@@ -105647,7 +105852,7 @@ loader.load(
     //   scale: 2,
     // });
 
-    // // console.log(lineMat);
+    // // // console.log(lineMat);
     // const line = new THREE.LineSegments(edges, lineMat);
 
     // line.scale.x = desk.scale.x + 0.1;
@@ -105659,7 +105864,7 @@ loader.load(
     // line.computeLineDistances();
     // scene.add(line);
 
-    // console.log(line);
+    // // console.log(line);
     //////////////
     //  desk outline as a wire mesh
     // var wireDeskMaterial = new THREE.MeshStandardMaterial({
@@ -105678,7 +105883,7 @@ loader.load(
     // deskWire.position.x = desk.position.x;
     // deskWire.position.y = desk.position.y;
     // deskWire.position.z = desk.position.z;
-    // // console.log(deskWire);
+    // // // console.log(deskWire);
     // scene.add(deskWire);
 
     ///////////////////////////////////////////////////
@@ -105694,10 +105899,10 @@ loader.load(
 
     var art = new three.TextureLoader().load("./assets/img/Palantiri.webp");
     const artMat = new three.MeshLambertMaterial({ map: art });
-    // console.log(palantirPlace);
+    // // console.log(palantirPlace);
     palantirPlace.material = artMat;
     palantirPlace.scale.set(0.2, 0.2, 0.2);
-    // console.log(palantirPlace);
+    // // console.log(palantirPlace);
     palantirPlace.material.transparent = true;
     // palantirPlace.rotation.set(1.57, 2.11, -3.14);
 
@@ -105724,7 +105929,7 @@ loader.load(
       "gradientGraphicArt",
       true
     );
-    // console.log(gradientGraphicArt);
+    // // console.log(gradientGraphicArt);
 
     var blendTexture = new three.TextureLoader().load(
       "./assets/img/gradient repeat1Blend.webp"
@@ -105734,7 +105939,7 @@ loader.load(
     const blendLayer = new three.Mesh(blendGeometry, blendMaterial);
     blendLayer.material.transparent = true;
     blendLayer.material.blending = three.MultiplyBlending;
-    // console.log(THREE);
+    // // console.log(THREE);
     blendLayer.position.set(
       gradientGraphicArt.position.x,
       gradientGraphicArt.position.y,
@@ -105761,7 +105966,7 @@ loader.load(
     // var gradientArt = new THREE.TextureLoader().load("/assets/img/gradient repeat1.webp");
     // const gradientArtMaterial = new THREE.MeshBasicMaterial({ map: gradientArt });
     gradientGraphicArt.material.map.rotation = 0.45;
-    // console.log(gradientGraphicArt);
+    // // console.log(gradientGraphicArt);
     scene.tl3 = new gsap_min.TimelineMax({ repeat: -1 }).delay(3);
     scene.tl3.to(gradientGraphicArt.material.map.offset, 6, {
       x: 0,
@@ -105776,11 +105981,11 @@ loader.load(
       ease: Power1.easeInOut,
     });
     // "https://api.weatherapi.com/v1/current.json?key=d7df60db6422414b9d1153848200912&q=Edinburgh"
-    // console.log("its gets here");
+    // // console.log("its gets here");
     axios_default().get(
       "https://api.openweathermap.org/data/2.5/weather?q=Edinburgh&appid=ab57b33912fbd3d3015d3f296505d3a8"
     ).then((response) => {
-      // console.log(response.data);
+      // // console.log(response.data);
 
       let icon = response.data.weather[0].icon;
       icon = "https://openweathermap.org/img/wn/" + icon + "@2x.png";
@@ -105819,7 +106024,7 @@ loader.load(
           const tempMesh = new three.Mesh(tempTextGeometry, tempMaterial);
           tempMesh.position.set(-0.27, 0.515, 0.088);
           // tempMesh.scale.set(0.09, 0.09, 1);
-          // console.log(gltf.scene);
+          // // console.log(gltf.scene);
           // tempMesh.rotation.set(-35, 1, 1);
           tempMesh.rotation.set(-0.45, 0.45, 0.2);
           //  alarmClockText.rotation.set(100, 100.25, 100.35);
@@ -106043,6 +106248,8 @@ let mouse = new three.Vector2();
 
 window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer2.setSize(window.innerWidth, window.innerHeight);
+
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
 });
@@ -106059,7 +106266,7 @@ function onMouseClick(event) {
 
   for (var i = 0; i < intersects.length; i++) {
     if (intersects[i].object.name == "painting") {
-      // console.log(scene);
+      // // console.log(scene);
       var bbox = new three.Box3().setFromObject(
         scene.getObjectByName("painting", true)
       );
@@ -106096,9 +106303,9 @@ function onMouseClick(event) {
         0
       );
     }
-    // console.log(intersects);
+    // // console.log(intersects);
     if (intersects[i].object.parent.name == "monitor") {
-      // console.log(scene);
+      // // console.log(scene);
       var bbox = new three.Box3().setFromObject(
         scene.getObjectByName("monitor", true)
       );
@@ -106134,7 +106341,7 @@ function onMouseClick(event) {
       );
     }
     if (intersects[i].object.parent.name == "monitor_1") {
-      // console.log(scene);
+      // // console.log(scene);
       var bbox = new three.Box3().setFromObject(
         scene.getObjectByName("monitor_1", true)
       );
@@ -106170,7 +106377,7 @@ function onMouseClick(event) {
       );
     }
     if (intersects[i].object.parent.name == "whiteboard") {
-      // console.log(scene);
+      // // console.log(scene);
       var bbox = new three.Box3().setFromObject(
         scene.getObjectByName("whiteboard", true)
       );
@@ -106225,7 +106432,7 @@ function onMouseMove(event) {
       }
       if (INTERSECTED != intersects[i].object) {
         if (intersects[i].object.name == "painting") {
-          // console.log(animationToggle);
+          // // console.log(animationToggle);
           if (animationToggle) animationToggle = false;
           scene.tlH = new gsap_min.TimelineMax();
 

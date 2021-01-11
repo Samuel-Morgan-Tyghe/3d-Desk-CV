@@ -20,6 +20,8 @@ import { VertexTangentsHelper } from "three/examples/jsm/helpers/VertexTangentsH
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 
+import * as THREEx from "./THREEx";
+
 let INTERSECTED;
 let animationToggle;
 let notfirstTimeBoolean = false;
@@ -53,13 +55,13 @@ container2.appendChild(renderer2.domElement);
 // document.querySelector('#css').appendChild( renderer2.domElement );
 
 const scene = new THREE.Scene();
-console.log(scene);
+// console.log(scene);
 let root = new THREE.Object3D();
 scene.add(root);
 const cssScene = new THREE.Scene();
 cssScene.scale.set(0.0005, 0.0005, 0.0005);
 
-console.log(scene);
+// console.log(scene);
 
 // scene.background = new Color(0xf3aab1);
 ////////////////////////////////
@@ -67,12 +69,13 @@ console.log(scene);
 var Element = function (id, objectCopy) {
   const obj = new THREE.Object3D();
 
-  console.log(objectCopy);
+  // console.log(objectCopy);
   var div = document.createElement("div");
-  div.style.width = "300px";
-  div.style.height = "190px";
-  div.style.backgroundColor = "#000";
-  console.log(div);
+  div.style.width = "1080px";
+  div.style.height = "893px";
+  div.style.backgroundColor = "red";
+  // div.style.backfacevisibility= "hidden";
+  // console.log(div);
 
   var iframe = document.createElement("iframe");
   iframe.style.width = "1080px";
@@ -80,14 +83,17 @@ var Element = function (id, objectCopy) {
   iframe.style.border = "0px";
   iframe.src = "https://samuel-morgan-tyghe.github.io/Basic-Website-To-React";
   // iframe.src = ["https://www.youtube.com/embed/", id, "?rel=0"].join("");
+  // iframe.style.backfacevisibility= "hidden";
+
   div.appendChild(iframe);
-  console.log(iframe);
+  // console.log(iframe);
 
   var css3dObject = new CSS3DObject(div);
-  css3dObject.position.set(-90, 700, -70);
+  css3dObject.position.set(-70, 725, -100);
   css3dObject.rotation.copy(objectCopy.rotation);
   css3dObject.rotateY(THREE.Math.degToRad(180));
-  css3dObject.scale.set(0.1,0.1,0.1)
+  css3dObject.scale.set(0.265, 0.21, 0.1);
+  console.log(css3dObject);
 
   obj.css3dObject = css3dObject;
   obj.add(css3dObject);
@@ -96,9 +102,9 @@ var Element = function (id, objectCopy) {
     opacity: 1,
     color: new THREE.Color(0x111111),
     blending: THREE.NoBlending,
-    side: THREE.DoubleSide,
+    side: THREE.FrontSide,
   });
-  var geometry = new THREE.BoxGeometry(0.19, 0.3, 0.1);
+  var geometry = new THREE.BoxGeometry(1.9, 0.3, 0.1);
   var mesh = new THREE.Mesh(geometry, material);
   mesh.castShadow = true;
   mesh.receiveShadow = true;
@@ -132,10 +138,10 @@ const loader = new GLTFLoader();
 
 /////////////////////////
 
-const Alight = new THREE.AmbientLight(0xffffff, 0.3);
+// const Alight = new THREE.AmbientLight(0xffffff, 0.3);
 
-scene.add(Alight);
-root.add(Alight);
+// scene.add(Alight);
+// root.add(Alight);
 
 // let hemiLight = new THREE.HemisphereLight(0xffeeb1, 0x080820, 1);
 // scene.add(hemiLight);
@@ -149,7 +155,7 @@ let light3 = new THREE.PointLight(0xc774e8, 0.3);
 light3.position.set(0, 100, -500);
 let light4 = new THREE.PointLight(0x09026b, 0.6);
 light4.position.set(-500, 300, 0);
-// console.log(light1);
+// // console.log(light1);
 // light1.castShadow = true;
 // light2.castShadow = true;
 // light3.castShadow = true;
@@ -212,6 +218,7 @@ palantirSpotLight.castShadow = true;
 scene.add(palantirSpotLight);
 
 const monitorLight1 = new THREE.RectAreaLight(0xffffff, 5, 0.29, 0.19);
+console.log(monitorLight1);
 const monitorLight2 = new THREE.RectAreaLight(0xffffff, 5, 0.29, 0.19);
 
 scene.add(monitorLight1);
@@ -235,7 +242,7 @@ scene.add(rectlight);
 const rectlightHelper = new RectAreaLightHelper(rectlight);
 
 rectlight.add(rectlightHelper);
-console.log(rectlight);
+// console.log(rectlight);
 
 //Flicker corner Light
 // let colorCycle = new TimelineMax({ repeat: -1 });
@@ -295,7 +302,7 @@ scene.add(cylinderShadow);
 loader.load(
   "./assets/models/scene.glb",
   function (gltf) {
-    console.log(gltf);
+    // console.log(gltf);
     /////
     // loop and add shadows
     gltf.scene.traverse(function (child) {
@@ -325,17 +332,14 @@ loader.load(
     monitorLight1.quaternion.copy(monitor_screen.getWorldQuaternion());
     monitorLight1.rotateX(THREE.Math.degToRad(90));
 
-    
     // var group = new THREE.Group();
     // group.add(new Element("SJOz3qjfQXU", monitorLight1));
-
-    
 
     const iframeObj = new Element("SJOz3qjfQXU", monitorLight1);
     iframeObj.scale.set(0.001, 0.001, 0.001);
     root.add(iframeObj);
-    console.log(cssScene);
-    console.log("cssScene^");
+    // console.log(cssScene);
+    // console.log("cssScene^");
 
     var monitor_screen2 = gltf.scene.getObjectByName("monitor_screen2", true);
     monitor_screen2.visible = false;
@@ -358,7 +362,7 @@ loader.load(
     //   scale: 2,
     // });
 
-    // // console.log(lineMat);
+    // // // console.log(lineMat);
     // const line = new THREE.LineSegments(edges, lineMat);
 
     // line.scale.x = desk.scale.x + 0.1;
@@ -370,7 +374,7 @@ loader.load(
     // line.computeLineDistances();
     // scene.add(line);
 
-    // console.log(line);
+    // // console.log(line);
     //////////////
     //  desk outline as a wire mesh
     // var wireDeskMaterial = new THREE.MeshStandardMaterial({
@@ -389,7 +393,7 @@ loader.load(
     // deskWire.position.x = desk.position.x;
     // deskWire.position.y = desk.position.y;
     // deskWire.position.z = desk.position.z;
-    // // console.log(deskWire);
+    // // // console.log(deskWire);
     // scene.add(deskWire);
 
     ///////////////////////////////////////////////////
@@ -405,10 +409,10 @@ loader.load(
 
     var art = new THREE.TextureLoader().load("./assets/img/Palantiri.webp");
     const artMat = new THREE.MeshLambertMaterial({ map: art });
-    // console.log(palantirPlace);
+    // // console.log(palantirPlace);
     palantirPlace.material = artMat;
     palantirPlace.scale.set(0.2, 0.2, 0.2);
-    // console.log(palantirPlace);
+    // // console.log(palantirPlace);
     palantirPlace.material.transparent = true;
     // palantirPlace.rotation.set(1.57, 2.11, -3.14);
 
@@ -435,7 +439,7 @@ loader.load(
       "gradientGraphicArt",
       true
     );
-    // console.log(gradientGraphicArt);
+    // // console.log(gradientGraphicArt);
 
     var blendTexture = new THREE.TextureLoader().load(
       "./assets/img/gradient repeat1Blend.webp"
@@ -445,7 +449,7 @@ loader.load(
     const blendLayer = new THREE.Mesh(blendGeometry, blendMaterial);
     blendLayer.material.transparent = true;
     blendLayer.material.blending = THREE.MultiplyBlending;
-    // console.log(THREE);
+    // // console.log(THREE);
     blendLayer.position.set(
       gradientGraphicArt.position.x,
       gradientGraphicArt.position.y,
@@ -472,7 +476,7 @@ loader.load(
     // var gradientArt = new THREE.TextureLoader().load("/assets/img/gradient repeat1.webp");
     // const gradientArtMaterial = new THREE.MeshBasicMaterial({ map: gradientArt });
     gradientGraphicArt.material.map.rotation = 0.45;
-    // console.log(gradientGraphicArt);
+    // // console.log(gradientGraphicArt);
     scene.tl3 = new TimelineMax({ repeat: -1 }).delay(3);
     scene.tl3.to(gradientGraphicArt.material.map.offset, 6, {
       x: 0,
@@ -487,11 +491,11 @@ loader.load(
       ease: Power1.easeInOut,
     });
     // "https://api.weatherapi.com/v1/current.json?key=d7df60db6422414b9d1153848200912&q=Edinburgh"
-    // console.log("its gets here");
+    // // console.log("its gets here");
     Axios.get(
       "https://api.openweathermap.org/data/2.5/weather?q=Edinburgh&appid=ab57b33912fbd3d3015d3f296505d3a8"
     ).then((response) => {
-      // console.log(response.data);
+      // // console.log(response.data);
 
       let icon = response.data.weather[0].icon;
       icon = "https://openweathermap.org/img/wn/" + icon + "@2x.png";
@@ -530,7 +534,7 @@ loader.load(
           const tempMesh = new THREE.Mesh(tempTextGeometry, tempMaterial);
           tempMesh.position.set(-0.27, 0.515, 0.088);
           // tempMesh.scale.set(0.09, 0.09, 1);
-          // console.log(gltf.scene);
+          // // console.log(gltf.scene);
           // tempMesh.rotation.set(-35, 1, 1);
           tempMesh.rotation.set(-0.45, 0.45, 0.2);
           //  alarmClockText.rotation.set(100, 100.25, 100.35);
@@ -754,6 +758,8 @@ let mouse = new THREE.Vector2();
 
 window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer2.setSize(window.innerWidth, window.innerHeight);
+
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
 });
@@ -770,7 +776,7 @@ function onMouseClick(event) {
 
   for (var i = 0; i < intersects.length; i++) {
     if (intersects[i].object.name == "painting") {
-      // console.log(scene);
+      // // console.log(scene);
       var bbox = new THREE.Box3().setFromObject(
         scene.getObjectByName("painting", true)
       );
@@ -807,9 +813,9 @@ function onMouseClick(event) {
         0
       );
     }
-    // console.log(intersects);
+    // // console.log(intersects);
     if (intersects[i].object.parent.name == "monitor") {
-      // console.log(scene);
+      // // console.log(scene);
       var bbox = new THREE.Box3().setFromObject(
         scene.getObjectByName("monitor", true)
       );
@@ -845,7 +851,7 @@ function onMouseClick(event) {
       );
     }
     if (intersects[i].object.parent.name == "monitor_1") {
-      // console.log(scene);
+      // // console.log(scene);
       var bbox = new THREE.Box3().setFromObject(
         scene.getObjectByName("monitor_1", true)
       );
@@ -881,7 +887,7 @@ function onMouseClick(event) {
       );
     }
     if (intersects[i].object.parent.name == "whiteboard") {
-      // console.log(scene);
+      // // console.log(scene);
       var bbox = new THREE.Box3().setFromObject(
         scene.getObjectByName("whiteboard", true)
       );
@@ -936,7 +942,7 @@ function onMouseMove(event) {
       }
       if (INTERSECTED != intersects[i].object) {
         if (intersects[i].object.name == "painting") {
-          // console.log(animationToggle);
+          // // console.log(animationToggle);
           if (animationToggle) animationToggle = false;
           scene.tlH = new TimelineMax();
 
