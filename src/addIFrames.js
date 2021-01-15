@@ -6,14 +6,14 @@ export function addIFrames(scene) {
   // //
   var div = document.createElement("div");
   div.style.width = "1080px";
-  div.style.height = "893px";
+  div.style.height = "890px";
   div.style.backgroundColor = "red";
   // div.style.backfacevisibility= "hidden";
   // //
 
   var iframe = document.createElement("iframe");
   iframe.style.width = "1080px";
-  iframe.style.height = "893px";
+  iframe.style.height = "890px";
   iframe.style.border = "0px";
   iframe.src = "https://samuel-morgan-tyghe.github.io/Basic-Website-To-React";
   // iframe.src = ["https://www.youtube.com/embed/", id, "?rel=0"].join("");
@@ -21,16 +21,20 @@ export function addIFrames(scene) {
 
   div.appendChild(iframe);
   // //
-  const objectCopy = scene.getObjectByName("monitorLight1");
+  const objectCopy = scene.getObjectByName("monitor_screen1");
   var css3dObject = new CSS3DObject(div);
   // css3dObject.position.set(-70, 725, -90);
-  css3dObject.rotation.copy(objectCopy.rotation);
-  css3dObject.rotateY(THREE.Math.degToRad(180));
+  
+  // obj.scale.copy(objectCopy.getWorldScale());
+
   css3dObject.scale.set(0.265, 0.21, 0.1);
   //
   const newtempWorldPosition = new THREE.Vector3();
 
   obj.css3dObject = css3dObject;
+  obj.quaternion.copy(objectCopy.getWorldQuaternion());
+  obj.rotateX(THREE.Math.degToRad(90));
+  obj.rotateY(THREE.Math.degToRad(180));
   obj.position.copy(objectCopy.getWorldPosition(newtempWorldPosition));
   obj.add(css3dObject);
 
