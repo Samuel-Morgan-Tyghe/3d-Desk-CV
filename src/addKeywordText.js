@@ -1,22 +1,24 @@
 import * as THREE from "../vendor/three";
 
-
-
 export function addKeywordText(scene) {
   let artGroup = scene.getObjectByName("ArtCenter").getWorldPosition();
 
-
-
   const artistTextLoader = new THREE.FontLoader();
   artistTextLoader.load("./assets/fonts/Alata_Regular.json", function (font) {
-    const artistTextGeometry = new THREE.TextBufferGeometry("FINE ARTIST", {
-      font: font,
-      size: 0.5,
-      height: 0.001,
-    });
+    const artistTextBufferGeometry = new THREE.TextBufferGeometry(
+      "FINE ARTIST",
+      {
+        font: font,
+        size: 0.5,
+        height: 0.001,
+      }
+    );
 
     const artistTextMaterial = new THREE.MeshBasicMaterial({ color: "white" });
-    let artistText = new THREE.Mesh(artistTextGeometry, artistTextMaterial);
+    let artistText = new THREE.Mesh(
+      artistTextBufferGeometry,
+      artistTextMaterial
+    );
 
     artistText.scale.set(0.1, 0.1, 1);
     // artistText.position.set(0.9, 1, -0.25);
@@ -34,25 +36,28 @@ export function addKeywordText(scene) {
 
   const creativeTextLoader = new THREE.FontLoader();
   creativeTextLoader.load("./assets/fonts/Alata_Regular.json", function (font) {
-    const creativeTextGeometry = new THREE.TextBufferGeometry("CREATIVE", {
-      font: font,
-      size: 0.4,
-      height: 0.001,
-    });
+    const creativeTextBufferGeometry = new THREE.TextBufferGeometry(
+      "CREATIVE",
+      {
+        font: font,
+        size: 0.4,
+        height: 0.001,
+      }
+    );
 
     const creativeTextMaterial = new THREE.MeshBasicMaterial({
       color: "white",
     });
     let creativeText = new THREE.Mesh(
-      creativeTextGeometry,
+      creativeTextBufferGeometry,
       creativeTextMaterial
     );
 
     creativeText.scale.set(0.1, 0.1, 1);
     // creativeText.position.set(1.0, 0.9, -0.25);
     creativeText.position.copy(artGroup);
-        creativeText.translateX(-0.2);
-creativeText.translateY(0.2);
+    creativeText.translateX(-0.2);
+    creativeText.translateY(0.2);
     creativeText.translateZ(0.25);
 
     // creativeText.rotation.set(0, 0.45, 0);
@@ -65,17 +70,20 @@ creativeText.translateY(0.2);
   inventiveTextLoader.load(
     "./assets/fonts/Alata_Regular.json",
     function (font) {
-      const inventiveTextGeometry = new THREE.TextBufferGeometry("INVENTIVE", {
-        font: font,
-        size: 0.3,
-        height: 0.001,
-      });
+      const inventiveTextBufferGeometry = new THREE.TextBufferGeometry(
+        "INVENTIVE",
+        {
+          font: font,
+          size: 0.3,
+          height: 0.001,
+        }
+      );
 
       const inventiveTextMaterial = new THREE.MeshBasicMaterial({
         color: "white",
       });
       let inventiveText = new THREE.Mesh(
-        inventiveTextGeometry,
+        inventiveTextBufferGeometry,
         inventiveTextMaterial
       );
 
@@ -95,17 +103,20 @@ creativeText.translateY(0.2);
 
   const adaptiveTextLoader = new THREE.FontLoader();
   adaptiveTextLoader.load("./assets/fonts/Alata_Regular.json", function (font) {
-    const adaptiveTextGeometry = new THREE.TextBufferGeometry("ADAPTIVE", {
-      font: font,
-      size: 0.2,
-      height: 0.001,
-    });
+    const adaptiveTextBufferGeometry = new THREE.TextBufferGeometry(
+      "ADAPTIVE",
+      {
+        font: font,
+        size: 0.2,
+        height: 0.001,
+      }
+    );
 
     const adaptiveTextMaterial = new THREE.MeshBasicMaterial({
       color: "white",
     });
     let adaptiveText = new THREE.Mesh(
-      adaptiveTextGeometry,
+      adaptiveTextBufferGeometry,
       adaptiveTextMaterial
     );
 
@@ -114,8 +125,8 @@ creativeText.translateY(0.2);
     adaptiveText.position.copy(artGroup);
     adaptiveText.translateX(-0.15);
     adaptiveText.translateY(0.075);
-        adaptiveText.translateZ(0.25);
-// adaptiveText.rotation.set(0, 0.45, 0);
+    adaptiveText.translateZ(0.25);
+    // adaptiveText.rotation.set(0, 0.45, 0);
     adaptiveText.name = "adaptive";
     // adaptiveText.visible = false
     scene.add(adaptiveText);
@@ -125,7 +136,7 @@ creativeText.translateY(0.2);
   weatherAppTextLoader.load(
     "./assets/fonts/Bebas Neue_Regular (1).json",
     function (font) {
-      const weatherAppTextGeometry = new THREE.TextBufferGeometry(
+      const weatherAppTextBufferGeometry = new THREE.TextBufferGeometry(
         "Weather App",
         {
           font: font,
@@ -138,7 +149,7 @@ creativeText.translateY(0.2);
         color: "white",
       });
       const weatherAppText = new THREE.Mesh(
-        weatherAppTextGeometry,
+        weatherAppTextBufferGeometry,
         weatherAppTextMaterial
       );
       weatherAppText.scale.set(0.1, 0.1, 1);

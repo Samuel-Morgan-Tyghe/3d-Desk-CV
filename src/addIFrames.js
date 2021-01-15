@@ -41,7 +41,7 @@ export function addIFrames(scene) {
     blending: THREE.NoBlending,
     side: THREE.FrontSide,
   });
-  var geometry = new THREE.BoxGeometry(1.9, 0.3, 0.1);
+  var geometry = new THREE.BoxBufferGeometry(1.9, 0.3, 0.1);
   var mesh = new THREE.Mesh(geometry, material);
   mesh.castShadow = true;
   mesh.receiveShadow = true;

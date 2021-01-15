@@ -1,6 +1,6 @@
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer.js";
-import Stats from 'three/examples/jsm/libs/stats.module.js';
+import Stats from "three/examples/jsm/libs/stats.module.js";
 
 import { TimelineMax } from "../vendor/gsap.min.js";
 import * as THREE from "../vendor/three";
@@ -18,24 +18,24 @@ import { keyboardLightAnimate } from "./keyboardLightAnimate";
 // import { onMouseMove } from "./onMouseMove";
 import { resetCameraToScene } from "./resetCameraToScene";
 import { addAutomatedArt } from "./addAutomatedArt";
-import {onClickMoveCamera} from './onClickMoveCamera'
-
+import { onClickMoveCamera } from "./onClickMoveCamera";
+import { matrixAutoUpdate } from "./matrixAutoUpdate";
 let INTERSECTED;
 let animationToggle;
 var stats;
 
-
-const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+const renderer = new THREE.WebGLRenderer({ alpha: true });
 
 renderer.domElement.style.position = "absolute";
 renderer.domElement.style.top = 0;
 renderer.setClearColor(0x000000, 0);
-renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 // renderer.gammaOutput = true;
 renderer.gammaFactor = 2.2;
 renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.shadowMap.enabled = true;
 renderer.shadowMapType = THREE.PCFSoftShadowMap;
+renderer.shadowMap.autoUpdate = false;
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 var container = document.getElementById("container");
@@ -51,15 +51,15 @@ var container2 = document.getElementById("container2");
 container2.appendChild(renderer2.domElement);
 
 stats = createStats();
-document.body.appendChild( stats.domElement );
+document.body.appendChild(stats.domElement);
 
 function createStats() {
   var stats = new Stats();
   stats.setMode(0);
 
-  stats.domElement.style.position = 'absolute';
-  stats.domElement.style.left = '0';
-  stats.domElement.style.top = '0';
+  stats.domElement.style.position = "absolute";
+  stats.domElement.style.left = "0";
+  stats.domElement.style.top = "0";
 
   return stats;
 }
@@ -93,20 +93,22 @@ async function main() {
   const gltfData = await addModel();
 
   scene.add(gltfData.scene);
-  // addWeather(scene);
+  addWeather(scene);
 
-  // resetCameraToScene(scene, controls);
-  // keyboardLightAnimate(scene);
-  // computerLightBlink(scene);
-  // addArt(scene);
-  // addClock(scene);
-  // addKeywordText(scene);
+  resetCameraToScene(scene, controls);
+  keyboardLightAnimate(scene);
+  computerLightBlink(scene);
+  addArt(scene);
+  addClock(scene);
+  addKeywordText(scene);
 
   addLights(scene);
   // addShadow(scene);
-  // addAutomatedArt(scene);
+  addAutomatedArt(scene);
 
-  // addIFrames(scene);
+  addIFrames(scene);
+  matrixAutoUpdate(scene);
+  // scene.overrideMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 }
 
 main().catch((error) => {
@@ -131,7 +133,6 @@ const animate = function () {
   renderer2.render(scene, camera);
   requestAnimationFrame(animate);
   stats.update();
-
 };
 
 animate();

@@ -1,7 +1,6 @@
 export function computerLightBlink(scene){
   let pLightEmmissive = scene.getObjectByName("powerLight");
 
-
     function computerBlink() {
         pLightEmmissive.visible = !pLightEmmissive.visible;
       }

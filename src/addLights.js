@@ -28,30 +28,29 @@ export function addLights(scene) {
   // scene.add(light3);
   // scene.add(light4);
 
-  const amLight = new THREE.AmbientLight( 0x404040, 1 ); // soft white light#
+  const amLight = new THREE.AmbientLight(0x404040, 1); // soft white light#
 
+  const sun = new THREE.DirectionalLight(0xffffff, 1);
+  sun.position.set(5, 1, 1);
+  const helper = new THREE.DirectionalLightHelper(sun, 5);
 
-  const sun = new THREE.DirectionalLight( 0xffffff, 1 );
-  sun.position.set(5,1,1)
-  const helper = new THREE.DirectionalLightHelper( sun, 5 );
-
-const plane = scene.getObjectByName('wall')
+  const plane = scene.getObjectByName("wall");
   // plane.material.side = THREE.DoubleSide;
-
-
-
-
 
   var windowref = scene.getObjectByName("windowLight", true);
   var bbox = new THREE.Box3().setFromObject(windowref);
-  console.log(bbox)
-  const window = new THREE.RectAreaLight('#e47025', 5, bbox.max.y - bbox.min.y, bbox.max.z - bbox.min.z);
-  const whelper = new RectAreaLightHelper( window );
-
+  console.log(bbox);
+  const window = new THREE.RectAreaLight(
+    "#e47025",
+    5,
+    bbox.max.y - bbox.min.y,
+    bbox.max.z - bbox.min.z
+  );
+  const whelper = new RectAreaLightHelper(window);
 
   windowref.visible = false;
-  const newtempWorldPosition3 = new THREE.Vector3()
-  const newtempWorldQ3 = new THREE.Quaternion()
+  const newtempWorldPosition3 = new THREE.Vector3();
+  const newtempWorldQ3 = new THREE.Quaternion();
 
   window.position.copy(windowref.getWorldPosition(newtempWorldPosition3));
   whelper.position.copy(windowref.getWorldPosition(newtempWorldPosition3));
@@ -59,18 +58,7 @@ const plane = scene.getObjectByName('wall')
   whelper.quaternion.copy(windowref.getWorldQuaternion(newtempWorldQ3));
   window.rotateX(THREE.Math.degToRad(90));
   whelper.rotateX(THREE.Math.degToRad(90));
-  window.name = 'window'
-
-
-
-
-
-
-
-
-
-
-
+  window.name = "window";
 
   const light = new THREE.PointLight(0xff6ad5, 0.3, 100);
   light.position.set(-1.5, 1.5, 1.5);
@@ -82,7 +70,6 @@ const plane = scene.getObjectByName('wall')
   // light.add(
   //   new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: 0xff6ad5 }))
   // );
-
 
   const light2 = new THREE.PointLight(0x01cdfe, 0.3, 100);
   light2.position.set(1.5, 1.5, 1.5);
@@ -97,37 +84,33 @@ const plane = scene.getObjectByName('wall')
 
   const gradientArtSpotLight = new THREE.SpotLight(0xffffff, 1, 0, 0.2, 0.4);
 
-
-  const gradientArt = scene.getObjectByName('gradientGraphicArt')
+  const gradientArt = scene.getObjectByName("gradientGraphicArt");
   gradientArtSpotLight.castShadow = true;
   gradientArtSpotLight.position.set(
     gradientArt.position.x,
     gradientArt.position.y + 1,
     gradientArt.position.z + 0.7
   );
-  gradientArtSpotLight.target = gradientArt; 
-  
+  gradientArtSpotLight.target = gradientArt;
+
   const artGroupSpotLight = new THREE.SpotLight(0xffffff, 0.5, 0, 0.35, 0.4);
 
-
-const artGroup = scene.getObjectByName('ArtCenter')
-artGroup.visible = false
+  const artGroup = scene.getObjectByName("ArtCenter");
+  artGroup.visible = false;
 
   artGroupSpotLight.castShadow = true;
   artGroupSpotLight.position.set(
-    artGroup.position.x -0.1,
+    artGroup.position.x - 0.1,
     artGroup.position.y + 0.7,
     artGroup.position.z + 1
   );
-  artGroupSpotLight.target = artGroup
+  artGroupSpotLight.target = artGroup;
 
-  const spotLightHelper = new THREE.SpotLightHelper( artGroupSpotLight );
-
+  const spotLightHelper = new THREE.SpotLightHelper(artGroupSpotLight);
 
   const deskSpotLight = new THREE.SpotLight(0xffffff, 3, 0, 0.2, 0.4);
 
-
-  const desk = scene.getObjectByName('desk')
+  const desk = scene.getObjectByName("desk");
   deskSpotLight.castShadow = true;
   deskSpotLight.position.set(
     desk.position.x,
@@ -135,12 +118,10 @@ artGroup.visible = false
     desk.position.z + 0.7
   );
   deskSpotLight.target = desk;
-  
-  
+
   const whiteboardSpotLight = new THREE.SpotLight(0xffffff, 3, 0, 0.2, 0.4);
 
-
-  const whiteboard = scene.getObjectByName('whiteboard')
+  const whiteboard = scene.getObjectByName("whiteboard");
   whiteboardSpotLight.castShadow = true;
   whiteboardSpotLight.position.set(
     whiteboard.position.x,
@@ -149,11 +130,9 @@ artGroup.visible = false
   );
   whiteboardSpotLight.target = whiteboard;
 
-
   const paintingSpotLight = new THREE.SpotLight(0xffffff, 0.5, 0, 0.35, 0.4);
 
-
-  const painting = scene.getObjectByName('art_1')
+  const painting = scene.getObjectByName("art_1");
   paintingSpotLight.castShadow = true;
   paintingSpotLight.position.set(
     painting.position.x,
@@ -179,31 +158,36 @@ artGroup.visible = false
   );
   palantirSpotLight.target = palantirPlace;
 
-
-
   const monitorLight1 = new THREE.RectAreaLight(0xffffff, 5, 0.29, 0.19);
 
   var monitor_screen = scene.getObjectByName("monitor_screen1", true);
 
   monitor_screen.visible = false;
-  const newtempWorldPosition = new THREE.Vector3()
-  const newtempWorldQ = new THREE.Quaternion()
+  const newtempWorldPosition = new THREE.Vector3();
+  const newtempWorldQ = new THREE.Quaternion();
 
-  monitorLight1.position.copy(monitor_screen.getWorldPosition(newtempWorldPosition));
-  monitorLight1.quaternion.copy(monitor_screen.getWorldQuaternion(newtempWorldQ));
+  monitorLight1.position.copy(
+    monitor_screen.getWorldPosition(newtempWorldPosition)
+  );
+  monitorLight1.quaternion.copy(
+    monitor_screen.getWorldQuaternion(newtempWorldQ)
+  );
   monitorLight1.rotateX(THREE.Math.degToRad(90));
-  monitorLight1.name = 'monitorLight1'
+  monitorLight1.name = "monitorLight1";
 
   const monitorLight2 = new THREE.RectAreaLight(0xffffff, 5, 0.29, 0.19);
   var monitor_screen2 = scene.getObjectByName("monitor_screen2", true);
   monitor_screen2.visible = false;
 
+  const newtempWorldPosition2 = new THREE.Vector3();
+  const newtempWorldQ2 = new THREE.Quaternion();
 
-  const newtempWorldPosition2 = new THREE.Vector3()
-  const newtempWorldQ2 = new THREE.Quaternion()
-
-  monitorLight2.position.copy(monitor_screen2.getWorldPosition(newtempWorldPosition2));
-  monitorLight2.quaternion.copy(monitor_screen2.getWorldQuaternion(newtempWorldQ2));
+  monitorLight2.position.copy(
+    monitor_screen2.getWorldPosition(newtempWorldPosition2)
+  );
+  monitorLight2.quaternion.copy(
+    monitor_screen2.getWorldQuaternion(newtempWorldQ2)
+  );
   monitorLight2.rotateX(THREE.Math.degToRad(90));
 
   const monitorLightHelper1 = new RectAreaLightHelper(monitorLight1);
@@ -261,32 +245,31 @@ artGroup.visible = false
   //   return Math.floor(Math.random() * 30 + 1) + 70;
   // }
 
-  const cylinderGeometryShadowGeometry = new THREE.CylinderGeometry(
+  const cylinderBufferGeometryShadowBufferGeometry = new THREE.CylinderBufferGeometry(
     0.02,
     0.02,
     1,
     8
   );
-  const cylinderGeometryShadowMaterial = new THREE.MeshStandardMaterial({
+  const cylinderBufferGeometryShadowMaterial = new THREE.MeshStandardMaterial({
     color: "black",
   });
   const cylinderShadow = new THREE.Mesh(
-    cylinderGeometryShadowGeometry,
-    cylinderGeometryShadowMaterial
+    cylinderBufferGeometryShadowBufferGeometry,
+    cylinderBufferGeometryShadowMaterial
   );
   cylinderShadow.position.set(1.2, 0.5, 0.01);
   cylinderShadow.castShadow = true;
   cylinderShadow.receiveShadow = true;
 
-  scene.add( amLight );
+  scene.add(amLight);
 
   // scene.add(light);
   // scene.add(light2);
   // scene.add(sun)
-  scene.add(whelper)
-  scene.add(window)
+  scene.add(whelper);
+  scene.add(window);
 
-  
   // scene.add(monitorLight1);
   // scene.add(monitorLight2);
 
@@ -297,7 +280,6 @@ artGroup.visible = false
   // scene.add(gradientArtSpotLight)
   // scene.add(paintingSpotLight);
   // scene.add( spotLightHelper );
-
 
   // scene.add(rectlight);
   // scene.add(cylinderShadow);

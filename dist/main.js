@@ -4,7 +4,7 @@
 /***/ 669:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-/* unused reexport */ __webpack_require__(609);
+module.exports = __webpack_require__(609);
 
 /***/ }),
 
@@ -16,7 +16,7 @@
 
 var utils = __webpack_require__(867);
 var settle = __webpack_require__(26);
-var cookies = __webpack_require__(691);
+var cookies = __webpack_require__(372);
 var buildURL = __webpack_require__(327);
 var buildFullPath = __webpack_require__(97);
 var parseHeaders = __webpack_require__(109);
@@ -1099,7 +1099,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 /***/ }),
 
-/***/ 691:
+/***/ 372:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
@@ -51942,6 +51942,35 @@ module.exports = {
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => module['default'] :
+/******/ 				() => module;
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop)
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/node module decorator */
 /******/ 	(() => {
 /******/ 		__webpack_require__.nmd = (module) => {
@@ -104638,7 +104667,7 @@ MapControls.prototype.constructor = MapControls;
  * Based on http://www.emagix.net/academic/mscs-project/item/camera-sync-with-css3-and-webgl-threejs
  */
 
-var CSS3DRenderer_CSS3DObject = function ( element ) {
+var CSS3DObject = function ( element ) {
 
 	Object3D.call( this );
 
@@ -104662,9 +104691,9 @@ var CSS3DRenderer_CSS3DObject = function ( element ) {
 
 };
 
-CSS3DRenderer_CSS3DObject.prototype = Object.assign( Object.create( Object3D.prototype ), {
+CSS3DObject.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
-	constructor: CSS3DRenderer_CSS3DObject,
+	constructor: CSS3DObject,
 
 	copy: function ( source, recursive ) {
 
@@ -104680,11 +104709,11 @@ CSS3DRenderer_CSS3DObject.prototype = Object.assign( Object.create( Object3D.pro
 
 var CSS3DSprite = function ( element ) {
 
-	CSS3DRenderer_CSS3DObject.call( this, element );
+	CSS3DObject.call( this, element );
 
 };
 
-CSS3DSprite.prototype = Object.create( CSS3DRenderer_CSS3DObject.prototype );
+CSS3DSprite.prototype = Object.create( CSS3DObject.prototype );
 CSS3DSprite.prototype.constructor = CSS3DSprite;
 
 //
@@ -104810,7 +104839,7 @@ var CSS3DRenderer = function () {
 
 	function renderObject( object, scene, camera, cameraCSSMatrix ) {
 
-		if ( object instanceof CSS3DRenderer_CSS3DObject ) {
+		if ( object instanceof CSS3DObject ) {
 
 			object.onBeforeRender( _this, scene, camera );
 
@@ -104900,7 +104929,7 @@ var CSS3DRenderer = function () {
 
 		scene.traverse( function ( object ) {
 
-			if ( object instanceof CSS3DRenderer_CSS3DObject ) result.push( object );
+			if ( object instanceof CSS3DObject ) result.push( object );
 
 		} );
 
@@ -105175,39 +105204,41 @@ var three = __webpack_require__(317);
 function addArt(scene) {
   var palantirPlace = scene.getObjectByName("palantirPlace", true);
 
-  var art = new THREE.TextureLoader().load("./assets/img/Palantiri.webp");
-  art.minFilter = THREE.LinearFilter;
-  const artMat = new THREE.MeshLambertMaterial({ map: art });
+  var art = new three.TextureLoader().load("./assets/img/Palantiri.webp");
+  art.minFilter = three.LinearFilter;
+  const artMat = new three.MeshLambertMaterial({ map: art,     alphaTest: 0.8,
+  });
   palantirPlace.material = artMat;
   palantirPlace.scale.set(0.2, 0.2, 0.2);
-  palantirPlace.material.transparent = true;
+  // palantirPlace.material.transparent = true;
   // palantirPlace.rotation.set(1.57, 2.11, -3.14);
 
-  scene.tl2 = new TimelineMax({ repeat: -1 }).delay(0.1);
+  scene.tl2 = new gsap_min.TimelineMax({ repeat: -1 }).delay(0.1);
   scene.tl2.to(palantirPlace.rotation, 0, {
     x: 1.57,
     y: 0,
     z: -3.14,
     ease: Linear.easeOut,
+   
   });
   scene.tl2.to(palantirPlace.rotation, 20, {
     x: 1.57,
     y: 10,
     z: -3.14,
-    ease: Power1.easeInOut,
+    ease: Power1.easeInOut, 
   });
   scene.tl2.to(palantirPlace.rotation, 5, {
     x: 1.57,
     y: 0,
     z: -3.14,
-    ease: Elastic.easeOut,
+    ease: Elastic.easeOut, 
   });
   ////////////////////////////////////////////////
   var gradientGraphicArt = scene.getObjectByName("gradientGraphicArt", true);
 
   gradientGraphicArt.material.map.rotation = 0.45;
 
-  scene.tl3 = new TimelineMax({ repeat: -1 }).delay(3);
+  scene.tl3 = new gsap_min.TimelineMax({ repeat: -1 }).delay(3);
   scene.tl3.to(gradientGraphicArt.material.map.offset, 6, {
     x: 0,
     y: 0,
@@ -105221,16 +105252,16 @@ function addArt(scene) {
     ease: Power1.easeInOut,
   });
 
-  var blendTexture = new THREE.TextureLoader().load(
+  var blendTexture = new three.TextureLoader().load(
     "./assets/img/gradient repeat1Blend.webp"
   );
-  blendTexture.minFilter = THREE.LinearFilter;
+  blendTexture.minFilter = three.LinearFilter;
 
-  const blendGeometry = new THREE.PlaneBufferGeometry(1, 1, 1);
-  const blendMaterial = new THREE.MeshLambertMaterial({ map: blendTexture });
-  const blendLayer = new THREE.Mesh(blendGeometry, blendMaterial);
+  const blendBufferGeometry = new three.PlaneBufferGeometry(1, 1, 1);
+  const blendMaterial = new three.MeshLambertMaterial({ map: blendTexture,  });
+  const blendLayer = new three.Mesh(blendBufferGeometry, blendMaterial);
   blendLayer.material.transparent = true;
-  blendLayer.material.blending = THREE.MultiplyBlending;
+  blendLayer.material.blending = three.MultiplyBlending;
   // // //
   blendLayer.position.set(
     gradientGraphicArt.position.x,
@@ -105245,18 +105276,18 @@ function addArt(scene) {
   scene.add(blendLayer);
   blendLayer.material.blendEquation = 50;
   ///////////////////////////////////////////////////
-  var texture = new THREE.TextureLoader().load("./assets/img/open.webp");
-  var texture2 = new THREE.TextureLoader().load("./assets/img/blink.webp");
-  texture.minFilter = THREE.LinearFilter;
-  texture2.minFilter = THREE.LinearFilter;
+  var texture = new three.TextureLoader().load("./assets/img/open.webp");
+  var texture2 = new three.TextureLoader().load("./assets/img/blink.webp");
+  texture.minFilter = three.LinearFilter;
+  texture2.minFilter = three.LinearFilter;
 
-  const paintingGeometry = new THREE.PlaneBufferGeometry(1, 1, 1);
-  const paintingMaterial = new THREE.MeshLambertMaterial({ map: texture });
+  const paintingBufferGeometry = new three.PlaneBufferGeometry(1, 1, 1);
+  const paintingMaterial = new three.MeshLambertMaterial({ map: texture });
 
-  const painting = new THREE.Mesh(paintingGeometry, paintingMaterial);
+  const painting = new three.Mesh(paintingBufferGeometry, paintingMaterial);
   const paintingpos = scene.getObjectByName("art_1");
   // paintingpos.visible = false
-  const newtempWorldPosition = new THREE.Vector3();
+  const newtempWorldPosition = new three.Vector3();
   painting.position.copy(paintingpos.getWorldPosition(newtempWorldPosition));
   painting.position.z = painting.position.z + 0.01;
   painting.scale.set(0.35, 0.53, 1);
@@ -105289,71 +105320,63 @@ function addArt(scene) {
 }
 
 // EXTERNAL MODULE: ./vendor/moment.js
-var vendor_moment = __webpack_require__(585);
+var moment = __webpack_require__(585);
+var moment_default = /*#__PURE__*/__webpack_require__.n(moment);
 ;// CONCATENATED MODULE: ./src/addClock.js
 
 
 function addClock(scene) {
-  const loader2 = new THREE.FontLoader();
-  const geometry = new THREE.PlaneGeometry( 5, 20, 32 );
-    const material = new THREE.MeshBasicMaterial({ color: 0xb01717 });
-    const alarmClockText = new THREE.Mesh(geometry, material);
-    alarmClockText.name = 'alarmClockText'
-        scene.add(alarmClockText);
+  const loader2 = new three.FontLoader();
+  const geometry = new three.PlaneBufferGeometry(5, 20, 32);
+  const material = new three.MeshBasicMaterial({ color: 0xb01717 });
+  const alarmClockText = new three.Mesh(geometry, material);
+  alarmClockText.name = "alarmClockText";
+  scene.add(alarmClockText);
 
   function fn60sec() {
     // runs every 60 sec and runs on init.
 
-   
+    loader2.load("./assets/fonts/alarm clock_Regular.json", function (font) {
+      let alarmClockTexttemp = scene.getObjectByName("alarmClockText", true);
+      alarmClockTexttemp.geometry.dispose();
+      alarmClockTexttemp.material.dispose();
+      scene.remove(alarmClockTexttemp);
 
-    loader2.load(
-      "./assets/fonts/alarm clock_Regular.json",
-      function (font) {
+      var currentTime = moment_default()().format("HH:mm");
 
+      const geometry = new three.TextBufferGeometry(currentTime, {
+        font: font,
+        size: 0.24,
+        height: 0.01,
+        // curveSegments: 12,
+        // bevelEnabled: true,
+        // bevelThickness: 10,
+        // bevelSize: 8,
+        // bevelOffset: 0,
+        // bevelSegments: 5
+      });
 
-          let alarmClockTexttemp = scene.getObjectByName(
-            "alarmClockText",
-            true
-          );
-          alarmClockTexttemp.geometry.dispose();
-          alarmClockTexttemp.material.dispose();
-          scene.remove(alarmClockTexttemp);
-        
-        var currentTime = moment().format("HH:mm");
+      const material = new three.MeshBasicMaterial({ color: 0xb01717 });
+      const alarmClockText = new three.Mesh(geometry, material);
+      // alarmClockText.position.set(0.315, 0.51, -0.08);
+      let clockPlane = scene.getObjectByName("ClockPlane", true);
+      const newtempWorldPosition = new three.Vector3();
 
-        const geometry = new THREE.TextBufferGeometry(currentTime, {
-          font: font,
-          size: 0.24,
-          height: 0.01,
-          // curveSegments: 12,
-          // bevelEnabled: true,
-          // bevelThickness: 10,
-          // bevelSize: 8,
-          // bevelOffset: 0,
-          // bevelSegments: 5
-        });
+      alarmClockText.position.copy(
+        clockPlane.getWorldPosition(newtempWorldPosition)
+      );
+      // alarmClockText.position.z = alarmClockText.position.z + 0.01;
+      alarmClockText.position.y = alarmClockText.position.y + 0.01;
+      alarmClockText.position.x = alarmClockText.position.x - 0.045;
 
-        const material = new THREE.MeshBasicMaterial({ color: 0xb01717 });
-        const alarmClockText = new THREE.Mesh(geometry, material);
-        // alarmClockText.position.set(0.315, 0.51, -0.08);
-        let clockPlane = scene.getObjectByName("ClockPlane", true);
-        const newtempWorldPosition = new THREE.Vector3()
-
-        alarmClockText.position.copy(clockPlane.getWorldPosition(newtempWorldPosition));
-        // alarmClockText.position.z = alarmClockText.position.z + 0.01;
-        alarmClockText.position.y = alarmClockText.position.y + 0.01;
-        alarmClockText.position.x = alarmClockText.position.x - 0.045;
-
-        alarmClockText.scale.set(0.09, 0.09, 1);
-        alarmClockText.rotation.set(100, 100.25, 100.35);
-        alarmClockText.name = "alarmClockText";
-        scene.add(alarmClockText);
-      }
-    );
+      alarmClockText.scale.set(0.09, 0.09, 1);
+      alarmClockText.rotation.set(100, 100.25, 100.35);
+      alarmClockText.name = "alarmClockText";
+      scene.add(alarmClockText);
+    });
   }
   fn60sec();
   setInterval(fn60sec, 60 * 1000);
-
 }
 
 ;// CONCATENATED MODULE: ./node_modules/three/examples/jsm/loaders/GLTFLoader.js
@@ -109254,7 +109277,7 @@ function addModel() {
 
 
 function addIFrames(scene) {
-  const obj = new THREE.Object3D();
+  const obj = new three.Object3D();
 
   // //
   var div = document.createElement("div");
@@ -109278,24 +109301,24 @@ function addIFrames(scene) {
   var css3dObject = new CSS3DObject(div);
   // css3dObject.position.set(-70, 725, -90);
   css3dObject.rotation.copy(objectCopy.rotation);
-  css3dObject.rotateY(THREE.Math.degToRad(180));
+  css3dObject.rotateY(three.Math.degToRad(180));
   css3dObject.scale.set(0.265, 0.21, 0.1);
   //
-  const newtempWorldPosition = new THREE.Vector3();
+  const newtempWorldPosition = new three.Vector3();
 
   obj.css3dObject = css3dObject;
   obj.position.copy(objectCopy.getWorldPosition(newtempWorldPosition));
   obj.add(css3dObject);
 
   // css3dObject.scale.set(0.001,0.001,1);
-  var material = new THREE.MeshPhongMaterial({
+  var material = new three.MeshPhongMaterial({
     opacity: 1,
-    color: new THREE.Color(0x111111),
-    blending: THREE.NoBlending,
-    side: THREE.FrontSide,
+    color: new three.Color(0x111111),
+    blending: three.NoBlending,
+    side: three.FrontSide,
   });
-  var geometry = new THREE.BoxGeometry(1.9, 0.3, 0.1);
-  var mesh = new THREE.Mesh(geometry, material);
+  var geometry = new three.BoxBufferGeometry(1.9, 0.3, 0.1);
+  var mesh = new three.Mesh(geometry, material);
   mesh.castShadow = true;
   mesh.receiveShadow = true;
 
@@ -109309,23 +109332,25 @@ function addIFrames(scene) {
 ;// CONCATENATED MODULE: ./src/addKeywordText.js
 
 
-
-
 function addKeywordText(scene) {
   let artGroup = scene.getObjectByName("ArtCenter").getWorldPosition();
 
-
-
-  const artistTextLoader = new THREE.FontLoader();
+  const artistTextLoader = new three.FontLoader();
   artistTextLoader.load("./assets/fonts/Alata_Regular.json", function (font) {
-    const artistTextGeometry = new THREE.TextBufferGeometry("FINE ARTIST", {
-      font: font,
-      size: 0.5,
-      height: 0.001,
-    });
+    const artistTextBufferGeometry = new three.TextBufferGeometry(
+      "FINE ARTIST",
+      {
+        font: font,
+        size: 0.5,
+        height: 0.001,
+      }
+    );
 
-    const artistTextMaterial = new THREE.MeshBasicMaterial({ color: "white" });
-    let artistText = new THREE.Mesh(artistTextGeometry, artistTextMaterial);
+    const artistTextMaterial = new three.MeshBasicMaterial({ color: "white" });
+    let artistText = new three.Mesh(
+      artistTextBufferGeometry,
+      artistTextMaterial
+    );
 
     artistText.scale.set(0.1, 0.1, 1);
     // artistText.position.set(0.9, 1, -0.25);
@@ -109341,27 +109366,30 @@ function addKeywordText(scene) {
     scene.add(artistText);
   });
 
-  const creativeTextLoader = new THREE.FontLoader();
+  const creativeTextLoader = new three.FontLoader();
   creativeTextLoader.load("./assets/fonts/Alata_Regular.json", function (font) {
-    const creativeTextGeometry = new THREE.TextBufferGeometry("CREATIVE", {
-      font: font,
-      size: 0.4,
-      height: 0.001,
-    });
+    const creativeTextBufferGeometry = new three.TextBufferGeometry(
+      "CREATIVE",
+      {
+        font: font,
+        size: 0.4,
+        height: 0.001,
+      }
+    );
 
-    const creativeTextMaterial = new THREE.MeshBasicMaterial({
+    const creativeTextMaterial = new three.MeshBasicMaterial({
       color: "white",
     });
-    let creativeText = new THREE.Mesh(
-      creativeTextGeometry,
+    let creativeText = new three.Mesh(
+      creativeTextBufferGeometry,
       creativeTextMaterial
     );
 
     creativeText.scale.set(0.1, 0.1, 1);
     // creativeText.position.set(1.0, 0.9, -0.25);
     creativeText.position.copy(artGroup);
-        creativeText.translateX(-0.2);
-creativeText.translateY(0.2);
+    creativeText.translateX(-0.2);
+    creativeText.translateY(0.2);
     creativeText.translateZ(0.25);
 
     // creativeText.rotation.set(0, 0.45, 0);
@@ -109370,21 +109398,24 @@ creativeText.translateY(0.2);
     scene.add(creativeText);
   });
 
-  const inventiveTextLoader = new THREE.FontLoader();
+  const inventiveTextLoader = new three.FontLoader();
   inventiveTextLoader.load(
     "./assets/fonts/Alata_Regular.json",
     function (font) {
-      const inventiveTextGeometry = new THREE.TextBufferGeometry("INVENTIVE", {
-        font: font,
-        size: 0.3,
-        height: 0.001,
-      });
+      const inventiveTextBufferGeometry = new three.TextBufferGeometry(
+        "INVENTIVE",
+        {
+          font: font,
+          size: 0.3,
+          height: 0.001,
+        }
+      );
 
-      const inventiveTextMaterial = new THREE.MeshBasicMaterial({
+      const inventiveTextMaterial = new three.MeshBasicMaterial({
         color: "white",
       });
-      let inventiveText = new THREE.Mesh(
-        inventiveTextGeometry,
+      let inventiveText = new three.Mesh(
+        inventiveTextBufferGeometry,
         inventiveTextMaterial
       );
 
@@ -109402,19 +109433,22 @@ creativeText.translateY(0.2);
     }
   );
 
-  const adaptiveTextLoader = new THREE.FontLoader();
+  const adaptiveTextLoader = new three.FontLoader();
   adaptiveTextLoader.load("./assets/fonts/Alata_Regular.json", function (font) {
-    const adaptiveTextGeometry = new THREE.TextBufferGeometry("ADAPTIVE", {
-      font: font,
-      size: 0.2,
-      height: 0.001,
-    });
+    const adaptiveTextBufferGeometry = new three.TextBufferGeometry(
+      "ADAPTIVE",
+      {
+        font: font,
+        size: 0.2,
+        height: 0.001,
+      }
+    );
 
-    const adaptiveTextMaterial = new THREE.MeshBasicMaterial({
+    const adaptiveTextMaterial = new three.MeshBasicMaterial({
       color: "white",
     });
-    let adaptiveText = new THREE.Mesh(
-      adaptiveTextGeometry,
+    let adaptiveText = new three.Mesh(
+      adaptiveTextBufferGeometry,
       adaptiveTextMaterial
     );
 
@@ -109423,18 +109457,18 @@ creativeText.translateY(0.2);
     adaptiveText.position.copy(artGroup);
     adaptiveText.translateX(-0.15);
     adaptiveText.translateY(0.075);
-        adaptiveText.translateZ(0.25);
-// adaptiveText.rotation.set(0, 0.45, 0);
+    adaptiveText.translateZ(0.25);
+    // adaptiveText.rotation.set(0, 0.45, 0);
     adaptiveText.name = "adaptive";
     // adaptiveText.visible = false
     scene.add(adaptiveText);
   });
 
-  const weatherAppTextLoader = new THREE.FontLoader();
+  const weatherAppTextLoader = new three.FontLoader();
   weatherAppTextLoader.load(
     "./assets/fonts/Bebas Neue_Regular (1).json",
     function (font) {
-      const weatherAppTextGeometry = new THREE.TextBufferGeometry(
+      const weatherAppTextBufferGeometry = new three.TextBufferGeometry(
         "Weather App",
         {
           font: font,
@@ -109443,11 +109477,11 @@ creativeText.translateY(0.2);
         }
       );
 
-      const weatherAppTextMaterial = new THREE.MeshBasicMaterial({
+      const weatherAppTextMaterial = new three.MeshBasicMaterial({
         color: "white",
       });
-      const weatherAppText = new THREE.Mesh(
-        weatherAppTextGeometry,
+      const weatherAppText = new three.Mesh(
+        weatherAppTextBufferGeometry,
         weatherAppTextMaterial
       );
       weatherAppText.scale.set(0.1, 0.1, 1);
@@ -109568,30 +109602,29 @@ function addLights(scene) {
   // scene.add(light3);
   // scene.add(light4);
 
-  const amLight = new AmbientLight( 0x404040, 1 ); // soft white light#
+  const amLight = new AmbientLight(0x404040, 1); // soft white light#
 
+  const sun = new DirectionalLight(0xffffff, 1);
+  sun.position.set(5, 1, 1);
+  const helper = new DirectionalLightHelper(sun, 5);
 
-  const sun = new DirectionalLight( 0xffffff, 1 );
-  sun.position.set(5,1,1)
-  const helper = new DirectionalLightHelper( sun, 5 );
-
-const plane = scene.getObjectByName('wall')
+  const plane = scene.getObjectByName("wall");
   // plane.material.side = THREE.DoubleSide;
-
-
-
-
 
   var windowref = scene.getObjectByName("windowLight", true);
   var bbox = new Box3().setFromObject(windowref);
-  console.log(bbox)
-  const window = new RectAreaLight('#e47025', 5, bbox.max.y - bbox.min.y, bbox.max.z - bbox.min.z);
-  const whelper = new RectAreaLightHelper( window );
-
+  console.log(bbox);
+  const window = new RectAreaLight(
+    "#e47025",
+    5,
+    bbox.max.y - bbox.min.y,
+    bbox.max.z - bbox.min.z
+  );
+  const whelper = new RectAreaLightHelper(window);
 
   windowref.visible = false;
-  const newtempWorldPosition3 = new Vector3()
-  const newtempWorldQ3 = new Quaternion()
+  const newtempWorldPosition3 = new Vector3();
+  const newtempWorldQ3 = new Quaternion();
 
   window.position.copy(windowref.getWorldPosition(newtempWorldPosition3));
   whelper.position.copy(windowref.getWorldPosition(newtempWorldPosition3));
@@ -109599,18 +109632,7 @@ const plane = scene.getObjectByName('wall')
   whelper.quaternion.copy(windowref.getWorldQuaternion(newtempWorldQ3));
   window.rotateX(MathUtils.degToRad(90));
   whelper.rotateX(MathUtils.degToRad(90));
-  window.name = 'window'
-
-
-
-
-
-
-
-
-
-
-
+  window.name = "window";
 
   const light = new PointLight(0xff6ad5, 0.3, 100);
   light.position.set(-1.5, 1.5, 1.5);
@@ -109622,7 +109644,6 @@ const plane = scene.getObjectByName('wall')
   // light.add(
   //   new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: 0xff6ad5 }))
   // );
-
 
   const light2 = new PointLight(0x01cdfe, 0.3, 100);
   light2.position.set(1.5, 1.5, 1.5);
@@ -109637,37 +109658,33 @@ const plane = scene.getObjectByName('wall')
 
   const gradientArtSpotLight = new SpotLight(0xffffff, 1, 0, 0.2, 0.4);
 
-
-  const gradientArt = scene.getObjectByName('gradientGraphicArt')
+  const gradientArt = scene.getObjectByName("gradientGraphicArt");
   gradientArtSpotLight.castShadow = true;
   gradientArtSpotLight.position.set(
     gradientArt.position.x,
     gradientArt.position.y + 1,
     gradientArt.position.z + 0.7
   );
-  gradientArtSpotLight.target = gradientArt; 
-  
+  gradientArtSpotLight.target = gradientArt;
+
   const artGroupSpotLight = new SpotLight(0xffffff, 0.5, 0, 0.35, 0.4);
 
-
-const artGroup = scene.getObjectByName('ArtCenter')
-artGroup.visible = false
+  const artGroup = scene.getObjectByName("ArtCenter");
+  artGroup.visible = false;
 
   artGroupSpotLight.castShadow = true;
   artGroupSpotLight.position.set(
-    artGroup.position.x -0.1,
+    artGroup.position.x - 0.1,
     artGroup.position.y + 0.7,
     artGroup.position.z + 1
   );
-  artGroupSpotLight.target = artGroup
+  artGroupSpotLight.target = artGroup;
 
-  const spotLightHelper = new SpotLightHelper( artGroupSpotLight );
-
+  const spotLightHelper = new SpotLightHelper(artGroupSpotLight);
 
   const deskSpotLight = new SpotLight(0xffffff, 3, 0, 0.2, 0.4);
 
-
-  const desk = scene.getObjectByName('desk')
+  const desk = scene.getObjectByName("desk");
   deskSpotLight.castShadow = true;
   deskSpotLight.position.set(
     desk.position.x,
@@ -109675,12 +109692,10 @@ artGroup.visible = false
     desk.position.z + 0.7
   );
   deskSpotLight.target = desk;
-  
-  
+
   const whiteboardSpotLight = new SpotLight(0xffffff, 3, 0, 0.2, 0.4);
 
-
-  const whiteboard = scene.getObjectByName('whiteboard')
+  const whiteboard = scene.getObjectByName("whiteboard");
   whiteboardSpotLight.castShadow = true;
   whiteboardSpotLight.position.set(
     whiteboard.position.x,
@@ -109689,11 +109704,9 @@ artGroup.visible = false
   );
   whiteboardSpotLight.target = whiteboard;
 
-
   const paintingSpotLight = new SpotLight(0xffffff, 0.5, 0, 0.35, 0.4);
 
-
-  const painting = scene.getObjectByName('art_1')
+  const painting = scene.getObjectByName("art_1");
   paintingSpotLight.castShadow = true;
   paintingSpotLight.position.set(
     painting.position.x,
@@ -109719,31 +109732,36 @@ artGroup.visible = false
   );
   palantirSpotLight.target = palantirPlace;
 
-
-
   const monitorLight1 = new RectAreaLight(0xffffff, 5, 0.29, 0.19);
 
   var monitor_screen = scene.getObjectByName("monitor_screen1", true);
 
   monitor_screen.visible = false;
-  const newtempWorldPosition = new Vector3()
-  const newtempWorldQ = new Quaternion()
+  const newtempWorldPosition = new Vector3();
+  const newtempWorldQ = new Quaternion();
 
-  monitorLight1.position.copy(monitor_screen.getWorldPosition(newtempWorldPosition));
-  monitorLight1.quaternion.copy(monitor_screen.getWorldQuaternion(newtempWorldQ));
+  monitorLight1.position.copy(
+    monitor_screen.getWorldPosition(newtempWorldPosition)
+  );
+  monitorLight1.quaternion.copy(
+    monitor_screen.getWorldQuaternion(newtempWorldQ)
+  );
   monitorLight1.rotateX(MathUtils.degToRad(90));
-  monitorLight1.name = 'monitorLight1'
+  monitorLight1.name = "monitorLight1";
 
   const monitorLight2 = new RectAreaLight(0xffffff, 5, 0.29, 0.19);
   var monitor_screen2 = scene.getObjectByName("monitor_screen2", true);
   monitor_screen2.visible = false;
 
+  const newtempWorldPosition2 = new Vector3();
+  const newtempWorldQ2 = new Quaternion();
 
-  const newtempWorldPosition2 = new Vector3()
-  const newtempWorldQ2 = new Quaternion()
-
-  monitorLight2.position.copy(monitor_screen2.getWorldPosition(newtempWorldPosition2));
-  monitorLight2.quaternion.copy(monitor_screen2.getWorldQuaternion(newtempWorldQ2));
+  monitorLight2.position.copy(
+    monitor_screen2.getWorldPosition(newtempWorldPosition2)
+  );
+  monitorLight2.quaternion.copy(
+    monitor_screen2.getWorldQuaternion(newtempWorldQ2)
+  );
   monitorLight2.rotateX(MathUtils.degToRad(90));
 
   const monitorLightHelper1 = new RectAreaLightHelper(monitorLight1);
@@ -109801,32 +109819,31 @@ artGroup.visible = false
   //   return Math.floor(Math.random() * 30 + 1) + 70;
   // }
 
-  const cylinderGeometryShadowGeometry = new CylinderGeometry(
+  const cylinderBufferGeometryShadowBufferGeometry = new CylinderBufferGeometry(
     0.02,
     0.02,
     1,
     8
   );
-  const cylinderGeometryShadowMaterial = new MeshStandardMaterial({
+  const cylinderBufferGeometryShadowMaterial = new MeshStandardMaterial({
     color: "black",
   });
   const cylinderShadow = new Mesh(
-    cylinderGeometryShadowGeometry,
-    cylinderGeometryShadowMaterial
+    cylinderBufferGeometryShadowBufferGeometry,
+    cylinderBufferGeometryShadowMaterial
   );
   cylinderShadow.position.set(1.2, 0.5, 0.01);
   cylinderShadow.castShadow = true;
   cylinderShadow.receiveShadow = true;
 
-  scene.add( amLight );
+  scene.add(amLight);
 
   // scene.add(light);
   // scene.add(light2);
   // scene.add(sun)
-  scene.add(whelper)
-  scene.add(window)
+  scene.add(whelper);
+  scene.add(window);
 
-  
   // scene.add(monitorLight1);
   // scene.add(monitorLight2);
 
@@ -109838,19 +109855,19 @@ artGroup.visible = false
   // scene.add(paintingSpotLight);
   // scene.add( spotLightHelper );
 
-
   // scene.add(rectlight);
   // scene.add(cylinderShadow);
 }
 
 // EXTERNAL MODULE: ./node_modules/axios/index.js
 var axios = __webpack_require__(669);
+var axios_default = /*#__PURE__*/__webpack_require__.n(axios);
 ;// CONCATENATED MODULE: ./src/addWeather.js
 
 
 
 function addWeather(scene) {
-  Axios.get(
+  axios_default().get(
     "https://api.openweathermap.org/data/2.5/weather?q=Edinburgh&appid=ab57b33912fbd3d3015d3f296505d3a8"
   ).then((response) => {
     // // //
@@ -109861,21 +109878,21 @@ function addWeather(scene) {
 
     let icon = response.data.weather[0].icon;
     icon = "https://openweathermap.org/img/wn/" + icon + "@2x.png";
-    var weatherIcon = new THREE.TextureLoader().load(icon);
+    var weatherIcon = new three.TextureLoader().load(icon);
 
-    weatherIcon.minFilter = THREE.LinearFilter;
+    weatherIcon.minFilter = three.LinearFilter;
 
-    const weatherMaterial = new THREE.MeshLambertMaterial({
-      map: weatherIcon, 
+    const weatherMaterial = new three.MeshLambertMaterial({
+      map: weatherIcon, alphaTest: 0.8,
     });
-    weatherMaterial.transparent = true;
+    // weatherMaterial.transparent = true;
 
-    const weatherGeometry = new THREE.PlaneBufferGeometry(1, 1, 1);
+    const weatherBufferGeometry = new three.PlaneBufferGeometry(1, 1, 1);
 
-    const weather = new THREE.Mesh(weatherGeometry, weatherMaterial);
+    const weather = new three.Mesh(weatherBufferGeometry, weatherMaterial);
     console.log(weather);
     weather.scale.set(0.058, 0.058, 1);
-    const newtempWorldPosition = new THREE.Vector3();
+    const newtempWorldPosition = new three.Vector3();
 
     weather.position.copy(
       weatherIconPlane.getWorldPosition(newtempWorldPosition)
@@ -109887,7 +109904,7 @@ function addWeather(scene) {
     weather.name = "weather";
     scene.add(weather);
     ///////////////////////////////////////////////////////////
-    const loaderTemp = new THREE.FontLoader();
+    const loaderTemp = new three.FontLoader();
     let temp = response.data.main.temp;
     temp = temp - 273.15;
     console.log(temp);
@@ -109896,7 +109913,7 @@ function addWeather(scene) {
     loaderTemp.load(
       "./assets/fonts/Bebas Neue_Regular (1).json",
       function (font) {
-        const tempTextGeometry = new THREE.TextBufferGeometry(
+        const tempTextBufferGeometry = new three.TextBufferGeometry(
           temp.toString() + "°C",
           {
             font: font,
@@ -109905,10 +109922,10 @@ function addWeather(scene) {
           }
         );
 
-        const tempMaterial = new THREE.MeshBasicMaterial({ color: 0xb01717 });
-        const tempMesh = new THREE.Mesh(tempTextGeometry, tempMaterial);
+        const tempMaterial = new three.MeshBasicMaterial({ color: 0xb01717 });
+        const tempMesh = new three.Mesh(tempTextBufferGeometry, tempMaterial);
         // tempMesh.position.set(-0.27, 0.515, 0.088);
-        const newtempWorldPosition = new THREE.Vector3();
+        const newtempWorldPosition = new three.Vector3();
 
         tempMesh.position.copy(
           weatherPlane.getWorldPosition(newtempWorldPosition)
@@ -109929,6 +109946,18 @@ function addWeather(scene) {
   });
 }
 
+;// CONCATENATED MODULE: ./src/computerLightBlink.js
+function computerLightBlink(scene){
+  let pLightEmmissive = scene.getObjectByName("powerLight");
+
+    function computerBlink() {
+        pLightEmmissive.visible = !pLightEmmissive.visible;
+      }
+      computerBlink();
+      setInterval(computerBlink, 1 * 1000);
+  
+
+}
 ;// CONCATENATED MODULE: ./src/keyboardLightAnimate.js
 
 function keyboardLightAnimate(scene) {
@@ -109937,7 +109966,7 @@ function keyboardLightAnimate(scene) {
   keyboardLights.traverse(function (child) {
     if (child.isMesh) {
       child.material.dispose();
-      child.material = new THREE.MeshStandardMaterial({
+      child.material = new three.MeshStandardMaterial({
         emissive: Math.random() * 0xffffff,
       });
     }
@@ -109960,9 +109989,9 @@ function keyboardLightAnimate(scene) {
 
 
 function resetCameraToScene(scene, controls) {
-  const center = new THREE.Vector3();
+  const center = new Vector3();
 
-  var bbox = new THREE.Box3().setFromObject(scene);
+  var bbox = new Box3().setFromObject(scene);
   let targetReset = bbox.getCenter(center);
   controls.target.set(targetReset.x, targetReset.y, targetReset.z);
   controls.update;
@@ -110005,10 +110034,10 @@ function addAutomatedArt(scene) {
   function startLoop() {
     let textureImage =
       artworkLinks[Math.floor(Math.random() * Math.floor(listLength))];
-    let texture = new THREE.TextureLoader().load(textureImage);
-    let geometry = new THREE.PlaneBufferGeometry(1, 1, 1);
-    let material = new THREE.MeshBasicMaterial({ map: texture });
-    const mesh = new THREE.Mesh(geometry, material);
+    let texture = new three.TextureLoader().load(textureImage);
+    let geometry = new three.PlaneBufferGeometry(1, 1, 1);
+    let material = new three.MeshBasicMaterial({ map: texture });
+    const mesh = new three.Mesh(geometry, material);
     mesh.position.copy(scene.getObjectByName("whiteboard").getWorldPosition());
     //   mesh.translateX(0.1)
     mesh.translateY(1);
@@ -110026,7 +110055,7 @@ function addAutomatedArt(scene) {
 
       // mesh.material.dispose()
       textureImage = artworkLinks[randomnumber];
-      texture = new THREE.TextureLoader().load(textureImage);
+      texture = new three.TextureLoader().load(textureImage);
 
       // const texture = new THREE.TextureLoader().load(textureImage);
       // const material = new THREE.MeshBasicMaterial( { map: texture } );
@@ -110083,6 +110112,18 @@ function onClickMoveCamera(scene, camera,controls, object, x, y, z) {
   );
 }
 
+;// CONCATENATED MODULE: ./src/matrixAutoUpdate.js
+function matrixAutoUpdate(scene) {
+  scene.traverse(function (child) {
+    if (child.isMesh) {
+      child.matrixAutoUpdate = false
+      child.updateMatrix()
+    }
+  });
+  const theException = scene.getObjectByName('palantirPlace')
+  theException.matrixAutoUpdate = true
+}
+
 ;// CONCATENATED MODULE: ./src/main.js
 
 
@@ -110110,18 +110151,18 @@ let INTERSECTED;
 let animationToggle;
 var stats;
 
-
-const renderer = new three.WebGLRenderer({ alpha: true, antialias: true });
+const renderer = new three.WebGLRenderer({ alpha: true });
 
 renderer.domElement.style.position = "absolute";
 renderer.domElement.style.top = 0;
 renderer.setClearColor(0x000000, 0);
-renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 // renderer.gammaOutput = true;
 renderer.gammaFactor = 2.2;
 renderer.outputEncoding = three.sRGBEncoding;
 renderer.shadowMap.enabled = true;
 renderer.shadowMapType = three.PCFSoftShadowMap;
+renderer.shadowMap.autoUpdate = false;
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 var container = document.getElementById("container");
@@ -110137,15 +110178,15 @@ var container2 = document.getElementById("container2");
 container2.appendChild(renderer2.domElement);
 
 stats = createStats();
-document.body.appendChild( stats.domElement );
+document.body.appendChild(stats.domElement);
 
 function createStats() {
   var stats = new stats_module();
   stats.setMode(0);
 
-  stats.domElement.style.position = 'absolute';
-  stats.domElement.style.left = '0';
-  stats.domElement.style.top = '0';
+  stats.domElement.style.position = "absolute";
+  stats.domElement.style.left = "0";
+  stats.domElement.style.top = "0";
 
   return stats;
 }
@@ -110179,20 +110220,22 @@ async function main() {
   const gltfData = await addModel();
 
   scene.add(gltfData.scene);
-  // addWeather(scene);
+  addWeather(scene);
 
-  // resetCameraToScene(scene, controls);
-  // keyboardLightAnimate(scene);
-  // computerLightBlink(scene);
-  // addArt(scene);
-  // addClock(scene);
-  // addKeywordText(scene);
+  resetCameraToScene(scene, controls);
+  keyboardLightAnimate(scene);
+  computerLightBlink(scene);
+  addArt(scene);
+  addClock(scene);
+  addKeywordText(scene);
 
   addLights(scene);
   // addShadow(scene);
-  // addAutomatedArt(scene);
+  addAutomatedArt(scene);
 
-  // addIFrames(scene);
+  addIFrames(scene);
+  matrixAutoUpdate(scene);
+  // scene.overrideMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 }
 
 main().catch((error) => {
@@ -110217,7 +110260,6 @@ const animate = function () {
   renderer2.render(scene, camera);
   requestAnimationFrame(animate);
   stats.update();
-
 };
 
 animate();

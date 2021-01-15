@@ -18,13 +18,13 @@ export function addWeather(scene) {
     weatherIcon.minFilter = THREE.LinearFilter;
 
     const weatherMaterial = new THREE.MeshLambertMaterial({
-      map: weatherIcon, 
+      map: weatherIcon, alphaTest: 0.8,
     });
-    weatherMaterial.transparent = true;
+    // weatherMaterial.transparent = true;
 
-    const weatherGeometry = new THREE.PlaneBufferGeometry(1, 1, 1);
+    const weatherBufferGeometry = new THREE.PlaneBufferGeometry(1, 1, 1);
 
-    const weather = new THREE.Mesh(weatherGeometry, weatherMaterial);
+    const weather = new THREE.Mesh(weatherBufferGeometry, weatherMaterial);
     console.log(weather);
     weather.scale.set(0.058, 0.058, 1);
     const newtempWorldPosition = new THREE.Vector3();
@@ -48,7 +48,7 @@ export function addWeather(scene) {
     loaderTemp.load(
       "./assets/fonts/Bebas Neue_Regular (1).json",
       function (font) {
-        const tempTextGeometry = new THREE.TextBufferGeometry(
+        const tempTextBufferGeometry = new THREE.TextBufferGeometry(
           temp.toString() + "°C",
           {
             font: font,
@@ -58,7 +58,7 @@ export function addWeather(scene) {
         );
 
         const tempMaterial = new THREE.MeshBasicMaterial({ color: 0xb01717 });
-        const tempMesh = new THREE.Mesh(tempTextGeometry, tempMaterial);
+        const tempMesh = new THREE.Mesh(tempTextBufferGeometry, tempMaterial);
         // tempMesh.position.set(-0.27, 0.515, 0.088);
         const newtempWorldPosition = new THREE.Vector3();
 
