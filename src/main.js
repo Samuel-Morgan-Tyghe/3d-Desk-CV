@@ -72,7 +72,7 @@ const camera = new THREE.PerspectiveCamera(
   50,
   window.innerWidth / window.innerHeight,
   0.1,
-  1000
+  5
 );
 camera.position.set(1.5, 2, 2);
 
@@ -93,14 +93,14 @@ async function main() {
   const gltfData = await addModel();
 
   scene.add(gltfData.scene);
-  addWeather(scene);
+  // addWeather(scene);
 
-  resetCameraToScene(scene, controls);
-  keyboardLightAnimate(scene);
-  computerLightBlink(scene);
-  addArt(scene);
-  addClock(scene);
-  addKeywordText(scene);
+  // resetCameraToScene(scene, controls);
+  // keyboardLightAnimate(scene);
+  // computerLightBlink(scene);
+  // addArt(scene);
+  // addClock(scene);
+  // addKeywordText(scene);
 
   addLights(scene);
   // addShadow(scene);

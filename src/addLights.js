@@ -278,24 +278,24 @@ artGroup.visible = false
   cylinderShadow.castShadow = true;
   cylinderShadow.receiveShadow = true;
 
-  // scene.add( amLight );
+  scene.add( amLight );
 
-  scene.add(light);
-  scene.add(light2);
-  scene.add(sun)
+  // scene.add(light);
+  // scene.add(light2);
+  // scene.add(sun)
   scene.add(whelper)
   scene.add(window)
 
   
-  scene.add(monitorLight1);
-  scene.add(monitorLight2);
+  // scene.add(monitorLight1);
+  // scene.add(monitorLight2);
 
   // scene.add(palantirSpotLight);
   // scene.add(whiteboardSpotLight)
   // scene.add(deskSpotLight)
-  scene.add(artGroupSpotLight)
+  // scene.add(artGroupSpotLight)
   // scene.add(gradientArtSpotLight)
-  scene.add(paintingSpotLight);
+  // scene.add(paintingSpotLight);
   // scene.add( spotLightHelper );
 
 

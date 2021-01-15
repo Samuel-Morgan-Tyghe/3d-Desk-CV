@@ -4,7 +4,7 @@
 /***/ 669:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-module.exports = __webpack_require__(609);
+/* unused reexport */ __webpack_require__(609);
 
 /***/ }),
 
@@ -51942,35 +51942,6 @@ module.exports = {
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__webpack_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => module['default'] :
-/******/ 				() => module;
-/******/ 			__webpack_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__webpack_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__webpack_require__.o = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop)
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/node module decorator */
 /******/ 	(() => {
 /******/ 		__webpack_require__.nmd = (module) => {
@@ -105204,15 +105175,15 @@ var three = __webpack_require__(317);
 function addArt(scene) {
   var palantirPlace = scene.getObjectByName("palantirPlace", true);
 
-  var art = new three.TextureLoader().load("./assets/img/Palantiri.webp");
-  art.minFilter = three.LinearFilter;
-  const artMat = new three.MeshLambertMaterial({ map: art });
+  var art = new THREE.TextureLoader().load("./assets/img/Palantiri.webp");
+  art.minFilter = THREE.LinearFilter;
+  const artMat = new THREE.MeshLambertMaterial({ map: art });
   palantirPlace.material = artMat;
   palantirPlace.scale.set(0.2, 0.2, 0.2);
   palantirPlace.material.transparent = true;
   // palantirPlace.rotation.set(1.57, 2.11, -3.14);
 
-  scene.tl2 = new gsap_min.TimelineMax({ repeat: -1 }).delay(0.1);
+  scene.tl2 = new TimelineMax({ repeat: -1 }).delay(0.1);
   scene.tl2.to(palantirPlace.rotation, 0, {
     x: 1.57,
     y: 0,
@@ -105236,7 +105207,7 @@ function addArt(scene) {
 
   gradientGraphicArt.material.map.rotation = 0.45;
 
-  scene.tl3 = new gsap_min.TimelineMax({ repeat: -1 }).delay(3);
+  scene.tl3 = new TimelineMax({ repeat: -1 }).delay(3);
   scene.tl3.to(gradientGraphicArt.material.map.offset, 6, {
     x: 0,
     y: 0,
@@ -105250,16 +105221,16 @@ function addArt(scene) {
     ease: Power1.easeInOut,
   });
 
-  var blendTexture = new three.TextureLoader().load(
+  var blendTexture = new THREE.TextureLoader().load(
     "./assets/img/gradient repeat1Blend.webp"
   );
-  blendTexture.minFilter = three.LinearFilter;
+  blendTexture.minFilter = THREE.LinearFilter;
 
-  const blendGeometry = new three.PlaneBufferGeometry(1, 1, 1);
-  const blendMaterial = new three.MeshLambertMaterial({ map: blendTexture });
-  const blendLayer = new three.Mesh(blendGeometry, blendMaterial);
+  const blendGeometry = new THREE.PlaneBufferGeometry(1, 1, 1);
+  const blendMaterial = new THREE.MeshLambertMaterial({ map: blendTexture });
+  const blendLayer = new THREE.Mesh(blendGeometry, blendMaterial);
   blendLayer.material.transparent = true;
-  blendLayer.material.blending = three.MultiplyBlending;
+  blendLayer.material.blending = THREE.MultiplyBlending;
   // // //
   blendLayer.position.set(
     gradientGraphicArt.position.x,
@@ -105274,18 +105245,18 @@ function addArt(scene) {
   scene.add(blendLayer);
   blendLayer.material.blendEquation = 50;
   ///////////////////////////////////////////////////
-  var texture = new three.TextureLoader().load("./assets/img/open.webp");
-  var texture2 = new three.TextureLoader().load("./assets/img/blink.webp");
-  texture.minFilter = three.LinearFilter;
-  texture2.minFilter = three.LinearFilter;
+  var texture = new THREE.TextureLoader().load("./assets/img/open.webp");
+  var texture2 = new THREE.TextureLoader().load("./assets/img/blink.webp");
+  texture.minFilter = THREE.LinearFilter;
+  texture2.minFilter = THREE.LinearFilter;
 
-  const paintingGeometry = new three.PlaneBufferGeometry(1, 1, 1);
-  const paintingMaterial = new three.MeshLambertMaterial({ map: texture });
+  const paintingGeometry = new THREE.PlaneBufferGeometry(1, 1, 1);
+  const paintingMaterial = new THREE.MeshLambertMaterial({ map: texture });
 
-  const painting = new three.Mesh(paintingGeometry, paintingMaterial);
+  const painting = new THREE.Mesh(paintingGeometry, paintingMaterial);
   const paintingpos = scene.getObjectByName("art_1");
   // paintingpos.visible = false
-  const newtempWorldPosition = new three.Vector3();
+  const newtempWorldPosition = new THREE.Vector3();
   painting.position.copy(paintingpos.getWorldPosition(newtempWorldPosition));
   painting.position.z = painting.position.z + 0.01;
   painting.scale.set(0.35, 0.53, 1);
@@ -105318,16 +105289,15 @@ function addArt(scene) {
 }
 
 // EXTERNAL MODULE: ./vendor/moment.js
-var moment = __webpack_require__(585);
-var moment_default = /*#__PURE__*/__webpack_require__.n(moment);
+var vendor_moment = __webpack_require__(585);
 ;// CONCATENATED MODULE: ./src/addClock.js
 
 
 function addClock(scene) {
-  const loader2 = new three.FontLoader();
-  const geometry = new three.PlaneGeometry( 5, 20, 32 );
-    const material = new three.MeshBasicMaterial({ color: 0xb01717 });
-    const alarmClockText = new three.Mesh(geometry, material);
+  const loader2 = new THREE.FontLoader();
+  const geometry = new THREE.PlaneGeometry( 5, 20, 32 );
+    const material = new THREE.MeshBasicMaterial({ color: 0xb01717 });
+    const alarmClockText = new THREE.Mesh(geometry, material);
     alarmClockText.name = 'alarmClockText'
         scene.add(alarmClockText);
 
@@ -105349,9 +105319,9 @@ function addClock(scene) {
           alarmClockTexttemp.material.dispose();
           scene.remove(alarmClockTexttemp);
         
-        var currentTime = moment_default()().format("HH:mm");
+        var currentTime = moment().format("HH:mm");
 
-        const geometry = new three.TextBufferGeometry(currentTime, {
+        const geometry = new THREE.TextBufferGeometry(currentTime, {
           font: font,
           size: 0.24,
           height: 0.01,
@@ -105363,11 +105333,11 @@ function addClock(scene) {
           // bevelSegments: 5
         });
 
-        const material = new three.MeshBasicMaterial({ color: 0xb01717 });
-        const alarmClockText = new three.Mesh(geometry, material);
+        const material = new THREE.MeshBasicMaterial({ color: 0xb01717 });
+        const alarmClockText = new THREE.Mesh(geometry, material);
         // alarmClockText.position.set(0.315, 0.51, -0.08);
         let clockPlane = scene.getObjectByName("ClockPlane", true);
-        const newtempWorldPosition = new three.Vector3()
+        const newtempWorldPosition = new THREE.Vector3()
 
         alarmClockText.position.copy(clockPlane.getWorldPosition(newtempWorldPosition));
         // alarmClockText.position.z = alarmClockText.position.z + 0.01;
@@ -109346,16 +109316,16 @@ function addKeywordText(scene) {
 
 
 
-  const artistTextLoader = new three.FontLoader();
+  const artistTextLoader = new THREE.FontLoader();
   artistTextLoader.load("./assets/fonts/Alata_Regular.json", function (font) {
-    const artistTextGeometry = new three.TextBufferGeometry("FINE ARTIST", {
+    const artistTextGeometry = new THREE.TextBufferGeometry("FINE ARTIST", {
       font: font,
       size: 0.5,
       height: 0.001,
     });
 
-    const artistTextMaterial = new three.MeshBasicMaterial({ color: "white" });
-    let artistText = new three.Mesh(artistTextGeometry, artistTextMaterial);
+    const artistTextMaterial = new THREE.MeshBasicMaterial({ color: "white" });
+    let artistText = new THREE.Mesh(artistTextGeometry, artistTextMaterial);
 
     artistText.scale.set(0.1, 0.1, 1);
     // artistText.position.set(0.9, 1, -0.25);
@@ -109371,18 +109341,18 @@ function addKeywordText(scene) {
     scene.add(artistText);
   });
 
-  const creativeTextLoader = new three.FontLoader();
+  const creativeTextLoader = new THREE.FontLoader();
   creativeTextLoader.load("./assets/fonts/Alata_Regular.json", function (font) {
-    const creativeTextGeometry = new three.TextBufferGeometry("CREATIVE", {
+    const creativeTextGeometry = new THREE.TextBufferGeometry("CREATIVE", {
       font: font,
       size: 0.4,
       height: 0.001,
     });
 
-    const creativeTextMaterial = new three.MeshBasicMaterial({
+    const creativeTextMaterial = new THREE.MeshBasicMaterial({
       color: "white",
     });
-    let creativeText = new three.Mesh(
+    let creativeText = new THREE.Mesh(
       creativeTextGeometry,
       creativeTextMaterial
     );
@@ -109400,20 +109370,20 @@ creativeText.translateY(0.2);
     scene.add(creativeText);
   });
 
-  const inventiveTextLoader = new three.FontLoader();
+  const inventiveTextLoader = new THREE.FontLoader();
   inventiveTextLoader.load(
     "./assets/fonts/Alata_Regular.json",
     function (font) {
-      const inventiveTextGeometry = new three.TextBufferGeometry("INVENTIVE", {
+      const inventiveTextGeometry = new THREE.TextBufferGeometry("INVENTIVE", {
         font: font,
         size: 0.3,
         height: 0.001,
       });
 
-      const inventiveTextMaterial = new three.MeshBasicMaterial({
+      const inventiveTextMaterial = new THREE.MeshBasicMaterial({
         color: "white",
       });
-      let inventiveText = new three.Mesh(
+      let inventiveText = new THREE.Mesh(
         inventiveTextGeometry,
         inventiveTextMaterial
       );
@@ -109432,18 +109402,18 @@ creativeText.translateY(0.2);
     }
   );
 
-  const adaptiveTextLoader = new three.FontLoader();
+  const adaptiveTextLoader = new THREE.FontLoader();
   adaptiveTextLoader.load("./assets/fonts/Alata_Regular.json", function (font) {
-    const adaptiveTextGeometry = new three.TextBufferGeometry("ADAPTIVE", {
+    const adaptiveTextGeometry = new THREE.TextBufferGeometry("ADAPTIVE", {
       font: font,
       size: 0.2,
       height: 0.001,
     });
 
-    const adaptiveTextMaterial = new three.MeshBasicMaterial({
+    const adaptiveTextMaterial = new THREE.MeshBasicMaterial({
       color: "white",
     });
-    let adaptiveText = new three.Mesh(
+    let adaptiveText = new THREE.Mesh(
       adaptiveTextGeometry,
       adaptiveTextMaterial
     );
@@ -109460,11 +109430,11 @@ creativeText.translateY(0.2);
     scene.add(adaptiveText);
   });
 
-  const weatherAppTextLoader = new three.FontLoader();
+  const weatherAppTextLoader = new THREE.FontLoader();
   weatherAppTextLoader.load(
     "./assets/fonts/Bebas Neue_Regular (1).json",
     function (font) {
-      const weatherAppTextGeometry = new three.TextBufferGeometry(
+      const weatherAppTextGeometry = new THREE.TextBufferGeometry(
         "Weather App",
         {
           font: font,
@@ -109473,10 +109443,10 @@ creativeText.translateY(0.2);
         }
       );
 
-      const weatherAppTextMaterial = new three.MeshBasicMaterial({
+      const weatherAppTextMaterial = new THREE.MeshBasicMaterial({
         color: "white",
       });
-      const weatherAppText = new three.Mesh(
+      const weatherAppText = new THREE.Mesh(
         weatherAppTextGeometry,
         weatherAppTextMaterial
       );
@@ -109848,24 +109818,24 @@ artGroup.visible = false
   cylinderShadow.castShadow = true;
   cylinderShadow.receiveShadow = true;
 
-  // scene.add( amLight );
+  scene.add( amLight );
 
-  scene.add(light);
-  scene.add(light2);
-  scene.add(sun)
+  // scene.add(light);
+  // scene.add(light2);
+  // scene.add(sun)
   scene.add(whelper)
   scene.add(window)
 
   
-  scene.add(monitorLight1);
-  scene.add(monitorLight2);
+  // scene.add(monitorLight1);
+  // scene.add(monitorLight2);
 
   // scene.add(palantirSpotLight);
   // scene.add(whiteboardSpotLight)
   // scene.add(deskSpotLight)
-  scene.add(artGroupSpotLight)
+  // scene.add(artGroupSpotLight)
   // scene.add(gradientArtSpotLight)
-  scene.add(paintingSpotLight);
+  // scene.add(paintingSpotLight);
   // scene.add( spotLightHelper );
 
 
@@ -109875,13 +109845,12 @@ artGroup.visible = false
 
 // EXTERNAL MODULE: ./node_modules/axios/index.js
 var axios = __webpack_require__(669);
-var axios_default = /*#__PURE__*/__webpack_require__.n(axios);
 ;// CONCATENATED MODULE: ./src/addWeather.js
 
 
 
 function addWeather(scene) {
-  axios_default().get(
+  Axios.get(
     "https://api.openweathermap.org/data/2.5/weather?q=Edinburgh&appid=ab57b33912fbd3d3015d3f296505d3a8"
   ).then((response) => {
     // // //
@@ -109892,21 +109861,21 @@ function addWeather(scene) {
 
     let icon = response.data.weather[0].icon;
     icon = "https://openweathermap.org/img/wn/" + icon + "@2x.png";
-    var weatherIcon = new three.TextureLoader().load(icon);
+    var weatherIcon = new THREE.TextureLoader().load(icon);
 
-    weatherIcon.minFilter = three.LinearFilter;
+    weatherIcon.minFilter = THREE.LinearFilter;
 
-    const weatherMaterial = new three.MeshLambertMaterial({
+    const weatherMaterial = new THREE.MeshLambertMaterial({
       map: weatherIcon, 
     });
     weatherMaterial.transparent = true;
 
-    const weatherGeometry = new three.PlaneBufferGeometry(1, 1, 1);
+    const weatherGeometry = new THREE.PlaneBufferGeometry(1, 1, 1);
 
-    const weather = new three.Mesh(weatherGeometry, weatherMaterial);
+    const weather = new THREE.Mesh(weatherGeometry, weatherMaterial);
     console.log(weather);
     weather.scale.set(0.058, 0.058, 1);
-    const newtempWorldPosition = new three.Vector3();
+    const newtempWorldPosition = new THREE.Vector3();
 
     weather.position.copy(
       weatherIconPlane.getWorldPosition(newtempWorldPosition)
@@ -109918,7 +109887,7 @@ function addWeather(scene) {
     weather.name = "weather";
     scene.add(weather);
     ///////////////////////////////////////////////////////////
-    const loaderTemp = new three.FontLoader();
+    const loaderTemp = new THREE.FontLoader();
     let temp = response.data.main.temp;
     temp = temp - 273.15;
     console.log(temp);
@@ -109927,7 +109896,7 @@ function addWeather(scene) {
     loaderTemp.load(
       "./assets/fonts/Bebas Neue_Regular (1).json",
       function (font) {
-        const tempTextGeometry = new three.TextBufferGeometry(
+        const tempTextGeometry = new THREE.TextBufferGeometry(
           temp.toString() + "°C",
           {
             font: font,
@@ -109936,10 +109905,10 @@ function addWeather(scene) {
           }
         );
 
-        const tempMaterial = new three.MeshBasicMaterial({ color: 0xb01717 });
-        const tempMesh = new three.Mesh(tempTextGeometry, tempMaterial);
+        const tempMaterial = new THREE.MeshBasicMaterial({ color: 0xb01717 });
+        const tempMesh = new THREE.Mesh(tempTextGeometry, tempMaterial);
         // tempMesh.position.set(-0.27, 0.515, 0.088);
-        const newtempWorldPosition = new three.Vector3();
+        const newtempWorldPosition = new THREE.Vector3();
 
         tempMesh.position.copy(
           weatherPlane.getWorldPosition(newtempWorldPosition)
@@ -109960,19 +109929,6 @@ function addWeather(scene) {
   });
 }
 
-;// CONCATENATED MODULE: ./src/computerLightBlink.js
-function computerLightBlink(scene){
-  let pLightEmmissive = scene.getObjectByName("powerLight");
-
-
-    function computerBlink() {
-        pLightEmmissive.visible = !pLightEmmissive.visible;
-      }
-      computerBlink();
-      setInterval(computerBlink, 1 * 1000);
-  
-
-}
 ;// CONCATENATED MODULE: ./src/keyboardLightAnimate.js
 
 function keyboardLightAnimate(scene) {
@@ -109981,7 +109937,7 @@ function keyboardLightAnimate(scene) {
   keyboardLights.traverse(function (child) {
     if (child.isMesh) {
       child.material.dispose();
-      child.material = new three.MeshStandardMaterial({
+      child.material = new THREE.MeshStandardMaterial({
         emissive: Math.random() * 0xffffff,
       });
     }
@@ -110004,9 +109960,9 @@ function keyboardLightAnimate(scene) {
 
 
 function resetCameraToScene(scene, controls) {
-  const center = new Vector3();
+  const center = new THREE.Vector3();
 
-  var bbox = new Box3().setFromObject(scene);
+  var bbox = new THREE.Box3().setFromObject(scene);
   let targetReset = bbox.getCenter(center);
   controls.target.set(targetReset.x, targetReset.y, targetReset.z);
   controls.update;
@@ -110202,7 +110158,7 @@ const camera = new three.PerspectiveCamera(
   50,
   window.innerWidth / window.innerHeight,
   0.1,
-  1000
+  5
 );
 camera.position.set(1.5, 2, 2);
 
@@ -110223,14 +110179,14 @@ async function main() {
   const gltfData = await addModel();
 
   scene.add(gltfData.scene);
-  addWeather(scene);
+  // addWeather(scene);
 
-  resetCameraToScene(scene, controls);
-  keyboardLightAnimate(scene);
-  computerLightBlink(scene);
-  addArt(scene);
-  addClock(scene);
-  addKeywordText(scene);
+  // resetCameraToScene(scene, controls);
+  // keyboardLightAnimate(scene);
+  // computerLightBlink(scene);
+  // addArt(scene);
+  // addClock(scene);
+  // addKeywordText(scene);
 
   addLights(scene);
   // addShadow(scene);
