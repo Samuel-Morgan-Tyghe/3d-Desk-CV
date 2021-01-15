@@ -91,7 +91,7 @@ async function main() {
     addShadow(scene);
     addAutomatedArt(scene)
 
-  // addIFrames(scene);
+  addIFrames(scene);
 
 }
 
