@@ -14,7 +14,7 @@ export function keyboardLightAnimate(scene) {
   function lightChanging() {
     keyboardLights.traverse(function (child) {
       if (child.isMesh) {
-        child.material.emissive.setHex(Math.random() * 0xffffff);
+        child.material.color.setHex(Math.random() * 0xffffff);
       }
     });
   }

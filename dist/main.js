@@ -16,7 +16,7 @@ module.exports = __webpack_require__(609);
 
 var utils = __webpack_require__(867);
 var settle = __webpack_require__(26);
-var cookies = __webpack_require__(372);
+var cookies = __webpack_require__(691);
 var buildURL = __webpack_require__(327);
 var buildFullPath = __webpack_require__(97);
 var parseHeaders = __webpack_require__(109);
@@ -1099,7 +1099,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 /***/ }),
 
-/***/ 372:
+/***/ 691:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
@@ -105024,6 +105024,175 @@ var CSS3DRenderer = function () {
 
 
 
+;// CONCATENATED MODULE: ./node_modules/three/examples/jsm/libs/stats.module.js
+var Stats = function () {
+
+	var mode = 0;
+
+	var container = document.createElement( 'div' );
+	container.style.cssText = 'position:fixed;top:0;left:0;cursor:pointer;opacity:0.9;z-index:10000';
+	container.addEventListener( 'click', function ( event ) {
+
+		event.preventDefault();
+		showPanel( ++ mode % container.children.length );
+
+	}, false );
+
+	//
+
+	function addPanel( panel ) {
+
+		container.appendChild( panel.dom );
+		return panel;
+
+	}
+
+	function showPanel( id ) {
+
+		for ( var i = 0; i < container.children.length; i ++ ) {
+
+			container.children[ i ].style.display = i === id ? 'block' : 'none';
+
+		}
+
+		mode = id;
+
+	}
+
+	//
+
+	var beginTime = ( performance || Date ).now(), prevTime = beginTime, frames = 0;
+
+	var fpsPanel = addPanel( new Stats.Panel( 'FPS', '#0ff', '#002' ) );
+	var msPanel = addPanel( new Stats.Panel( 'MS', '#0f0', '#020' ) );
+
+	if ( self.performance && self.performance.memory ) {
+
+		var memPanel = addPanel( new Stats.Panel( 'MB', '#f08', '#201' ) );
+
+	}
+
+	showPanel( 0 );
+
+	return {
+
+		REVISION: 16,
+
+		dom: container,
+
+		addPanel: addPanel,
+		showPanel: showPanel,
+
+		begin: function () {
+
+			beginTime = ( performance || Date ).now();
+
+		},
+
+		end: function () {
+
+			frames ++;
+
+			var time = ( performance || Date ).now();
+
+			msPanel.update( time - beginTime, 200 );
+
+			if ( time >= prevTime + 1000 ) {
+
+				fpsPanel.update( ( frames * 1000 ) / ( time - prevTime ), 100 );
+
+				prevTime = time;
+				frames = 0;
+
+				if ( memPanel ) {
+
+					var memory = performance.memory;
+					memPanel.update( memory.usedJSHeapSize / 1048576, memory.jsHeapSizeLimit / 1048576 );
+
+				}
+
+			}
+
+			return time;
+
+		},
+
+		update: function () {
+
+			beginTime = this.end();
+
+		},
+
+		// Backwards Compatibility
+
+		domElement: container,
+		setMode: showPanel
+
+	};
+
+};
+
+Stats.Panel = function ( name, fg, bg ) {
+
+	var min = Infinity, max = 0, round = Math.round;
+	var PR = round( window.devicePixelRatio || 1 );
+
+	var WIDTH = 80 * PR, HEIGHT = 48 * PR,
+		TEXT_X = 3 * PR, TEXT_Y = 2 * PR,
+		GRAPH_X = 3 * PR, GRAPH_Y = 15 * PR,
+		GRAPH_WIDTH = 74 * PR, GRAPH_HEIGHT = 30 * PR;
+
+	var canvas = document.createElement( 'canvas' );
+	canvas.width = WIDTH;
+	canvas.height = HEIGHT;
+	canvas.style.cssText = 'width:80px;height:48px';
+
+	var context = canvas.getContext( '2d' );
+	context.font = 'bold ' + ( 9 * PR ) + 'px Helvetica,Arial,sans-serif';
+	context.textBaseline = 'top';
+
+	context.fillStyle = bg;
+	context.fillRect( 0, 0, WIDTH, HEIGHT );
+
+	context.fillStyle = fg;
+	context.fillText( name, TEXT_X, TEXT_Y );
+	context.fillRect( GRAPH_X, GRAPH_Y, GRAPH_WIDTH, GRAPH_HEIGHT );
+
+	context.fillStyle = bg;
+	context.globalAlpha = 0.9;
+	context.fillRect( GRAPH_X, GRAPH_Y, GRAPH_WIDTH, GRAPH_HEIGHT );
+
+	return {
+
+		dom: canvas,
+
+		update: function ( value, maxValue ) {
+
+			min = Math.min( min, value );
+			max = Math.max( max, value );
+
+			context.fillStyle = bg;
+			context.globalAlpha = 1;
+			context.fillRect( 0, 0, WIDTH, GRAPH_Y );
+			context.fillStyle = fg;
+			context.fillText( round( value ) + ' ' + name + ' (' + round( min ) + '-' + round( max ) + ')', TEXT_X, TEXT_Y );
+
+			context.drawImage( canvas, GRAPH_X + PR, GRAPH_Y, GRAPH_WIDTH - PR, GRAPH_HEIGHT, GRAPH_X, GRAPH_Y, GRAPH_WIDTH - PR, GRAPH_HEIGHT );
+
+			context.fillRect( GRAPH_X + GRAPH_WIDTH - PR, GRAPH_Y, PR, GRAPH_HEIGHT );
+
+			context.fillStyle = bg;
+			context.globalAlpha = 0.9;
+			context.fillRect( GRAPH_X + GRAPH_WIDTH - PR, GRAPH_Y, PR, round( ( 1 - ( value / maxValue ) ) * GRAPH_HEIGHT ) );
+
+		}
+
+	};
+
+};
+
+/* harmony default export */ const stats_module = (Stats);
+
 // EXTERNAL MODULE: ./vendor/gsap.min.js
 var gsap_min = __webpack_require__(310);
 // EXTERNAL MODULE: ./vendor/three.js
@@ -109704,23 +109873,6 @@ artGroup.visible = false
   // scene.add(cylinderShadow);
 }
 
-;// CONCATENATED MODULE: ./src/addShadow.js
-function addShadow(scene) {
-  scene.traverse(function (child) {
-    if (child.isMesh) {
-      child.castShadow = true;
-      child.receiveShadow = true;
-    }
-  });
-  const theException = scene.getObjectByName('blendLayer')
-  theException.castShadow = false;
-  theException.receiveShadow = false;
-
-  // let theException1 = scene.getObjectByName('weatherMaterial')
-  // theException1.castShadow = false;
-  // theException1.receiveShadow = false;
-}
-
 // EXTERNAL MODULE: ./node_modules/axios/index.js
 var axios = __webpack_require__(669);
 var axios_default = /*#__PURE__*/__webpack_require__.n(axios);
@@ -109838,7 +109990,7 @@ function keyboardLightAnimate(scene) {
   function lightChanging() {
     keyboardLights.traverse(function (child) {
       if (child.isMesh) {
-        child.material.emissive.setHex(Math.random() * 0xffffff);
+        child.material.color.setHex(Math.random() * 0xffffff);
       }
     });
   }
@@ -109897,10 +110049,10 @@ function addAutomatedArt(scene) {
   function startLoop() {
     let textureImage =
       artworkLinks[Math.floor(Math.random() * Math.floor(listLength))];
-    let texture = new three.TextureLoader().load(textureImage);
-    let geometry = new three.PlaneBufferGeometry(1, 1, 1);
-    let material = new three.MeshBasicMaterial({ map: texture });
-    const mesh = new three.Mesh(geometry, material);
+    let texture = new THREE.TextureLoader().load(textureImage);
+    let geometry = new THREE.PlaneBufferGeometry(1, 1, 1);
+    let material = new THREE.MeshBasicMaterial({ map: texture });
+    const mesh = new THREE.Mesh(geometry, material);
     mesh.position.copy(scene.getObjectByName("whiteboard").getWorldPosition());
     //   mesh.translateX(0.1)
     mesh.translateY(1);
@@ -109918,7 +110070,7 @@ function addAutomatedArt(scene) {
 
       // mesh.material.dispose()
       textureImage = artworkLinks[randomnumber];
-      texture = new three.TextureLoader().load(textureImage);
+      texture = new THREE.TextureLoader().load(textureImage);
 
       // const texture = new THREE.TextureLoader().load(textureImage);
       // const material = new THREE.MeshBasicMaterial( { map: texture } );
@@ -109930,7 +110082,54 @@ function addAutomatedArt(scene) {
   }
 }
 
+;// CONCATENATED MODULE: ./src/onClickMoveCamera.js
+
+
+
+
+function onClickMoveCamera(scene, camera,controls, object, x, y, z) {
+  const center = new three.Vector3();
+
+  var bbox = new three.Box3().setFromObject(
+    scene.getObjectByName(object, true)
+  );
+
+  let targetReset = bbox.getCenter(center);
+
+  scene.tl1 = new gsap_min.TimelineMax().delay(0.1);
+  scene.tl1.to(
+    camera.position,
+    1,
+    {
+      x: targetReset.x+x,
+      y: targetReset.y+y,
+      z: targetReset.z+z ,
+      ease: Expo.easeOut,
+      onUpdate: function () {
+        camera.updateProjectionMatrix();
+      },
+    },
+    0
+  );
+  scene.tl1.to(
+    controls.target,
+    1,
+    {
+      x: targetReset.x,
+      y: targetReset.y,
+      z: targetReset.z,
+      ease: Expo.easeOut,
+      onUpdate: function () {
+        controls.update();
+      },
+    },
+    0
+  );
+}
+
 ;// CONCATENATED MODULE: ./src/main.js
+
+
 
 
 
@@ -109950,10 +110149,11 @@ function addAutomatedArt(scene) {
 
 
 
-let INTERSECTED
-let animationToggle;
 
-const center = new three.Vector3();
+let INTERSECTED;
+let animationToggle;
+var stats;
+
 
 const renderer = new three.WebGLRenderer({ alpha: true, antialias: true });
 
@@ -109980,8 +110180,22 @@ renderer2.domElement.style.top = 0;
 var container2 = document.getElementById("container2");
 container2.appendChild(renderer2.domElement);
 
+stats = createStats();
+document.body.appendChild( stats.domElement );
+
+function createStats() {
+  var stats = new stats_module();
+  stats.setMode(0);
+
+  stats.domElement.style.position = 'absolute';
+  stats.domElement.style.left = '0';
+  stats.domElement.style.top = '0';
+
+  return stats;
+}
+
 const scene = new three.Scene();
-console.log(scene)
+console.log(scene);
 scene.background = new three.Color("#000");
 
 const camera = new three.PerspectiveCamera(
@@ -110009,7 +110223,7 @@ async function main() {
   const gltfData = await addModel();
 
   scene.add(gltfData.scene);
-  addWeather(scene)
+  addWeather(scene);
 
   resetCameraToScene(scene, controls);
   keyboardLightAnimate(scene);
@@ -110018,12 +110232,11 @@ async function main() {
   addClock(scene);
   addKeywordText(scene);
 
-    addLights(scene);
-    addShadow(scene);
-    addAutomatedArt(scene)
+  addLights(scene);
+  // addShadow(scene);
+  // addAutomatedArt(scene);
 
   // addIFrames(scene);
-
 }
 
 main().catch((error) => {
@@ -110032,7 +110245,6 @@ main().catch((error) => {
 
 let raycaster = new three.Raycaster();
 let mouse = new three.Vector2();
-
 
 window.addEventListener("click", onMouseClick);
 window.addEventListener("mousemove", onMouseMove);
@@ -110048,177 +110260,59 @@ const animate = function () {
   renderer.render(scene, camera);
   renderer2.render(scene, camera);
   requestAnimationFrame(animate);
+  stats.update();
+
 };
 
 animate();
 
 /////////////////////////////////////////////////////////////////////////
 
-
 function onMouseClick(event) {
   event.preventDefault();
-
+  let object, x, y, z;
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
   raycaster.setFromCamera(mouse, camera);
 
   var intersects = raycaster.intersectObjects(scene.children, true);
-console.log(window.innerWidth)
+  console.log(window.innerWidth);
   for (var i = 0; i < intersects.length; i++) {
     if (intersects[i].object.name == "painting") {
-
-      var bbox = new three.Box3().setFromObject(
-        scene.getObjectByName("painting", true)
-      );
-
-      let targetReset = bbox.getCenter(center);
-
-      scene.tl1 = new gsap_min.TimelineMax().delay(0.1);
-      scene.tl1.to(
-        camera.position,
-        1,
-        {
-          x: targetReset.x,
-          y: targetReset.y,
-          z: targetReset.z+(window.innerWidth/1980),
-          ease: Expo.easeOut,
-          onUpdate: function () {
-            camera.updateProjectionMatrix();
-          },
-        },
-        0
-      );
-      scene.tl1.to(
-        controls.target,
-        1,
-        {
-          x: targetReset.x,
-          y: targetReset.y,
-          z: targetReset.z,
-          ease: Expo.easeOut,
-          onUpdate: function () {
-            controls.update();
-          },
-        },
-        0
-      );
+      object = "painting";
+      x = 0;
+      y = 0;
+      z = window.innerWidth / 1980;
+      onClickMoveCamera(scene, camera, controls, object, x, y, z);
     }
-    // // //
     if (intersects[i].object.parent.name == "monitor") {
-      // // //
-      var bbox = new three.Box3().setFromObject(
-        scene.getObjectByName("monitor_screen1", true)
-      );
-      let targetReset = bbox.getCenter(center);
-      scene.tl1 = new gsap_min.TimelineMax().delay(0.1);
-      scene.tl1.to(
-        camera.position,
-        1,
-        {
-          x:targetReset.x+0.2,
-          y: targetReset.y,
-          z:  targetReset.z+0.3,
-          ease: Expo.easeOut,
-          onUpdate: function () {
-            camera.updateProjectionMatrix();
-          },
-        },
-        0
-      );
-      scene.tl1.to(
-        controls.target,
-        1,
-        {
-          x: targetReset.x,
-          y: targetReset.y,
-          z: targetReset.z,
-          ease: Expo.easeOut,
-          onUpdate: function () {
-            controls.update();
-          },
-        },
-        0
-      );
+      object = "monitor_screen1";
+      x = 0.2;
+      y = 0;
+      z = 0.3;
+      onClickMoveCamera(scene, camera, controls, object, x, y, z);
     }
     if (intersects[i].object.parent.name == "monitor_1") {
-      // // //
-      var bbox = new three.Box3().setFromObject(
-        scene.getObjectByName("monitor_screen2", true)
-      );
-      let targetReset = bbox.getCenter(center);
-      scene.tl1 = new gsap_min.TimelineMax().delay(0.1);
-      scene.tl1.to(
-        camera.position,
-        1,
-        {
-          x:targetReset.x-0.15,
-          y: targetReset.y,
-          z:  targetReset.z+0.3,
-          ease: Expo.easeOut,
-          onUpdate: function () {
-            camera.updateProjectionMatrix();
-          },
-        },
-        0
-      );
-      scene.tl1.to(
-        controls.target,
-        1,
-        {
-          x: targetReset.x,
-          y: targetReset.y,
-          z: targetReset.z,
-          ease: Expo.easeOut,
-          onUpdate: function () {
-            controls.update();
-          },
-        },
-        0
-      );
+      object = "monitor_screen2";
+      x = -0.15;
+      y = 0;
+      z = 0.3;
+      onClickMoveCamera(scene, camera, controls, object, x, y, z);
     }
     if (intersects[i].object.parent.name == "whiteboard") {
-      // // //
-      var bbox = new three.Box3().setFromObject(
-        scene.getObjectByName("whiteboard", true)
-      );
-      let targetReset = bbox.getCenter(center);
-      scene.tl1 = new gsap_min.TimelineMax().delay(0.1);
-      scene.tl1.to(
-        camera.position,
-        1,
-        {
-          x: targetReset.x,
-          y: targetReset.y,
-          z: targetReset.z+(window.innerWidth/1980),
-          ease: Expo.easeOut,
-          onUpdate: function () {
-            camera.updateProjectionMatrix();
-          },
-        },
-        0
-      );
-      scene.tl1.to(
-        controls.target,
-        1,
-        {
-          x: targetReset.x,
-          y: targetReset.y,
-          z: targetReset.z,
-          ease: Expo.easeOut,
-          onUpdate: function () {
-            controls.update();
-          },
-        },
-        0
-      );
+      object = "whiteboard";
+      x = 0;
+      y = 0;
+      z = window.innerWidth / 1980;
+      onClickMoveCamera(scene, camera, controls, object, x, y, z);
     }
   }
 }
 
 function onMouseMove(event) {
   event.preventDefault();
-  let weatherAppText = scene.getObjectByName('weatherAppText')
+  let weatherAppText = scene.getObjectByName("weatherAppText");
 
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
