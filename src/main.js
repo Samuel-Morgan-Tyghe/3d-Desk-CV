@@ -104,7 +104,7 @@ async function main() {
 
   addLights(scene);
   // addShadow(scene);
-  addAutomatedArt(scene);
+  // addAutomatedArt(scene);
 
   addIFrames(scene);
   matrixAutoUpdate(scene);
