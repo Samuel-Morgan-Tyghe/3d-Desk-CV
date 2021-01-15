@@ -110038,10 +110038,10 @@ function addAutomatedArt(scene) {
   function startLoop() {
     let textureImage =
       artworkLinks[Math.floor(Math.random() * Math.floor(listLength))];
-    let texture = new THREE.TextureLoader().load(textureImage);
-    let geometry = new THREE.PlaneBufferGeometry(1, 1, 1);
-    let material = new THREE.MeshBasicMaterial({ map: texture });
-    const mesh = new THREE.Mesh(geometry, material);
+    let texture = new three.TextureLoader().load(textureImage);
+    let geometry = new three.PlaneBufferGeometry(1, 1, 1);
+    let material = new three.MeshBasicMaterial({ map: texture });
+    const mesh = new three.Mesh(geometry, material);
     mesh.position.copy(scene.getObjectByName("whiteboard").getWorldPosition());
     //   mesh.translateX(0.1)
     mesh.translateY(1);
@@ -110059,7 +110059,7 @@ function addAutomatedArt(scene) {
 
       // mesh.material.dispose()
       textureImage = artworkLinks[randomnumber];
-      texture = new THREE.TextureLoader().load(textureImage);
+      texture = new three.TextureLoader().load(textureImage);
 
       // const texture = new THREE.TextureLoader().load(textureImage);
       // const material = new THREE.MeshBasicMaterial( { map: texture } );
@@ -110235,12 +110235,16 @@ async function main() {
 
   addLights(scene);
   // addShadow(scene);
-  // addAutomatedArt(scene);
-
-  addIFrames(scene);
+// detect mobile
+  if (( window.innerWidth >= 800 ) && ( window.innerHeight >= 600 )) {
+    addAutomatedArt(scene);
+    addIFrames(scene);
+  }
   matrixAutoUpdate(scene);
   // scene.overrideMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 }
+
+
 
 main().catch((error) => {
   console.error(error);

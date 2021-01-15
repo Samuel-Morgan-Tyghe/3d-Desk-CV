@@ -104,12 +104,16 @@ async function main() {
 
   addLights(scene);
   // addShadow(scene);
-  // addAutomatedArt(scene);
-
-  addIFrames(scene);
+// detect mobile
+  if (( window.innerWidth >= 800 ) && ( window.innerHeight >= 600 )) {
+    addAutomatedArt(scene);
+    addIFrames(scene);
+  }
   matrixAutoUpdate(scene);
   // scene.overrideMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 }
+
+
 
 main().catch((error) => {
   console.error(error);
