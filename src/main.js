@@ -124,7 +124,9 @@ async function main() {
   addShadow(scene, renderer);
   // removeShadow(scene)
   // detect mobile
-  if (window.innerWidth >= 800 && window.innerHeight >= 600) {
+  if (!((typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1))) {
+    console.log(window.innerWidth)
+    console.log(window.innerHeight)
     addAutomatedArt(scene);
     addIFrames(scene);
   }
