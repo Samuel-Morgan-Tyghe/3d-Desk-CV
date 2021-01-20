@@ -218,8 +218,8 @@ const directionalLight = new THREE.DirectionalLight("#e47025", 2);
   scene.add(whelper);
   scene.add(window);
 
-  scene.add(monitorLight1);
-  scene.add(monitorLight2);
+  // scene.add(monitorLight1);
+  // scene.add(monitorLight2);
 
   // scene.add(palantirSpotLight);
   // scene.add(whiteboardSpotLight)
