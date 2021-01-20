@@ -5,9 +5,7 @@ export function addShadow(scene, renderer) {
       child.receiveShadow = true;
     }
   });
-  const theException = scene.getObjectByName('blendLayer')
-  theException.castShadow = false;
-  theException.receiveShadow = false;
+  
 
   // const theException = scene.getObjectByName('windowhelper')
   // theException.castShadow = false;
