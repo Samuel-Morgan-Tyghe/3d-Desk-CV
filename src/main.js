@@ -11,6 +11,7 @@ import { addIFrames } from "./addIFrames";
 import { addKeywordText } from "./addKeywordText";
 import { addLights } from "./addLights";
 import { addShadow } from "./addShadow";
+import { removeShadow } from "./removeShadow";
 import { addWeather } from "./addWeather";
 import { computerLightBlink } from "./computerLightBlink";
 import { keyboardLightAnimate } from "./keyboardLightAnimate";
@@ -24,7 +25,7 @@ let INTERSECTED;
 let animationToggle;
 var stats;
 
-const renderer = new THREE.WebGLRenderer({ alpha: true });
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true});
 
 renderer.domElement.style.position = "absolute";
 renderer.domElement.style.top = 0;
@@ -34,7 +35,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.gammaFactor = 2.2;
 renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.shadowMap.enabled = true;
-renderer.shadowMapType = THREE.PCFSoftShadowMap;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.shadowMap.autoUpdate = false;
 renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -66,7 +67,8 @@ function createStats() {
 
 const scene = new THREE.Scene();
 console.log(scene);
-scene.background = new THREE.Color("#000");
+// scene.background = new THREE.Color("#FFBA70");
+scene.background = new THREE.Color('black');
 
 const camera = new THREE.PerspectiveCamera(
   50,
@@ -90,30 +92,45 @@ controls.update();
 //  addModel();
 
 async function main() {
-  const gltfData = await addModel();
+  const gltfData = await addModel(renderer);
 
   scene.add(gltfData.scene);
-  addWeather(scene);
 
+  const wall = scene.getObjectByName('ceiling')
+  const wall2 = scene.getObjectByName('wall_1')
+  console.log(wall)
+  wall.material = new THREE.MeshBasicMaterial({transparent: true,opacity: 0.001})
+  wall.rotateX(THREE.Math.degToRad(180));
+
+  wall2.material = new THREE.MeshBasicMaterial({transparent: true,opacity: 0.001})
+  wall2.rotateX(THREE.Math.degToRad(180));
+
+  //   wall2.material = new  new THREE.MeshBasicMaterial({
+  //     color: 0x000000,
+  //     transparent: true,
+  //     blending: THREE.AdditiveBlending
+  // });
+  // wall2.material.side = THREE.DoubleSide;
+  
+  addWeather(scene);
   resetCameraToScene(scene, controls);
   keyboardLightAnimate(scene);
   computerLightBlink(scene);
-  addArt(scene);
+  addArt(scene,renderer);
   addClock(scene);
   addKeywordText(scene);
 
   addLights(scene);
-  // addShadow(scene);
-// detect mobile
-  if (( window.innerWidth >= 800 ) && ( window.innerHeight >= 600 )) {
+  addShadow(scene, renderer);
+  // removeShadow(scene)
+  // detect mobile
+  if (window.innerWidth >= 800 && window.innerHeight >= 600) {
     addAutomatedArt(scene);
     addIFrames(scene);
   }
   matrixAutoUpdate(scene);
   // scene.overrideMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 }
-
-
 
 main().catch((error) => {
   console.error(error);
@@ -152,7 +169,6 @@ function onMouseClick(event) {
   raycaster.setFromCamera(mouse, camera);
 
   var intersects = raycaster.intersectObjects(scene.children, true);
-  console.log(window.innerWidth);
   for (var i = 0; i < intersects.length; i++) {
     if (intersects[i].object.name == "painting") {
       object = "painting";
@@ -203,42 +219,15 @@ function onMouseMove(event) {
       }
       if (INTERSECTED != intersects[i].object) {
         if (intersects[i].object.name == "painting") {
-          // // //
-          if (animationToggle) animationToggle = false;
-          scene.tlH = new TimelineMax();
 
-          scene.tlH.to(
-            intersects[i].object.material,
-            5,
-            {
-              emissiveIntensity: 0,
-              ease: Expo.easeOut,
-            },
-            0
-          );
-          scene.tlH.to(
-            intersects[i].object.material,
-            5,
-            {
-              emissiveIntensity: 0.3,
-              ease: Expo.easeOut,
-            },
-            0
-          );
-          scene.tlH.to(
-            intersects[i].object.material,
-            5,
-            {
-              emissiveIntensity: 0,
-              ease: Expo.easeOut,
-              animationToggle() {
-                animationToggle = true;
-              },
-            },
-            0
-          );
+// scene.getObjectByName('Wall_Art_Classical_Plane').material.wireframe = true
         }
       }
     }
+
+
+
+
+    
   }
 }

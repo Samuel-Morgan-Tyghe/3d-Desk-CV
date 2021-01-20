@@ -18,14 +18,14 @@ export function addWeather(scene) {
     weatherIcon.minFilter = THREE.LinearFilter;
 
     const weatherMaterial = new THREE.MeshLambertMaterial({
-      map: weatherIcon, alphaTest: 0.8,
+      map: weatherIcon,
+      alphaTest: 0.8,
     });
     // weatherMaterial.transparent = true;
 
     const weatherBufferGeometry = new THREE.PlaneBufferGeometry(1, 1, 1);
 
     const weather = new THREE.Mesh(weatherBufferGeometry, weatherMaterial);
-    console.log(weather);
     weather.scale.set(0.058, 0.058, 1);
     const newtempWorldPosition = new THREE.Vector3();
 
@@ -42,7 +42,6 @@ export function addWeather(scene) {
     const loaderTemp = new THREE.FontLoader();
     let temp = response.data.main.temp;
     temp = temp - 273.15;
-    console.log(temp);
     temp = Math.floor(temp);
 
     loaderTemp.load(

@@ -30,29 +30,21 @@ export function addIFrames(scene) {
   css3dObject.scale.set(0.265, 0.21, 0.1);
   //
   const newtempWorldPosition = new THREE.Vector3();
+  const newtempWorldQ3 = new THREE.Quaternion();
 
   obj.css3dObject = css3dObject;
-  obj.quaternion.copy(objectCopy.getWorldQuaternion());
+  obj.quaternion.copy(objectCopy.getWorldQuaternion(newtempWorldQ3));
   obj.rotateX(THREE.Math.degToRad(90));
   obj.rotateY(THREE.Math.degToRad(180));
   obj.position.copy(objectCopy.getWorldPosition(newtempWorldPosition));
+  // obj.translateZ(0.1)
   obj.add(css3dObject);
 
   // css3dObject.scale.set(0.001,0.001,1);
-  var material = new THREE.MeshPhongMaterial({
-    opacity: 1,
-    color: new THREE.Color(0x111111),
-    blending: THREE.NoBlending,
-    side: THREE.FrontSide,
-  });
-  var geometry = new THREE.BoxBufferGeometry(1.9, 0.3, 0.1);
-  var mesh = new THREE.Mesh(geometry, material);
-  mesh.castShadow = true;
-  mesh.receiveShadow = true;
-
-  obj.lightShadowMesh = mesh;
-  obj.add(mesh);
-  obj.scale.set(0.001, 0.001, 0.001);
+ obj.scale.set(0.001, 0.001, 0.001);
+ 
 
   scene.add(obj);
+
+
 }

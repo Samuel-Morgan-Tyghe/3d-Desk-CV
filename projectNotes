@@ -84,5 +84,7 @@ webp images and upload post model
 
 automated art corner, ( text saying automated generative art)
 
+For post loading , compress images using basis/basis loader, use 
+gltf-transform etc1s input/file/gltf.gltf /output/gt.gltf
 
-compress model at end with this https://discourse.threejs.org/t/how-to-compress-glb-files/15150
+

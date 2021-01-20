@@ -7,4 +7,6 @@ export function matrixAutoUpdate(scene) {
   });
   const theException = scene.getObjectByName('palantirPlace')
   theException.matrixAutoUpdate = true
+
+
 }

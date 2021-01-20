@@ -10,7 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@gltf-transform/core": "^0.8.4",
+    "@gltf-transform/extensions": "^0.8.4",
+    "@gltf-transform/lib": "^0.8.4",
     "axios": "^0.21.1",
+    "basisu": "^1.2.1",
     "gsap": "^3.6.0",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",

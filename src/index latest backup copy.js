@@ -435,7 +435,7 @@ loader.load(
     palantirSpotLight.target = palantirPlace;
 
     var art = new THREE.TextureLoader().load("./assets/img/Palantiri.webp");
-    art.minFilter = THREE.LinearFilter;
+    // art.minFilter = THREE.LinearFilter;
 
     const artMat = new THREE.MeshLambertMaterial({ map: art });
     // // //
@@ -473,7 +473,7 @@ loader.load(
     var blendTexture = new THREE.TextureLoader().load(
       "./assets/img/gradient repeat1Blend.webp"
     );
-    blendTexture.minFilter = THREE.LinearFilter;
+    //blendTexture.minFilter = THREE.LinearFilter;
 
     const blendGeometry = new THREE.PlaneBufferGeometry(1, 1, 1);
     const blendMaterial = new THREE.MeshLambertMaterial({ map: blendTexture });

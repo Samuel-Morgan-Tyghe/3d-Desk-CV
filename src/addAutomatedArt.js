@@ -1,5 +1,8 @@
 import * as THREE from "../vendor/three";
 
+
+const newtempWorldPosition = new THREE.Vector3();
+
 export function addAutomatedArt(scene) {
   let artworkLinks = [];
 
@@ -27,7 +30,6 @@ export function addAutomatedArt(scene) {
     for (i = 0; i < x.length; i++) {
       artworkLinks.push(x[i].childNodes[0].nodeValue);
     }
-    //   console.log(artworkLinks)
     startLoop();
   }
 
@@ -35,15 +37,20 @@ export function addAutomatedArt(scene) {
     let textureImage =
       artworkLinks[Math.floor(Math.random() * Math.floor(listLength))];
     let texture = new THREE.TextureLoader().load(textureImage);
+    texture.minFilter = THREE.LinearFilter;
+
     let geometry = new THREE.PlaneBufferGeometry(1, 1, 1);
     let material = new THREE.MeshBasicMaterial({ map: texture });
     const mesh = new THREE.Mesh(geometry, material);
-    mesh.position.copy(scene.getObjectByName("whiteboard").getWorldPosition());
+    const posRef =       scene.getObjectByName("whiteboard")
+    var bbox = new THREE.Box3().setFromObject(posRef);
+    mesh.position.copy(
+      posRef.getWorldPosition(newtempWorldPosition)
+    );
     //   mesh.translateX(0.1)
     mesh.translateY(1);
-    mesh.translateZ(0.1);
+    mesh.translateZ(0.05);
     mesh.scale.set(0.3, 0.3, 0.3);
-    console.log(mesh);
     scene.add(mesh);
 
     function fn60sec() {
@@ -51,7 +58,6 @@ export function addAutomatedArt(scene) {
 
       mesh.material.needsUpdate = true;
       let randomnumber = Math.floor(Math.random() * Math.floor(listLength));
-      // console.log(randomnumber)
 
       // mesh.material.dispose()
       textureImage = artworkLinks[randomnumber];
