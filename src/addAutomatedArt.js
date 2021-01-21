@@ -1,6 +1,5 @@
 import * as THREE from "../vendor/three";
 
-
 const newtempWorldPosition = new THREE.Vector3();
 
 export function addAutomatedArt(scene) {
@@ -36,17 +35,22 @@ export function addAutomatedArt(scene) {
   function startLoop() {
     let textureImage =
       artworkLinks[Math.floor(Math.random() * Math.floor(listLength))];
+    let randomnumber = Math.floor(Math.random() * Math.floor(listLength));
+    //compress images using images.weserv ( i know very cool)
+    textureImage =
+      "https://images.weserv.nl/?url=" +
+      artworkLinks[randomnumber] +
+      "&w=512&h=512&q=80";
+
     let texture = new THREE.TextureLoader().load(textureImage);
-    texture.minFilter = THREE.LinearFilter;
+    // texture.minFilter = THREE.LinearFilter;
 
     let geometry = new THREE.PlaneBufferGeometry(1, 1, 1);
     let material = new THREE.MeshBasicMaterial({ map: texture });
     const mesh = new THREE.Mesh(geometry, material);
-    const posRef =       scene.getObjectByName("whiteboard")
+    const posRef = scene.getObjectByName("whiteboard");
     var bbox = new THREE.Box3().setFromObject(posRef);
-    mesh.position.copy(
-      posRef.getWorldPosition(newtempWorldPosition)
-    );
+    mesh.position.copy(posRef.getWorldPosition(newtempWorldPosition));
     //   mesh.translateX(0.1)
     mesh.translateY(1);
     mesh.translateZ(0.05);
@@ -57,10 +61,14 @@ export function addAutomatedArt(scene) {
       mesh.material.map = texture;
 
       mesh.material.needsUpdate = true;
-      let randomnumber = Math.floor(Math.random() * Math.floor(listLength));
+      randomnumber = Math.floor(Math.random() * Math.floor(listLength));
 
       // mesh.material.dispose()
-      textureImage = artworkLinks[randomnumber];
+      textureImage =
+        "https://images.weserv.nl/?url=" +
+        artworkLinks[randomnumber] +
+        "&w=512&h=512&q=80";
+
       texture = new THREE.TextureLoader().load(textureImage);
 
       // const texture = new THREE.TextureLoader().load(textureImage);

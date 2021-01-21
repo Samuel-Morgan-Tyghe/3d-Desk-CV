@@ -184,8 +184,10 @@ export function addLights(scene) {
     windowSpotlight.castShadow = true;
     windowSpotlight.shadow.mapSize.width = 250;
     windowSpotlight.shadow.mapSize.height = 250;
-    windowSpotlight.shadow.camera.near = 0.5;
-    windowSpotlight.shadow.camera.far = 50
+    windowSpotlight.shadow.camera.near = 5.9;
+    windowSpotlight.shadow.camera.far = 10
+    
+    windowSpotlight.shadow.camera.fov = 0
     // windowSpotlight.shadow.camera.position=windowSpotlight.position
   windowSpotlight.target = windowref
 

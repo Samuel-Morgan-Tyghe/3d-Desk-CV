@@ -1,7 +1,6 @@
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer.js";
 import Stats from "three/examples/jsm/libs/stats.module.js";
-import {RendererStats} from "../vendor/threex.rendererstats";
 import { TimelineMax } from "../vendor/gsap.min.js";
 import * as THREE from "../vendor/three";
 import { addArt } from "./addArt";
@@ -151,7 +150,7 @@ async function main() {
   ) {
     console.log(window.innerWidth);
     console.log(window.innerHeight);
-    // addAutomatedArt(scene);
+    addAutomatedArt(scene);
     addIFrames(scene);
   }
   matrixAutoUpdate(scene);

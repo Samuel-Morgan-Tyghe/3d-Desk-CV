@@ -51911,78 +51911,6 @@ module.exports = {
 });
 
 
-/***/ }),
-
-/***/ 725:
-/***/ (() => {
-
-/**
- * @author mrdoob / http://mrdoob.com/
- * @author jetienne / http://jetienne.com/
- */
-/** @namespace */
-var THREEx	= THREEx || {}
-
-/**
- * provide info on THREE.WebGLRenderer
- * 
- * @param {Object} renderer the renderer to update
- * @param {Object} Camera the camera to update
-*/
-const RendererStats	= function (){
-
-	var msMin	= 100;
-	var msMax	= 0;
-
-	var container	= document.createElement( 'div' );
-	container.style.cssText = 'width:80px;opacity:0.9;cursor:pointer';
-
-	var msDiv	= document.createElement( 'div' );
-	msDiv.style.cssText = 'padding:0 0 3px 3px;text-align:left;background-color:#200;';
-	container.appendChild( msDiv );
-
-	var msText	= document.createElement( 'div' );
-	msText.style.cssText = 'color:#f00;font-family:Helvetica,Arial,sans-serif;font-size:9px;font-weight:bold;line-height:15px';
-	msText.innerHTML= 'WebGLRenderer';
-	msDiv.appendChild( msText );
-	
-	var msTexts	= [];
-	var nLines	= 9;
-	for(var i = 0; i < nLines; i++){
-		msTexts[i]	= document.createElement( 'div' );
-		msTexts[i].style.cssText = 'color:#f00;background-color:#311;font-family:Helvetica,Arial,sans-serif;font-size:9px;font-weight:bold;line-height:15px';
-		msDiv.appendChild( msTexts[i] );		
-		msTexts[i].innerHTML= '-';
-	}
-
-
-	var lastTime	= Date.now();
-	return {
-		domElement: container,
-
-		update: function(webGLRenderer){
-			// sanity check
-			console.assert(webGLRenderer instanceof THREE.WebGLRenderer)
-
-			// refresh only 30time per second
-			if( Date.now() - lastTime < 1000/30 )	return;
-			lastTime	= Date.now()
-
-			var i	= 0;
-			msTexts[i++].textContent = "== Memory =====";
-			msTexts[i++].textContent = "Programs: "	+ webGLRenderer.info.memory.programs;
-			msTexts[i++].textContent = "Geometries: "+webGLRenderer.info.memory.geometries;
-			msTexts[i++].textContent = "Textures: "	+ webGLRenderer.info.memory.textures;
-
-			msTexts[i++].textContent = "== Render =====";
-			msTexts[i++].textContent = "Calls: "	+ webGLRenderer.info.render.calls;
-			msTexts[i++].textContent = "Vertices: "	+ webGLRenderer.info.render.vertices;
-			msTexts[i++].textContent = "Faces: "	+ webGLRenderer.info.render.faces;
-			msTexts[i++].textContent = "Points: "	+ webGLRenderer.info.render.points;
-		}
-	}	
-};
-
 /***/ })
 
 /******/ 	});
@@ -105265,8 +105193,6 @@ Stats.Panel = function ( name, fg, bg ) {
 
 /* harmony default export */ const stats_module = (Stats);
 
-// EXTERNAL MODULE: ./vendor/threex.rendererstats.js
-var threex_rendererstats = __webpack_require__(725);
 // EXTERNAL MODULE: ./vendor/gsap.min.js
 var gsap_min = __webpack_require__(310);
 // EXTERNAL MODULE: ./vendor/three.js
@@ -111899,8 +111825,10 @@ function addLights(scene) {
     windowSpotlight.castShadow = true;
     windowSpotlight.shadow.mapSize.width = 250;
     windowSpotlight.shadow.mapSize.height = 250;
-    windowSpotlight.shadow.camera.near = 0.5;
-    windowSpotlight.shadow.camera.far = 50
+    windowSpotlight.shadow.camera.near = 5.9;
+    windowSpotlight.shadow.camera.far = 10
+    
+    windowSpotlight.shadow.camera.fov = 0
     // windowSpotlight.shadow.camera.position=windowSpotlight.position
   windowSpotlight.target = windowref
 
@@ -112001,7 +111929,7 @@ function addWeather(scene) {
 
     weatherIcon.minFilter = three.LinearFilter;
 
-    const weatherMaterial = new three.MeshLambertMaterial({
+    const weatherMaterial = new three.MeshBasicMaterial({
       map: weatherIcon,
       alphaTest: 0.8,
     });
@@ -112118,7 +112046,6 @@ function resetCameraToScene(scene, controls) {
 ;// CONCATENATED MODULE: ./src/addAutomatedArt.js
 
 
-
 const addAutomatedArt_newtempWorldPosition = new three.Vector3();
 
 function addAutomatedArt(scene) {
@@ -112154,17 +112081,22 @@ function addAutomatedArt(scene) {
   function startLoop() {
     let textureImage =
       artworkLinks[Math.floor(Math.random() * Math.floor(listLength))];
-    let texture = new THREE.TextureLoader().load(textureImage);
-    texture.minFilter = THREE.LinearFilter;
+    let randomnumber = Math.floor(Math.random() * Math.floor(listLength));
+    //compress images using images.weserv ( i know very cool)
+    textureImage =
+      "https://images.weserv.nl/?url=" +
+      artworkLinks[randomnumber] +
+      "&w=512&h=512&q=80";
 
-    let geometry = new THREE.PlaneBufferGeometry(1, 1, 1);
-    let material = new THREE.MeshBasicMaterial({ map: texture });
-    const mesh = new THREE.Mesh(geometry, material);
-    const posRef =       scene.getObjectByName("whiteboard")
-    var bbox = new THREE.Box3().setFromObject(posRef);
-    mesh.position.copy(
-      posRef.getWorldPosition(addAutomatedArt_newtempWorldPosition)
-    );
+    let texture = new three.TextureLoader().load(textureImage);
+    // texture.minFilter = THREE.LinearFilter;
+
+    let geometry = new three.PlaneBufferGeometry(1, 1, 1);
+    let material = new three.MeshBasicMaterial({ map: texture });
+    const mesh = new three.Mesh(geometry, material);
+    const posRef = scene.getObjectByName("whiteboard");
+    var bbox = new three.Box3().setFromObject(posRef);
+    mesh.position.copy(posRef.getWorldPosition(addAutomatedArt_newtempWorldPosition));
     //   mesh.translateX(0.1)
     mesh.translateY(1);
     mesh.translateZ(0.05);
@@ -112175,11 +112107,15 @@ function addAutomatedArt(scene) {
       mesh.material.map = texture;
 
       mesh.material.needsUpdate = true;
-      let randomnumber = Math.floor(Math.random() * Math.floor(listLength));
+      randomnumber = Math.floor(Math.random() * Math.floor(listLength));
 
       // mesh.material.dispose()
-      textureImage = artworkLinks[randomnumber];
-      texture = new THREE.TextureLoader().load(textureImage);
+      textureImage =
+        "https://images.weserv.nl/?url=" +
+        artworkLinks[randomnumber] +
+        "&w=512&h=512&q=80";
+
+      texture = new three.TextureLoader().load(textureImage);
 
       // const texture = new THREE.TextureLoader().load(textureImage);
       // const material = new THREE.MeshBasicMaterial( { map: texture } );
@@ -112251,7 +112187,6 @@ function matrixAutoUpdate(scene) {
 }
 
 ;// CONCATENATED MODULE: ./src/main.js
-
 
 
 
@@ -112404,7 +112339,7 @@ async function main() {
   ) {
     console.log(window.innerWidth);
     console.log(window.innerHeight);
-    // addAutomatedArt(scene);
+    addAutomatedArt(scene);
     addIFrames(scene);
   }
   matrixAutoUpdate(scene);

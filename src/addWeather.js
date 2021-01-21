@@ -17,7 +17,7 @@ export function addWeather(scene) {
 
     weatherIcon.minFilter = THREE.LinearFilter;
 
-    const weatherMaterial = new THREE.MeshLambertMaterial({
+    const weatherMaterial = new THREE.MeshBasicMaterial({
       map: weatherIcon,
       alphaTest: 0.8,
     });
