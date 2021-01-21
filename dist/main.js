@@ -51911,6 +51911,78 @@ module.exports = {
 });
 
 
+/***/ }),
+
+/***/ 725:
+/***/ (() => {
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author jetienne / http://jetienne.com/
+ */
+/** @namespace */
+var THREEx	= THREEx || {}
+
+/**
+ * provide info on THREE.WebGLRenderer
+ * 
+ * @param {Object} renderer the renderer to update
+ * @param {Object} Camera the camera to update
+*/
+const RendererStats	= function (){
+
+	var msMin	= 100;
+	var msMax	= 0;
+
+	var container	= document.createElement( 'div' );
+	container.style.cssText = 'width:80px;opacity:0.9;cursor:pointer';
+
+	var msDiv	= document.createElement( 'div' );
+	msDiv.style.cssText = 'padding:0 0 3px 3px;text-align:left;background-color:#200;';
+	container.appendChild( msDiv );
+
+	var msText	= document.createElement( 'div' );
+	msText.style.cssText = 'color:#f00;font-family:Helvetica,Arial,sans-serif;font-size:9px;font-weight:bold;line-height:15px';
+	msText.innerHTML= 'WebGLRenderer';
+	msDiv.appendChild( msText );
+	
+	var msTexts	= [];
+	var nLines	= 9;
+	for(var i = 0; i < nLines; i++){
+		msTexts[i]	= document.createElement( 'div' );
+		msTexts[i].style.cssText = 'color:#f00;background-color:#311;font-family:Helvetica,Arial,sans-serif;font-size:9px;font-weight:bold;line-height:15px';
+		msDiv.appendChild( msTexts[i] );		
+		msTexts[i].innerHTML= '-';
+	}
+
+
+	var lastTime	= Date.now();
+	return {
+		domElement: container,
+
+		update: function(webGLRenderer){
+			// sanity check
+			console.assert(webGLRenderer instanceof THREE.WebGLRenderer)
+
+			// refresh only 30time per second
+			if( Date.now() - lastTime < 1000/30 )	return;
+			lastTime	= Date.now()
+
+			var i	= 0;
+			msTexts[i++].textContent = "== Memory =====";
+			msTexts[i++].textContent = "Programs: "	+ webGLRenderer.info.memory.programs;
+			msTexts[i++].textContent = "Geometries: "+webGLRenderer.info.memory.geometries;
+			msTexts[i++].textContent = "Textures: "	+ webGLRenderer.info.memory.textures;
+
+			msTexts[i++].textContent = "== Render =====";
+			msTexts[i++].textContent = "Calls: "	+ webGLRenderer.info.render.calls;
+			msTexts[i++].textContent = "Vertices: "	+ webGLRenderer.info.render.vertices;
+			msTexts[i++].textContent = "Faces: "	+ webGLRenderer.info.render.faces;
+			msTexts[i++].textContent = "Points: "	+ webGLRenderer.info.render.points;
+		}
+	}	
+};
+
 /***/ })
 
 /******/ 	});
@@ -99221,7 +99293,7 @@ ImmediateRenderObject.prototype.isImmediateRenderObject = true;
 
 const _vector$9 = /*@__PURE__*/ new Vector3();
 
-class SpotLightHelper extends (/* unused pure expression or super */ null && (Object3D)) {
+class SpotLightHelper extends Object3D {
 
 	constructor( light, color ) {
 
@@ -99692,7 +99764,7 @@ const _v1$6 = /*@__PURE__*/ new Vector3();
 const _v2$3 = /*@__PURE__*/ new Vector3();
 const _v3$1 = /*@__PURE__*/ new Vector3();
 
-class DirectionalLightHelper extends Object3D {
+class DirectionalLightHelper extends (/* unused pure expression or super */ null && (Object3D)) {
 
 	constructor( light, size, color ) {
 
@@ -105193,6 +105265,8 @@ Stats.Panel = function ( name, fg, bg ) {
 
 /* harmony default export */ const stats_module = (Stats);
 
+// EXTERNAL MODULE: ./vendor/threex.rendererstats.js
+var threex_rendererstats = __webpack_require__(725);
 // EXTERNAL MODULE: ./vendor/gsap.min.js
 var gsap_min = __webpack_require__(310);
 // EXTERNAL MODULE: ./vendor/three.js
@@ -106510,7 +106584,7 @@ function addArt(scene, renderer) {
     texture.flipY = false;
     const painting = scene.getObjectByName("painting");
     //insync with lights use MeshLambertMaterial / MeshBasicMaterial
-    const mat = new three.MeshBasicMaterial({ map: texture });
+    const mat = new three.MeshStandardMaterial({ map: texture });
     painting.material = mat;
     console.log(painting);
     function paintingOpen() {
@@ -111645,8 +111719,8 @@ RectAreaLightHelper.prototype.dispose = function () {
 function addLights(scene) {
   const sphere = new SphereBufferGeometry(0.05, 5, 5);
 
-  const amLight = new AmbientLight('#6a0d83', 0.3); // soft white light#
-////////////////////////////////////////////////////////////////////////////////////////////////
+  const amLight = new AmbientLight("#6a0d83", 0.3); // soft white light#
+  ////////////////////////////////////////////////////////////////////////////////////////////////
 
   const plane = scene.getObjectByName("wall");
   // plane.material.side = THREE.DoubleSide;
@@ -111675,7 +111749,8 @@ function addLights(scene) {
   whelper.rotateX(MathUtils.degToRad(90));
   window.name = "window";
   whelper.name = "windowhelper";
-////////////////////////////////////////////////////////////////////////////////////////////////
+  whelper.castShadow=false
+  ////////////////////////////////////////////////////////////////////////////////////////////////
   // const gradientArtSpotLight = new THREE.SpotLight(0xffffff, 1, 0, 0.2, 0.4);
 
   // const gradientArt = scene.getObjectByName("gradientGraphicArt");
@@ -111686,7 +111761,7 @@ function addLights(scene) {
   //   gradientArt.position.z + 0.7
   // );
   // gradientArtSpotLight.target = gradientArt;
-////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////
   // const artGroupSpotLight = new THREE.SpotLight(0xffffff, 0.5, 0, 0.35, 0.4);
 
   // const artGroup = scene.getObjectByName("ArtCenter");
@@ -111701,7 +111776,7 @@ function addLights(scene) {
   // artGroupSpotLight.target = artGroup;
 
   // const spotLightHelper = new THREE.SpotLightHelper(artGroupSpotLight);
-////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////
   // const deskSpotLight = new THREE.SpotLight(0xffffff, 3, 0, 0.2, 0.4);
 
   // const desk = scene.getObjectByName("desk");
@@ -111712,7 +111787,7 @@ function addLights(scene) {
   //   desk.position.z + 0.7
   // );
   // deskSpotLight.target = desk;
-////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////
   // const whiteboardSpotLight = new THREE.SpotLight(0xffffff, 3, 0, 0.2, 0.4);
 
   // const whiteboard = scene.getObjectByName("whiteboard");
@@ -111723,7 +111798,7 @@ function addLights(scene) {
   //   whiteboard.position.z + 0.7
   // );
   // whiteboardSpotLight.target = whiteboard;
-////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////
   // const paintingSpotLight = new THREE.SpotLight(0xffffff, 0.5, 0, 0.35, 0.4);
 
   // const painting = scene.getObjectByName("painting");
@@ -111737,7 +111812,7 @@ function addLights(scene) {
   //   painting.position.z + 0.05
   // );
   // paintingSpotLight.target = painting;
-////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////
   // const palantirSpotLight = new THREE.SpotLight(0xffffff, 1, 0, 0.15, 0.9);
   // palantirSpotLight.castShadow = true;
 
@@ -111754,7 +111829,7 @@ function addLights(scene) {
   //   palantirPlace.position.z + 0.7
   // );
   // palantirSpotLight.target = palantirPlace;
-////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////
   const monitorLight1 = new RectAreaLight(0xffffff, 3, 0.29, 0.19);
 
   var monitor_screen = scene.getObjectByName("monitor_screen1", true);
@@ -111771,7 +111846,7 @@ function addLights(scene) {
   );
   monitorLight1.rotateX(MathUtils.degToRad(90));
   monitorLight1.name = "monitorLight1";
-////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////
   const monitorLight2 = new RectAreaLight(0xffffff, 3, 0.29, 0.19);
   var monitor_screen2 = scene.getObjectByName("monitor_screen2", true);
   monitor_screen2.visible = false;
@@ -111794,68 +111869,73 @@ function addLights(scene) {
   const monitorLightHelper2 = new RectAreaLightHelper(monitorLight2);
 
   monitorLight2.add(monitorLightHelper2);
-////////////////////////////////////////////////////////////////////////////////////////////////
-const directionalLight = new DirectionalLight("#e47025", 2);
-  const dlHelper = new DirectionalLightHelper(directionalLight, 1);
-  //  windowref.visible= false
-  directionalLight.castShadow = true;
-  directionalLight.position.copy(
-    windowref.getWorldPosition(newtempWorldPosition3)
-  );
-  directionalLight.quaternion.copy(
-    windowref.getWorldQuaternion(newtempWorldQ3)
-  );
-  // directionalLight.rotateX(THREE.Math.degToRad(180));
-  directionalLight.translateY(-0.5);
-  directionalLight.translateZ(0.5);
-  console.log(directionalLight);
-  // // dlHelper.translateX(5)
-  directionalLight.target = windowref;
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  // const directionalLight = new THREE.DirectionalLight("#e47025", 2);
+  // const dlHelper = new THREE.DirectionalLightHelper(directionalLight, 1);
+  // //  windowref.visible= false
+  // directionalLight.castShadow = true;
+  // directionalLight.position.copy(
+  //   windowref.getWorldPosition(newtempWorldPosition3)
+  // );
+  // directionalLight.quaternion.copy(
+  //   windowref.getWorldQuaternion(newtempWorldQ3)
+  // );
+  // // directionalLight.rotateX(THREE.Math.degToRad(180));
+  // directionalLight.translateY(-0.5);
+  // directionalLight.translateZ(0.5);
+  // directionalLight.shadow.mapSize.width = 512; // default
+  // directionalLight.shadow.mapSize.height = 512; // default
+  // directionalLight.shadow.camera.near = 0.5; // default
+  // directionalLight.shadow.camera.far = 2; // default
+  // console.log(directionalLight);
+  // // // dlHelper.translateX(5)
+  // directionalLight.target = windowref;
   // scene.add(dlHelper);
-  scene.add(directionalLight);
+  // scene.add(directionalLight);
 
   //   //Create a SpotLight and turn on shadows for the light
-  //   const windowSpotlight = new THREE.SpotLight("#e47025");
-  //   windowSpotlight.angle = 2;
-  //   windowSpotlight.castShadow = true;
-  //   windowSpotlight.shadow.mapSize.width = 512;
-  //   windowSpotlight.shadow.mapSize.height = 512;
-  //   windowSpotlight.shadow.camera.near = 0.5;
-  //   windowSpotlight.shadow.camera.far = 5
-  //   // windowSpotlight.shadow.camera.position=windowSpotlight.position
-  // windowSpotlight.target = windowref
+    const windowSpotlight = new SpotLight("#e47025");
+    windowSpotlight.angle = 0.1;
+    windowSpotlight.castShadow = true;
+    windowSpotlight.shadow.mapSize.width = 250;
+    windowSpotlight.shadow.mapSize.height = 250;
+    windowSpotlight.shadow.camera.near = 0.5;
+    windowSpotlight.shadow.camera.far = 50
+    // windowSpotlight.shadow.camera.position=windowSpotlight.position
+  windowSpotlight.target = windowref
 
-  //   // const wSLShelper = new THREE.CameraHelper( windowSpotlight.shadow.camera );
-  //   // windowSpotlight.target = scene.getObjectByName('monitor')
-  //   windowSpotlight.castShadow = true;
-  //   // windowSpotlight.shadow = new THREE.SpotLightShadow(new THREE.PerspectiveCamera(20, 1, 1, 250));
+    // windowSpotlight.target = scene.getObjectByName('monitor')
+    // windowSpotlight.shadow = new THREE.SpotLightShadow(new THREE.PerspectiveCamera(20, 1, 1, 250));
 
-  //   windowSpotlight.position.copy(
-  //     windowref.getWorldPosition(newtempWorldPosition3)
-  //   );
-  //   windowSpotlight.translateX(0.5)
+    windowSpotlight.position.copy(
+      windowref.getWorldPosition(newtempWorldPosition3)
+    );
+    windowSpotlight.translateX(5)
+    windowSpotlight.translateZ(4)
 
-  //   // wSLShelper.position.copy(
-  //   //   windowref.getWorldPosition(newtempWorldPosition3)
-  //   // );
-  //   // wSLShelper.translateX(-0.1)
+    // wSLShelper.position.copy(
+    //   windowref.getWorldPosition(newtempWorldPosition3)
+    // );
+    // wSLShelper.translateX(-0.1)
 
-  //   // scene.add(windowSpotlight);
-  //   const wslhelper = new THREE.CameraHelper(windowSpotlight.shadow.camera);
-  // scene.add(wslhelper);
+    // scene.add(windowSpotlight);
 
-  // console.log(windowSpotlight)
 
-  // const windowSpotlightHelper = new THREE.SpotLightHelper(windowSpotlight);
+  console.log(windowSpotlight)
 
-  // scene.add(windowSpotlightHelper);
-  // scene.add( wSLShelper );
+  const windowSpotlightHelper = new SpotLightHelper(windowSpotlight);
+
+  scene.add(windowSpotlight);
+  scene.add(windowSpotlightHelper);
+
+
   scene.add(amLight);
 
   // scene.add(light);
   // scene.add(light2);
   // scene.add(sun)
 
+console.log(whelper)
   scene.add(whelper);
   scene.add(window);
 
@@ -111872,6 +111952,7 @@ const directionalLight = new DirectionalLight("#e47025", 2);
 
   // scene.add(rectlight);
   // scene.add(cylinderShadow);
+
 }
 
 ;// CONCATENATED MODULE: ./src/addShadow.js
@@ -111884,9 +111965,10 @@ function addShadow(scene, renderer) {
   });
   
 
-  // const theException = scene.getObjectByName('windowhelper')
-  // theException.castShadow = false;
-  // theException.receiveShadow = false;
+  const theException = scene.getObjectByName('windowhelper')
+  console.log(theException)
+  theException.children[0].castShadow= false
+  theException.children[0].receiveShadow= false
   
   // let theException1 = scene.getObjectByName('weatherMaterial')
   // theException1.castShadow = false;
@@ -112072,14 +112154,14 @@ function addAutomatedArt(scene) {
   function startLoop() {
     let textureImage =
       artworkLinks[Math.floor(Math.random() * Math.floor(listLength))];
-    let texture = new three.TextureLoader().load(textureImage);
-    texture.minFilter = three.LinearFilter;
+    let texture = new THREE.TextureLoader().load(textureImage);
+    texture.minFilter = THREE.LinearFilter;
 
-    let geometry = new three.PlaneBufferGeometry(1, 1, 1);
-    let material = new three.MeshBasicMaterial({ map: texture });
-    const mesh = new three.Mesh(geometry, material);
+    let geometry = new THREE.PlaneBufferGeometry(1, 1, 1);
+    let material = new THREE.MeshBasicMaterial({ map: texture });
+    const mesh = new THREE.Mesh(geometry, material);
     const posRef =       scene.getObjectByName("whiteboard")
-    var bbox = new three.Box3().setFromObject(posRef);
+    var bbox = new THREE.Box3().setFromObject(posRef);
     mesh.position.copy(
       posRef.getWorldPosition(addAutomatedArt_newtempWorldPosition)
     );
@@ -112097,7 +112179,7 @@ function addAutomatedArt(scene) {
 
       // mesh.material.dispose()
       textureImage = artworkLinks[randomnumber];
-      texture = new three.TextureLoader().load(textureImage);
+      texture = new THREE.TextureLoader().load(textureImage);
 
       // const texture = new THREE.TextureLoader().load(textureImage);
       // const material = new THREE.MeshBasicMaterial( { map: texture } );
@@ -112196,7 +112278,19 @@ let INTERSECTED;
 let animationToggle;
 var stats;
 
-const renderer = new three.WebGLRenderer({ alpha: true, antialias: true});
+let pixelRatio = window.devicePixelRatio;
+let AA = true;
+if (pixelRatio > 1) {
+  AA = false;
+}
+
+const renderer = new three.WebGLRenderer({
+  antialias: AA,
+  powerPreference: "high-performance",
+  alpha: true,
+});
+
+// const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true});
 
 renderer.domElement.style.position = "absolute";
 renderer.domElement.style.top = 0;
@@ -112206,7 +112300,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.gammaFactor = 2.2;
 renderer.outputEncoding = three.sRGBEncoding;
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = three.PCFSoftShadowMap;
+// renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.shadowMap.autoUpdate = false;
 renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -112239,7 +112333,7 @@ function createStats() {
 const scene = new three.Scene();
 console.log(scene);
 // scene.background = new THREE.Color("#FFBA70");
-scene.background = new three.Color('black');
+scene.background = new three.Color("black");
 
 const camera = new three.PerspectiveCamera(
   50,
@@ -112267,13 +112361,19 @@ async function main() {
 
   scene.add(gltfData.scene);
 
-  const wall = scene.getObjectByName('ceiling')
-  const wall2 = scene.getObjectByName('wall_1')
-  console.log(wall)
-  wall.material = new three.MeshBasicMaterial({transparent: true,opacity: 0.001})
+  const wall = scene.getObjectByName("ceiling");
+  const wall2 = scene.getObjectByName("wall_1");
+  console.log(wall);
+  wall.material = new three.MeshBasicMaterial({
+    transparent: true,
+    opacity: 0.001,
+  });
   wall.rotateX(three.Math.degToRad(180));
 
-  wall2.material = new three.MeshBasicMaterial({transparent: true,opacity: 0.001})
+  wall2.material = new three.MeshBasicMaterial({
+    transparent: true,
+    opacity: 0.001,
+  });
   wall2.rotateX(three.Math.degToRad(180));
 
   //   wall2.material = new  new THREE.MeshBasicMaterial({
@@ -112282,27 +112382,34 @@ async function main() {
   //     blending: THREE.AdditiveBlending
   // });
   // wall2.material.side = THREE.DoubleSide;
-  
+
   addWeather(scene);
   resetCameraToScene(scene, controls);
   keyboardLightAnimate(scene);
   computerLightBlink(scene);
-  addArt(scene,renderer);
+  addArt(scene, renderer);
   addClock(scene);
   addKeywordText(scene);
 
   addLights(scene);
   addShadow(scene, renderer);
+
   // removeShadow(scene)
   // detect mobile
-  if (!((typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1))) {
-    console.log(window.innerWidth)
-    console.log(window.innerHeight)
-    addAutomatedArt(scene);
+  if (
+    !(
+      typeof window.orientation !== "undefined" ||
+      navigator.userAgent.indexOf("IEMobile") !== -1
+    )
+  ) {
+    console.log(window.innerWidth);
+    console.log(window.innerHeight);
+    // addAutomatedArt(scene);
     addIFrames(scene);
   }
   matrixAutoUpdate(scene);
   // scene.overrideMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+  console.log("Scene polycount:", renderer.info);
 }
 
 main().catch((error) => {
@@ -112323,9 +112430,11 @@ window.addEventListener("resize", () => {
 });
 
 const animate = function () {
+
   renderer.render(scene, camera);
   renderer2.render(scene, camera);
   requestAnimationFrame(animate);
+
   stats.update();
 };
 
@@ -112392,16 +112501,10 @@ function onMouseMove(event) {
       }
       if (INTERSECTED != intersects[i].object) {
         if (intersects[i].object.name == "painting") {
-
-// scene.getObjectByName('Wall_Art_Classical_Plane').material.wireframe = true
+          // scene.getObjectByName('Wall_Art_Classical_Plane').material.wireframe = true
         }
       }
     }
-
-
-
-
-    
   }
 }
 

@@ -136,7 +136,7 @@ export function addArt(scene, renderer) {
     texture.flipY = false;
     const painting = scene.getObjectByName("painting");
     //insync with lights use MeshLambertMaterial / MeshBasicMaterial
-    const mat = new THREE.MeshBasicMaterial({ map: texture });
+    const mat = new THREE.MeshStandardMaterial({ map: texture });
     painting.material = mat;
     console.log(painting);
     function paintingOpen() {

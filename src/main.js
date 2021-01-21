@@ -1,7 +1,7 @@
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer.js";
 import Stats from "three/examples/jsm/libs/stats.module.js";
-
+import {RendererStats} from "../vendor/threex.rendererstats";
 import { TimelineMax } from "../vendor/gsap.min.js";
 import * as THREE from "../vendor/three";
 import { addArt } from "./addArt";
@@ -25,7 +25,19 @@ let INTERSECTED;
 let animationToggle;
 var stats;
 
-const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true});
+let pixelRatio = window.devicePixelRatio;
+let AA = true;
+if (pixelRatio > 1) {
+  AA = false;
+}
+
+const renderer = new THREE.WebGLRenderer({
+  antialias: AA,
+  powerPreference: "high-performance",
+  alpha: true,
+});
+
+// const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true});
 
 renderer.domElement.style.position = "absolute";
 renderer.domElement.style.top = 0;
@@ -35,7 +47,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.gammaFactor = 2.2;
 renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+// renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.shadowMap.autoUpdate = false;
 renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -68,7 +80,7 @@ function createStats() {
 const scene = new THREE.Scene();
 console.log(scene);
 // scene.background = new THREE.Color("#FFBA70");
-scene.background = new THREE.Color('black');
+scene.background = new THREE.Color("black");
 
 const camera = new THREE.PerspectiveCamera(
   50,
@@ -96,13 +108,19 @@ async function main() {
 
   scene.add(gltfData.scene);
 
-  const wall = scene.getObjectByName('ceiling')
-  const wall2 = scene.getObjectByName('wall_1')
-  console.log(wall)
-  wall.material = new THREE.MeshBasicMaterial({transparent: true,opacity: 0.001})
+  const wall = scene.getObjectByName("ceiling");
+  const wall2 = scene.getObjectByName("wall_1");
+  console.log(wall);
+  wall.material = new THREE.MeshBasicMaterial({
+    transparent: true,
+    opacity: 0.001,
+  });
   wall.rotateX(THREE.Math.degToRad(180));
 
-  wall2.material = new THREE.MeshBasicMaterial({transparent: true,opacity: 0.001})
+  wall2.material = new THREE.MeshBasicMaterial({
+    transparent: true,
+    opacity: 0.001,
+  });
   wall2.rotateX(THREE.Math.degToRad(180));
 
   //   wall2.material = new  new THREE.MeshBasicMaterial({
@@ -111,27 +129,34 @@ async function main() {
   //     blending: THREE.AdditiveBlending
   // });
   // wall2.material.side = THREE.DoubleSide;
-  
+
   addWeather(scene);
   resetCameraToScene(scene, controls);
   keyboardLightAnimate(scene);
   computerLightBlink(scene);
-  addArt(scene,renderer);
+  addArt(scene, renderer);
   addClock(scene);
   addKeywordText(scene);
 
   addLights(scene);
   addShadow(scene, renderer);
+
   // removeShadow(scene)
   // detect mobile
-  if (!((typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1))) {
-    console.log(window.innerWidth)
-    console.log(window.innerHeight)
-    addAutomatedArt(scene);
+  if (
+    !(
+      typeof window.orientation !== "undefined" ||
+      navigator.userAgent.indexOf("IEMobile") !== -1
+    )
+  ) {
+    console.log(window.innerWidth);
+    console.log(window.innerHeight);
+    // addAutomatedArt(scene);
     addIFrames(scene);
   }
   matrixAutoUpdate(scene);
   // scene.overrideMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+  console.log("Scene polycount:", renderer.info);
 }
 
 main().catch((error) => {
@@ -152,9 +177,11 @@ window.addEventListener("resize", () => {
 });
 
 const animate = function () {
+
   renderer.render(scene, camera);
   renderer2.render(scene, camera);
   requestAnimationFrame(animate);
+
   stats.update();
 };
 
@@ -221,15 +248,9 @@ function onMouseMove(event) {
       }
       if (INTERSECTED != intersects[i].object) {
         if (intersects[i].object.name == "painting") {
-
-// scene.getObjectByName('Wall_Art_Classical_Plane').material.wireframe = true
+          // scene.getObjectByName('Wall_Art_Classical_Plane').material.wireframe = true
         }
       }
     }
-
-
-
-
-    
   }
 }
