@@ -89,3 +89,5 @@ gltf-transform etc1s input/file/gltf.gltf /output/gt.gltf
 
 npx basisu dist\assets\img\blink.jpg   
 gltf-transform etc1s dist\assets\models\gltftoconvert\gltfdesk.gltf  dist/assets/models/output/gt.gltf
+
+compress images using images.weserv

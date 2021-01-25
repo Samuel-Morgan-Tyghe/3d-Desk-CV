@@ -44,7 +44,7 @@ export function addArt(scene, renderer) {
   basisLoader.setTranscoderPath("../vendor/basis/");
   basisLoader.detectSupport(renderer);
   basisLoader.load("./assets/img/basis/Palantiri.basis", function (texture) {
-    artMat = new THREE.MeshStandardMaterial({
+    artMat = new THREE.MeshBasicMaterial({
       map: texture,
       alphaTest: 0.9,
     });
@@ -76,17 +76,17 @@ export function addArt(scene, renderer) {
 
   ////////////////////////////////////////////////
   var gradientGraphicArt = scene.getObjectByName("gradientGraphicArt", true);
-
-  gradientGraphicArt.material.map.rotation = 0.45;
+  // gradientGraphicArt.material.map.rotation = 0.45;
+  gradientGraphicArt.material.emissiveMap.rotation = 0.45;
 
   scene.tl3 = new TimelineMax({ repeat: -1 }).delay(3);
-  scene.tl3.to(gradientGraphicArt.material.map.offset, 6, {
+  scene.tl3.to(gradientGraphicArt.material.emissiveMap.offset, 6, {
     x: 0,
     y: 0,
     z: 0,
     ease: Linear.easeOut,
   });
-  scene.tl3.to(gradientGraphicArt.material.map.offset, 1, {
+  scene.tl3.to(gradientGraphicArt.material.emissiveMap.offset, 1, {
     x: 0,
     y: 1,
     z: 0,
@@ -136,7 +136,7 @@ export function addArt(scene, renderer) {
     texture.flipY = false;
     const painting = scene.getObjectByName("painting");
     //insync with lights use MeshLambertMaterial / MeshBasicMaterial
-    const mat = new THREE.MeshStandardMaterial({ map: texture });
+    const mat = new THREE.MeshBasicMaterial({ map: texture });
     painting.material = mat;
     console.log(painting);
     function paintingOpen() {

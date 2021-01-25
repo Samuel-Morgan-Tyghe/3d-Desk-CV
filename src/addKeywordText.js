@@ -3,7 +3,7 @@ const newtempWorldPosition= new THREE.Vector3();
 const newtempWorldPosition2= new THREE.Vector3();
 
 export function addKeywordText(scene) {
-  let artGroup = scene.getObjectByName("ArtCenter").getWorldPosition(newtempWorldPosition);
+  let artGroup = scene.getObjectByName("NickHarper").getWorldPosition(newtempWorldPosition);
 
   const artistTextLoader = new THREE.FontLoader();
   artistTextLoader.load("./assets/fonts/Alata_Regular.json", function (font) {

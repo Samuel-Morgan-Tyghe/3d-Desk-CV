@@ -4,37 +4,38 @@ import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHel
 export function addLights(scene) {
   const sphere = new THREE.SphereBufferGeometry(0.05, 5, 5);
 
-  const amLight = new THREE.AmbientLight("#6a0d83", 0.3); // soft white light#
+  // const amLight = new THREE.AmbientLight("#6a0d83", 0.3); // soft white light#
+  const amLight = new THREE.AmbientLight("#6a0d83", 0.05); // soft white light#
   ////////////////////////////////////////////////////////////////////////////////////////////////
 
-  const plane = scene.getObjectByName("wall");
-  // plane.material.side = THREE.DoubleSide;
+  // const plane = scene.getObjectByName("wall");
+  // // plane.material.side = THREE.DoubleSide;
 
-  var windowref = scene.getObjectByName("windowLight", true);
-  var bbox = new THREE.Box3().setFromObject(windowref);
-  const window = new THREE.RectAreaLight(
-    "#e47025",
-    10,
-    bbox.max.y - bbox.min.y,
-    bbox.max.z - bbox.min.z
-  );
+  // var windowref = scene.getObjectByName("windowLight", true);
+  // var bbox = new THREE.Box3().setFromObject(windowref);
+  // const window = new THREE.RectAreaLight(
+  //   "#e47025",
+  //   10,
+  //   bbox.max.y - bbox.min.y,
+  //   bbox.max.z - bbox.min.z
+  // );
 
-  console.log(window);
-  const whelper = new RectAreaLightHelper(window);
+  // console.log(window);
+  // const whelper = new RectAreaLightHelper(window);
 
-  windowref.visible = false;
-  const newtempWorldPosition3 = new THREE.Vector3();
-  const newtempWorldQ3 = new THREE.Quaternion();
+  // windowref.visible = false;
+  // const newtempWorldPosition3 = new THREE.Vector3();
+  // const newtempWorldQ3 = new THREE.Quaternion();
 
-  window.position.copy(windowref.getWorldPosition(newtempWorldPosition3));
-  whelper.position.copy(windowref.getWorldPosition(newtempWorldPosition3));
-  window.quaternion.copy(windowref.getWorldQuaternion(newtempWorldQ3));
-  whelper.quaternion.copy(windowref.getWorldQuaternion(newtempWorldQ3));
-  window.rotateX(THREE.Math.degToRad(90));
-  whelper.rotateX(THREE.Math.degToRad(90));
-  window.name = "window";
-  whelper.name = "windowhelper";
-  whelper.castShadow=false
+  // window.position.copy(windowref.getWorldPosition(newtempWorldPosition3));
+  // whelper.position.copy(windowref.getWorldPosition(newtempWorldPosition3));
+  // window.quaternion.copy(windowref.getWorldQuaternion(newtempWorldQ3));
+  // whelper.quaternion.copy(windowref.getWorldQuaternion(newtempWorldQ3));
+  // window.rotateX(THREE.Math.degToRad(90));
+  // whelper.rotateX(THREE.Math.degToRad(90));
+  // window.name = "window";
+  // whelper.name = "windowhelper";
+  // whelper.castShadow=false
   ////////////////////////////////////////////////////////////////////////////////////////////////
   // const gradientArtSpotLight = new THREE.SpotLight(0xffffff, 1, 0, 0.2, 0.4);
 
@@ -115,45 +116,45 @@ export function addLights(scene) {
   // );
   // palantirSpotLight.target = palantirPlace;
   ////////////////////////////////////////////////////////////////////////////////////////////////
-  const monitorLight1 = new THREE.RectAreaLight(0xffffff, 3, 0.29, 0.19);
+  // const monitorLight1 = new THREE.RectAreaLight(0xffffff, 3, 0.29, 0.19);
 
-  var monitor_screen = scene.getObjectByName("monitor_screen1", true);
+  // var monitor_screen = scene.getObjectByName("monitor_screen1", true);
 
-  monitor_screen.visible = false;
-  const newtempWorldPosition = new THREE.Vector3();
-  const newtempWorldQ = new THREE.Quaternion();
+  // monitor_screen.visible = false;
+  // const newtempWorldPosition = new THREE.Vector3();
+  // const newtempWorldQ = new THREE.Quaternion();
 
-  monitorLight1.position.copy(
-    monitor_screen.getWorldPosition(newtempWorldPosition)
-  );
-  monitorLight1.quaternion.copy(
-    monitor_screen.getWorldQuaternion(newtempWorldQ)
-  );
-  monitorLight1.rotateX(THREE.Math.degToRad(90));
-  monitorLight1.name = "monitorLight1";
-  ////////////////////////////////////////////////////////////////////////////////////////////////
-  const monitorLight2 = new THREE.RectAreaLight(0xffffff, 3, 0.29, 0.19);
-  var monitor_screen2 = scene.getObjectByName("monitor_screen2", true);
-  monitor_screen2.visible = false;
+  // monitorLight1.position.copy(
+  //   monitor_screen.getWorldPosition(newtempWorldPosition)
+  // );
+  // monitorLight1.quaternion.copy(
+  //   monitor_screen.getWorldQuaternion(newtempWorldQ)
+  // );
+  // monitorLight1.rotateX(THREE.Math.degToRad(90));
+  // monitorLight1.name = "monitorLight1";
+  // ////////////////////////////////////////////////////////////////////////////////////////////////
+  // const monitorLight2 = new THREE.RectAreaLight(0xffffff, 3, 0.29, 0.19);
+  // var monitor_screen2 = scene.getObjectByName("monitor_screen2", true);
+  // monitor_screen2.visible = false;
 
-  const newtempWorldPosition2 = new THREE.Vector3();
-  const newtempWorldQ2 = new THREE.Quaternion();
+  // const newtempWorldPosition2 = new THREE.Vector3();
+  // const newtempWorldQ2 = new THREE.Quaternion();
 
-  monitorLight2.position.copy(
-    monitor_screen2.getWorldPosition(newtempWorldPosition2)
-  );
-  monitorLight2.quaternion.copy(
-    monitor_screen2.getWorldQuaternion(newtempWorldQ2)
-  );
-  monitorLight2.rotateX(THREE.Math.degToRad(90));
+  // monitorLight2.position.copy(
+  //   monitor_screen2.getWorldPosition(newtempWorldPosition2)
+  // );
+  // monitorLight2.quaternion.copy(
+  //   monitor_screen2.getWorldQuaternion(newtempWorldQ2)
+  // );
+  // monitorLight2.rotateX(THREE.Math.degToRad(90));
 
-  const monitorLightHelper1 = new RectAreaLightHelper(monitorLight1);
+  // const monitorLightHelper1 = new RectAreaLightHelper(monitorLight1);
 
-  monitorLight1.add(monitorLightHelper1);
+  // monitorLight1.add(monitorLightHelper1);
 
-  const monitorLightHelper2 = new RectAreaLightHelper(monitorLight2);
+  // const monitorLightHelper2 = new RectAreaLightHelper(monitorLight2);
 
-  monitorLight2.add(monitorLightHelper2);
+  // monitorLight2.add(monitorLightHelper2);
   ////////////////////////////////////////////////////////////////////////////////////////////////
   // const directionalLight = new THREE.DirectionalLight("#e47025", 2);
   // const dlHelper = new THREE.DirectionalLightHelper(directionalLight, 1);
@@ -179,26 +180,26 @@ export function addLights(scene) {
   // scene.add(directionalLight);
 
   //   //Create a SpotLight and turn on shadows for the light
-    const windowSpotlight = new THREE.SpotLight("#e47025");
-    windowSpotlight.angle = 0.1;
-    windowSpotlight.castShadow = true;
-    windowSpotlight.shadow.mapSize.width = 250;
-    windowSpotlight.shadow.mapSize.height = 250;
-    windowSpotlight.shadow.camera.near = 5.9;
-    windowSpotlight.shadow.camera.far = 10
+    // const windowSpotlight = new THREE.SpotLight("#e47025");
+    // windowSpotlight.angle = 0.1;
+    // windowSpotlight.castShadow = true;
+    // windowSpotlight.shadow.mapSize.width = 250;
+    // windowSpotlight.shadow.mapSize.height = 250;
+    // windowSpotlight.shadow.camera.near = 5.9;
+    // windowSpotlight.shadow.camera.far = 10
     
-    windowSpotlight.shadow.camera.fov = 0
+    // windowSpotlight.shadow.camera.fov = 0
     // windowSpotlight.shadow.camera.position=windowSpotlight.position
-  windowSpotlight.target = windowref
+  // windowSpotlight.target = windowref
 
     // windowSpotlight.target = scene.getObjectByName('monitor')
     // windowSpotlight.shadow = new THREE.SpotLightShadow(new THREE.PerspectiveCamera(20, 1, 1, 250));
 
-    windowSpotlight.position.copy(
-      windowref.getWorldPosition(newtempWorldPosition3)
-    );
-    windowSpotlight.translateX(5)
-    windowSpotlight.translateZ(4)
+    // windowSpotlight.position.copy(
+    //   windowref.getWorldPosition(newtempWorldPosition3)
+    // );
+    // windowSpotlight.translateX(5)
+    // windowSpotlight.translateZ(4)
 
     // wSLShelper.position.copy(
     //   windowref.getWorldPosition(newtempWorldPosition3)
@@ -208,23 +209,23 @@ export function addLights(scene) {
     // scene.add(windowSpotlight);
 
 
-  console.log(windowSpotlight)
+  // console.log(windowSpotlight)
 
-  const windowSpotlightHelper = new THREE.SpotLightHelper(windowSpotlight);
+  // const windowSpotlightHelper = new THREE.SpotLightHelper(windowSpotlight);
 
-  scene.add(windowSpotlight);
-  scene.add(windowSpotlightHelper);
+  // scene.add(windowSpotlight);
+  // scene.add(windowSpotlightHelper);
 
 
-  scene.add(amLight);
+  // scene.add(amLight);
 
   // scene.add(light);
   // scene.add(light2);
   // scene.add(sun)
 
-console.log(whelper)
-  scene.add(whelper);
-  scene.add(window);
+// console.log(whelper)
+  // scene.add(whelper);
+  // scene.add(window);
 
   // scene.add(monitorLight1);
   // scene.add(monitorLight2);
