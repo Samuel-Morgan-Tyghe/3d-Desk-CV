@@ -7,6 +7,7 @@ import { addArt } from "./addArt";
 import { addClock } from "./addClock";
 import { addModel } from "./addGLBModel";
 import { addIFrames } from "./addIFrames";
+import { addWhiteboard } from "./addWhiteboard";
 import { addIFramesCV } from "./addCV";
 import { addKeywordText } from "./addKeywordText";
 import { addLights } from "./addLights";
@@ -155,6 +156,7 @@ async function main() {
     addAutomatedArt(scene);
     addIFrames(scene);
     addIFramesCV(scene);
+    addWhiteboard(scene)
   }
   matrixAutoUpdate(scene);
   // scene.overrideMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
