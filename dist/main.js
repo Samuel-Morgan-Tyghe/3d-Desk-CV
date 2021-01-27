@@ -111338,18 +111338,19 @@ function addModel(renderer) {
 ;// CONCATENATED MODULE: ./src/addIFrames.js
 
 
+
 function addIFrames(scene) {
   const obj = new three.Object3D();
-
   // //
   var div = document.createElement("div");
   div.style.width = "1080px";
   div.style.height = "890px";
-  div.style.backgroundColor = "red";
+  div.style.backgroundColor = "white";
   // div.style.backfacevisibility= "hidden";
   // //
 
   var iframe = document.createElement("iframe");
+  iframe.id = 'projects'
   iframe.style.width = "1080px";
   iframe.style.height = "890px";
   iframe.style.border = "0px";
@@ -111361,8 +111362,9 @@ function addIFrames(scene) {
   // //
   const objectCopy = scene.getObjectByName("monitor_screen1");
   var css3dObject = new CSS3DObject(div);
+  console.log(css3dObject)
   // css3dObject.position.set(-70, 725, -90);
-  
+
   // obj.scale.copy(objectCopy.getWorldScale());
 
   css3dObject.scale.set(0.265, 0.21, 0.1);
@@ -111379,12 +111381,61 @@ function addIFrames(scene) {
   obj.add(css3dObject);
 
   // css3dObject.scale.set(0.001,0.001,1);
- obj.scale.set(0.001, 0.001, 0.001);
- 
+  obj.scale.set(0.001, 0.001, 0.001);
 
   scene.add(obj);
+}
+
+;// CONCATENATED MODULE: ./src/addCV.js
 
 
+
+function addIFramesCV(scene) {
+  const obj = new three.Object3D();
+  console.log(obj)
+  // //
+  var div = document.createElement("div");
+  div.style.width = "1080px";
+  div.style.height = "890px";
+  div.style.backgroundColor = "white";
+  // div.style.backfacevisibility= "hidden";
+  // //
+
+  var iframe = document.createElement("iframe");
+  iframe.id = 'cv'
+
+  iframe.style.width = "1080px";
+  iframe.style.height = "890px";
+  iframe.style.border = "0px";
+  iframe.src = "https://samuel-morgan-tyghe.github.io/Resume/";
+  // iframe.src = ["https://www.youtube.com/embed/", id, "?rel=0"].join("");
+  // iframe.style.backfacevisibility= "hidden";
+
+  div.appendChild(iframe);
+  // //
+  const objectCopy = scene.getObjectByName("monitor_screen2");
+  var css3dObject = new CSS3DObject(div);
+  // css3dObject.position.set(-70, 725, -90);
+
+  // obj.scale.copy(objectCopy.getWorldScale());
+
+  css3dObject.scale.set(0.265, 0.21, 0.1);
+  //
+  const newtempWorldPosition = new three.Vector3();
+  const newtempWorldQ3 = new three.Quaternion();
+
+  obj.css3dObject = css3dObject;
+  obj.quaternion.copy(objectCopy.getWorldQuaternion(newtempWorldQ3));
+  obj.rotateX(three.Math.degToRad(90));
+  obj.rotateY(three.Math.degToRad(180));
+  obj.position.copy(objectCopy.getWorldPosition(newtempWorldPosition));
+  // obj.translateZ(0.1)
+  obj.add(css3dObject);
+
+  // css3dObject.scale.set(0.001,0.001,1);
+  obj.scale.set(0.001, 0.001, 0.001);
+
+  scene.add(obj);
 }
 
 ;// CONCATENATED MODULE: ./src/addKeywordText.js
@@ -112726,6 +112777,7 @@ function matrixAutoUpdate(scene) {
 
 
 
+
 // import { onMouseClick } from "./onMouseClick";
 // import { onMouseMove } from "./onMouseMove";
 
@@ -112841,7 +112893,7 @@ async function main() {
   //     blending: THREE.AdditiveBlending
   // });
   // wall2.material.side = THREE.DoubleSide;
-// addLightMap(scene)
+  // addLightMap(scene)
   addWeather(scene);
   resetCameraToScene(scene, controls);
   keyboardLightAnimate(scene);
@@ -112865,6 +112917,7 @@ async function main() {
     console.log(window.innerHeight);
     addAutomatedArt(scene);
     addIFrames(scene);
+    addIFramesCV(scene);
   }
   matrixAutoUpdate(scene);
   // scene.overrideMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
@@ -112889,7 +112942,6 @@ window.addEventListener("resize", () => {
 });
 
 const animate = function () {
-
   renderer.render(scene, camera);
   renderer2.render(scene, camera);
   requestAnimationFrame(animate);
@@ -112901,16 +112953,45 @@ animate();
 
 /////////////////////////////////////////////////////////////////////////
 
+let number = 0;
+
 function onMouseClick(event) {
   event.preventDefault();
   let object, x, y, z;
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  let projectSrcArray = [
+    "https://samuel-morgan-tyghe.github.io/Weather-App/",
+    "https://samuel-morgan-tyghe.github.io/Basic-Website-To-React",
+    "https://samuel-morgan-tyghe.github.io/Creative-Portfolio/",
+    "https://automated-art.co.uk/",
+  ];
+  function getSrcNumber(add) {
+    number = number + add;
+    if (number < 0) {
+      number = 3;
+    }
+    if (number > 3) {
+      number = 0;
+    }
+
+    return number;
+  }
 
   raycaster.setFromCamera(mouse, camera);
 
   var intersects = raycaster.intersectObjects(scene.children, true);
   for (var i = 0; i < intersects.length; i++) {
+    if (intersects[i].object.name == "Prism_2") {
+      const element = document.getElementById("projects");
+      number = getSrcNumber(+1);
+      element.src = projectSrcArray[number];
+    }
+    if (intersects[i].object.name == "Prism_3") {
+      const element = document.getElementById("projects");
+      number = getSrcNumber(-1);
+      element.src = projectSrcArray[number];
+    }
     if (intersects[i].object.name == "painting") {
       object = "painting";
       x = 0;

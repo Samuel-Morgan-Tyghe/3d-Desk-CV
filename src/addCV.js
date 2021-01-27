@@ -1,8 +1,9 @@
 import { CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer.js";
 import * as THREE from "../vendor/three";
 
-export function addIFrames(scene) {
+export function addIFramesCV(scene) {
   const obj = new THREE.Object3D();
+  console.log(obj)
   // //
   var div = document.createElement("div");
   div.style.width = "1080px";
@@ -12,19 +13,19 @@ export function addIFrames(scene) {
   // //
 
   var iframe = document.createElement("iframe");
-  iframe.id = 'projects'
+  iframe.id = 'cv'
+
   iframe.style.width = "1080px";
   iframe.style.height = "890px";
   iframe.style.border = "0px";
-  iframe.src = "https://samuel-morgan-tyghe.github.io/Basic-Website-To-React";
+  iframe.src = "https://samuel-morgan-tyghe.github.io/Resume/";
   // iframe.src = ["https://www.youtube.com/embed/", id, "?rel=0"].join("");
   // iframe.style.backfacevisibility= "hidden";
 
   div.appendChild(iframe);
   // //
-  const objectCopy = scene.getObjectByName("monitor_screen1");
+  const objectCopy = scene.getObjectByName("monitor_screen2");
   var css3dObject = new CSS3DObject(div);
-  console.log(css3dObject)
   // css3dObject.position.set(-70, 725, -90);
 
   // obj.scale.copy(objectCopy.getWorldScale());

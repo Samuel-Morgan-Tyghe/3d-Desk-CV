@@ -7,6 +7,7 @@ import { addArt } from "./addArt";
 import { addClock } from "./addClock";
 import { addModel } from "./addGLBModel";
 import { addIFrames } from "./addIFrames";
+import { addIFramesCV } from "./addCV";
 import { addKeywordText } from "./addKeywordText";
 import { addLights } from "./addLights";
 import { addShadow } from "./addShadow";
@@ -129,7 +130,7 @@ async function main() {
   //     blending: THREE.AdditiveBlending
   // });
   // wall2.material.side = THREE.DoubleSide;
-// addLightMap(scene)
+  // addLightMap(scene)
   addWeather(scene);
   resetCameraToScene(scene, controls);
   keyboardLightAnimate(scene);
@@ -153,6 +154,7 @@ async function main() {
     console.log(window.innerHeight);
     addAutomatedArt(scene);
     addIFrames(scene);
+    addIFramesCV(scene);
   }
   matrixAutoUpdate(scene);
   // scene.overrideMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
@@ -177,7 +179,6 @@ window.addEventListener("resize", () => {
 });
 
 const animate = function () {
-
   renderer.render(scene, camera);
   renderer2.render(scene, camera);
   requestAnimationFrame(animate);
@@ -189,16 +190,45 @@ animate();
 
 /////////////////////////////////////////////////////////////////////////
 
+let number = 0;
+
 function onMouseClick(event) {
   event.preventDefault();
   let object, x, y, z;
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  let projectSrcArray = [
+    "https://samuel-morgan-tyghe.github.io/Weather-App/",
+    "https://samuel-morgan-tyghe.github.io/Basic-Website-To-React",
+    "https://samuel-morgan-tyghe.github.io/Creative-Portfolio/",
+    "https://automated-art.co.uk/",
+  ];
+  function getSrcNumber(add) {
+    number = number + add;
+    if (number < 0) {
+      number = 3;
+    }
+    if (number > 3) {
+      number = 0;
+    }
+
+    return number;
+  }
 
   raycaster.setFromCamera(mouse, camera);
 
   var intersects = raycaster.intersectObjects(scene.children, true);
   for (var i = 0; i < intersects.length; i++) {
+    if (intersects[i].object.name == "Prism_2") {
+      const element = document.getElementById("projects");
+      number = getSrcNumber(+1);
+      element.src = projectSrcArray[number];
+    }
+    if (intersects[i].object.name == "Prism_3") {
+      const element = document.getElementById("projects");
+      number = getSrcNumber(-1);
+      element.src = projectSrcArray[number];
+    }
     if (intersects[i].object.name == "painting") {
       object = "painting";
       x = 0;
