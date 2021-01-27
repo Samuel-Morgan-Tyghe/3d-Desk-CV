@@ -77,16 +77,16 @@ export function addArt(scene, renderer) {
   ////////////////////////////////////////////////
   var gradientGraphicArt = scene.getObjectByName("gradientGraphicArt", true);
   // gradientGraphicArt.material.map.rotation = 0.45;
-  gradientGraphicArt.material.emissiveMap.rotation = 0.45;
+  gradientGraphicArt.material.map.rotation = 0.45;
 
   scene.tl3 = new TimelineMax({ repeat: -1 }).delay(3);
-  scene.tl3.to(gradientGraphicArt.material.emissiveMap.offset, 6, {
+  scene.tl3.to(gradientGraphicArt.material.map.offset, 6, {
     x: 0,
     y: 0,
     z: 0,
     ease: Linear.easeOut,
   });
-  scene.tl3.to(gradientGraphicArt.material.emissiveMap.offset, 1, {
+  scene.tl3.to(gradientGraphicArt.material.map.offset, 1, {
     x: 0,
     y: 1,
     z: 0,

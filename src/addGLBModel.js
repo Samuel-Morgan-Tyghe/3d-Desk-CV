@@ -13,6 +13,7 @@ export function addModel(renderer) {
   return new Promise((resolve, reject) => {
     gltfLoader.load(
       "../dist/assets/models/output/gt.gltf",
+      // "../dist/assets/models/test for threejs/untitled2.gltf",
 
       (data) => resolve(data),
       null,

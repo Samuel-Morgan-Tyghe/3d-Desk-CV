@@ -6,11 +6,11 @@ export function addShadow(scene, renderer) {
     }
   });
   
-
   const theException = scene.getObjectByName('windowhelper')
-  console.log(theException)
+  // console.log(theException)
+  if(theException){
   theException.children[0].castShadow= false
-  theException.children[0].receiveShadow= false
+  theException.children[0].receiveShadow= false}
   
   // let theException1 = scene.getObjectByName('weatherMaterial')
   // theException1.castShadow = false;

@@ -17,6 +17,7 @@ import { keyboardLightAnimate } from "./keyboardLightAnimate";
 // import { onMouseClick } from "./onMouseClick";
 // import { onMouseMove } from "./onMouseMove";
 import { resetCameraToScene } from "./resetCameraToScene";
+import { addLightMap } from "./addLightMap";
 import { addAutomatedArt } from "./addAutomatedArt";
 import { onClickMoveCamera } from "./onClickMoveCamera";
 import { matrixAutoUpdate } from "./matrixAutoUpdate";
@@ -79,7 +80,7 @@ function createStats() {
 const scene = new THREE.Scene();
 console.log(scene);
 // scene.background = new THREE.Color("#FFBA70");
-scene.background = new THREE.Color("black");
+scene.background = new THREE.Color("grey");
 
 const camera = new THREE.PerspectiveCamera(
   50,
@@ -128,7 +129,7 @@ async function main() {
   //     blending: THREE.AdditiveBlending
   // });
   // wall2.material.side = THREE.DoubleSide;
-
+// addLightMap(scene)
   addWeather(scene);
   resetCameraToScene(scene, controls);
   keyboardLightAnimate(scene);
@@ -138,7 +139,7 @@ async function main() {
   addKeywordText(scene);
 
   addLights(scene);
-  // addShadow(scene, renderer);
+  addShadow(scene, renderer);
 
   // removeShadow(scene)
   // detect mobile
