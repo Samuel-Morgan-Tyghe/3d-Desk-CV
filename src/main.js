@@ -109,29 +109,7 @@ async function main() {
   const gltfData = await addModel(renderer);
 
   scene.add(gltfData.scene);
-
-  // const wall = scene.getObjectByName("ceiling");
-  // const wall2 = scene.getObjectByName("wall_1");
-  // console.log(wall);
-  // wall.material = new THREE.MeshBasicMaterial({
-  //   transparent: true,
-  //   opacity: 0.001,
-  // });
-  // wall.rotateX(THREE.Math.degToRad(180));
-
-  // wall2.material = new THREE.MeshBasicMaterial({
-  //   transparent: true,
-  //   opacity: 0.001,
-  // });
-  // wall2.rotateX(THREE.Math.degToRad(180));
-
-  //   wall2.material = new  new THREE.MeshBasicMaterial({
-  //     color: 0x000000,
-  //     transparent: true,
-  //     blending: THREE.AdditiveBlending
-  // });
-  // wall2.material.side = THREE.DoubleSide;
-  // addLightMap(scene)
+  addLightMap(scene, renderer)
   addWeather(scene);
   resetCameraToScene(scene, controls);
   keyboardLightAnimate(scene);

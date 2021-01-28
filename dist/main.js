@@ -111392,7 +111392,7 @@ function addIFrames(scene) {
 
 function addWhiteboard(scene) {
   const obj = new three.Object3D();
-  console.log(obj)
+  console.log(obj);
   // //
   var div = document.createElement("div");
   div.style.width = "980px";
@@ -111401,14 +111401,14 @@ function addWhiteboard(scene) {
   div.style.overflow = "hidden";
   div.style.scrolling = "no";
   div.style.frameborder = "0";
-  div.style.backgroundColor =  'rgba(201, 76, 76, 0);'
+  div.style.backgroundColor = "rgba(201, 76, 76, 0);";
 
   // div.style.backgroundColor = "white";
   // div.style.backfacevisibility= "hidden";
   // //
 
   var iframe = document.createElement("iframe");
-  iframe.id = 'whiteboard'
+  iframe.id = "whiteboard";
 
   iframe.style.width = "980px";
   iframe.style.height = "480px";
@@ -111417,12 +111417,13 @@ function addWhiteboard(scene) {
   iframe.style.overflow_y = "hidden";
   iframe.style.scrolling = "no";
   iframe.style.frameborder = "0";
-  iframe.style.backgroundColor =  'rgba(201, 76, 76, 0);'
+  iframe.style.backgroundColor = "rgba(201, 76, 76, 0);";
 
-  iframe.src = 'https://editor.p5js.org/automatedartist/embed/0n9kUViVH';
+  iframe.src = "https://editor.p5js.org/automatedartist/embed/ksa1q3ycg";
+  //<iframe src="https://editor.p5js.org/automatedartist/embed/ksa1q3ycg"></iframe>
   //<iframe src="https://editor.p5js.org/automatedartist/embed/0n9kUViVH"></iframe>
   // <iframe src="https://editor.p5js.org/automatedartist/embed/QRJ3Qv2Xq"></iframe>
-/* <iframe src="https://editor.p5js.org/automatedartist/embed/kKpXtVM_R"></iframe> */
+  /* <iframe src="https://editor.p5js.org/automatedartist/embed/kKpXtVM_R"></iframe> */
   //<iframe src="https://editor.p5js.org/automatedartist/embed/QwFeEz_C3"></iframe>
   //<iframe src="https://editor.p5js.org/automatedartist/embed/zAz3hhFF4"></iframe>
   //<iframe src="https://editor.p5js.org/automatedartist/embed/6s9fM2BrI"></iframe>
@@ -111436,7 +111437,9 @@ function addWhiteboard(scene) {
   // <iframe src="https://editor.p5js.org/automatedartist/embed/I_nutuyQK"></iframe>
   // iframe.src = ["https://www.youtube.com/embed/", id, "?rel=0"].join("");
   // iframe.style.backfacevisibility= "hidden";
-{/* <iframe src="https://editor.p5js.org/p5/embed/AmFCcDVysYj"></iframe> */}
+  {
+    /* <iframe src="https://editor.p5js.org/p5/embed/AmFCcDVysYj"></iframe> */
+  }
   div.appendChild(iframe);
   // //
   const objectCopy = scene.getObjectByName("whiteboardScreen");
@@ -112185,7 +112188,7 @@ function resetCameraToScene(scene, controls) {
 // https://github.com/mrdoob/three.js/issues/5552
 // http://en.wikipedia.org/wiki/RGBE_image_format
 
-var RGBELoader_RGBELoader = function ( manager ) {
+var RGBELoader = function ( manager ) {
 
 	DataTextureLoader.call( this, manager );
 
@@ -112193,9 +112196,9 @@ var RGBELoader_RGBELoader = function ( manager ) {
 
 };
 
-RGBELoader_RGBELoader.prototype = Object.assign( Object.create( DataTextureLoader.prototype ), {
+RGBELoader.prototype = Object.assign( Object.create( DataTextureLoader.prototype ), {
 
-	constructor: RGBELoader_RGBELoader,
+	constructor: RGBELoader,
 
 	// adapted from http://www.graphics.cornell.edu/~bjw/rgbe.html
 
@@ -112664,35 +112667,21 @@ RGBELoader_RGBELoader.prototype = Object.assign( Object.create( DataTextureLoade
 
 
 
-// export function addLightMap(scene) {
-  //   var name = object.name.toString().replace(/_/g, ".") + "_baked.hdr";
-  //   console.log(name);
+function addLightMap(scene, renderer) {
+  var pmremGenerator = new three.PMREMGenerator(renderer);
 
-//   const object = scene.getObjectByName("wall_1_1");
-
-//   const texture = new RGBELoader()
-//     .setDataType(THREE.UnsignedByteType)
-//     .load("./assets/img/hdr/wall.1_baked.hdr");
-// object.geometry.attributes.uv2 = object.geometry.attributes.uv;
-
-//   object.material.side = 2;
-//   object.material.lightmap = texture;
-// }
-
-function addLightMap(scene) {
   scene.traverse(function (object) {
     if (object.isMesh) {
       var name = object.name.toString().replace(/_/g, ".") + "_baked.hdr";
-    //   console.log(name);
 
-  const texture = new RGBELoader()
-    .setDataType(THREE.UnsignedByteType)
-    .load("./assets/img/hdr/" +name);
-// object.geometry.attributes.uv2 = object.geometry.attributes.uv;
+      const texture = new RGBELoader()
+        .setDataType(three.UnsignedByteType)
+        .load("./assets/img/hdr/" + name);
+      object.geometry.attributes.uv2 = object.geometry.attributes.uv;
 
       object.material.side = 2;
-  object.material.lightmap = texture;
-}
+      object.material.lightmap = texture;
+    }
   });
 }
 
@@ -112951,29 +112940,7 @@ async function main() {
   const gltfData = await addModel(renderer);
 
   scene.add(gltfData.scene);
-
-  // const wall = scene.getObjectByName("ceiling");
-  // const wall2 = scene.getObjectByName("wall_1");
-  // console.log(wall);
-  // wall.material = new THREE.MeshBasicMaterial({
-  //   transparent: true,
-  //   opacity: 0.001,
-  // });
-  // wall.rotateX(THREE.Math.degToRad(180));
-
-  // wall2.material = new THREE.MeshBasicMaterial({
-  //   transparent: true,
-  //   opacity: 0.001,
-  // });
-  // wall2.rotateX(THREE.Math.degToRad(180));
-
-  //   wall2.material = new  new THREE.MeshBasicMaterial({
-  //     color: 0x000000,
-  //     transparent: true,
-  //     blending: THREE.AdditiveBlending
-  // });
-  // wall2.material.side = THREE.DoubleSide;
-  // addLightMap(scene)
+  addLightMap(scene, renderer)
   addWeather(scene);
   resetCameraToScene(scene, controls);
   keyboardLightAnimate(scene);

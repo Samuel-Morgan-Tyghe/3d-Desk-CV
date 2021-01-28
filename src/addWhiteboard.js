@@ -3,7 +3,7 @@ import * as THREE from "../vendor/three";
 
 export function addWhiteboard(scene) {
   const obj = new THREE.Object3D();
-  console.log(obj)
+  console.log(obj);
   // //
   var div = document.createElement("div");
   div.style.width = "980px";
@@ -12,14 +12,14 @@ export function addWhiteboard(scene) {
   div.style.overflow = "hidden";
   div.style.scrolling = "no";
   div.style.frameborder = "0";
-  div.style.backgroundColor =  'rgba(201, 76, 76, 0);'
+  div.style.backgroundColor = "rgba(201, 76, 76, 0);";
 
   // div.style.backgroundColor = "white";
   // div.style.backfacevisibility= "hidden";
   // //
 
   var iframe = document.createElement("iframe");
-  iframe.id = 'whiteboard'
+  iframe.id = "whiteboard";
 
   iframe.style.width = "980px";
   iframe.style.height = "480px";
@@ -28,12 +28,13 @@ export function addWhiteboard(scene) {
   iframe.style.overflow_y = "hidden";
   iframe.style.scrolling = "no";
   iframe.style.frameborder = "0";
-  iframe.style.backgroundColor =  'rgba(201, 76, 76, 0);'
+  iframe.style.backgroundColor = "rgba(201, 76, 76, 0);";
 
-  iframe.src = 'https://editor.p5js.org/automatedartist/embed/0n9kUViVH';
+  iframe.src = "https://editor.p5js.org/automatedartist/embed/ksa1q3ycg";
+  //<iframe src="https://editor.p5js.org/automatedartist/embed/ksa1q3ycg"></iframe>
   //<iframe src="https://editor.p5js.org/automatedartist/embed/0n9kUViVH"></iframe>
   // <iframe src="https://editor.p5js.org/automatedartist/embed/QRJ3Qv2Xq"></iframe>
-/* <iframe src="https://editor.p5js.org/automatedartist/embed/kKpXtVM_R"></iframe> */
+  /* <iframe src="https://editor.p5js.org/automatedartist/embed/kKpXtVM_R"></iframe> */
   //<iframe src="https://editor.p5js.org/automatedartist/embed/QwFeEz_C3"></iframe>
   //<iframe src="https://editor.p5js.org/automatedartist/embed/zAz3hhFF4"></iframe>
   //<iframe src="https://editor.p5js.org/automatedartist/embed/6s9fM2BrI"></iframe>
@@ -47,7 +48,9 @@ export function addWhiteboard(scene) {
   // <iframe src="https://editor.p5js.org/automatedartist/embed/I_nutuyQK"></iframe>
   // iframe.src = ["https://www.youtube.com/embed/", id, "?rel=0"].join("");
   // iframe.style.backfacevisibility= "hidden";
-{/* <iframe src="https://editor.p5js.org/p5/embed/AmFCcDVysYj"></iframe> */}
+  {
+    /* <iframe src="https://editor.p5js.org/p5/embed/AmFCcDVysYj"></iframe> */
+  }
   div.appendChild(iframe);
   // //
   const objectCopy = scene.getObjectByName("whiteboardScreen");
