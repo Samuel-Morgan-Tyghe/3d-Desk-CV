@@ -22,7 +22,7 @@ export function addWhiteboard(scene) {
   iframe.id = "whiteboard";
 
   iframe.style.width = "980px";
-  iframe.style.height = "480px";
+  iframe.style.height = "490px";
   iframe.style.border = "0px";
   iframe.style.overflow_x = "hidden";
   iframe.style.overflow_y = "hidden";

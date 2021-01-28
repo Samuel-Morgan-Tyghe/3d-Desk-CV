@@ -14,7 +14,7 @@ export function addLightMap(scene, renderer) {
       object.geometry.attributes.uv2 = object.geometry.attributes.uv;
 
       object.material.side = 2;
-      object.material.lightmap = texture;
+      object.material.lightMap = texture;
     }
   });
 }

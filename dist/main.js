@@ -111411,7 +111411,7 @@ function addWhiteboard(scene) {
   iframe.id = "whiteboard";
 
   iframe.style.width = "980px";
-  iframe.style.height = "480px";
+  iframe.style.height = "490px";
   iframe.style.border = "0px";
   iframe.style.overflow_x = "hidden";
   iframe.style.overflow_y = "hidden";
@@ -112680,7 +112680,7 @@ function addLightMap(scene, renderer) {
       object.geometry.attributes.uv2 = object.geometry.attributes.uv;
 
       object.material.side = 2;
-      object.material.lightmap = texture;
+      object.material.lightMap = texture;
     }
   });
 }
@@ -112940,7 +112940,8 @@ async function main() {
   const gltfData = await addModel(renderer);
 
   scene.add(gltfData.scene);
-  addLightMap(scene, renderer)
+
+  addLightMap(scene, renderer);
   addWeather(scene);
   resetCameraToScene(scene, controls);
   keyboardLightAnimate(scene);
@@ -112965,7 +112966,7 @@ async function main() {
     addAutomatedArt(scene);
     addIFrames(scene);
     addIFramesCV(scene);
-    addWhiteboard(scene)
+    addWhiteboard(scene);
   }
   matrixAutoUpdate(scene);
   // scene.overrideMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );

@@ -109,7 +109,8 @@ async function main() {
   const gltfData = await addModel(renderer);
 
   scene.add(gltfData.scene);
-  addLightMap(scene, renderer)
+
+  addLightMap(scene, renderer);
   addWeather(scene);
   resetCameraToScene(scene, controls);
   keyboardLightAnimate(scene);
@@ -134,7 +135,7 @@ async function main() {
     addAutomatedArt(scene);
     addIFrames(scene);
     addIFramesCV(scene);
-    addWhiteboard(scene)
+    addWhiteboard(scene);
   }
   matrixAutoUpdate(scene);
   // scene.overrideMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
