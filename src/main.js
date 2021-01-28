@@ -119,8 +119,8 @@ async function main() {
   addClock(scene);
   addKeywordText(scene);
 
-  addLights(scene);
-  addShadow(scene, renderer);
+  // addLights(scene);
+  // addShadow(scene, renderer);
 
   // removeShadow(scene)
   // detect mobile

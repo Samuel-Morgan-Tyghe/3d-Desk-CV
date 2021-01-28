@@ -99221,7 +99221,7 @@ ImmediateRenderObject.prototype.isImmediateRenderObject = true;
 
 const _vector$9 = /*@__PURE__*/ new Vector3();
 
-class SpotLightHelper extends Object3D {
+class SpotLightHelper extends (/* unused pure expression or super */ null && (Object3D)) {
 
 	constructor( light, color ) {
 
@@ -99500,7 +99500,7 @@ const _vector$b = /*@__PURE__*/ new Vector3();
 const _color1 = /*@__PURE__*/ new Color();
 const _color2 = /*@__PURE__*/ new Color();
 
-class HemisphereLightHelper extends Object3D {
+class HemisphereLightHelper extends (/* unused pure expression or super */ null && (Object3D)) {
 
 	constructor( light, size, color ) {
 
@@ -99692,7 +99692,7 @@ const _v1$6 = /*@__PURE__*/ new Vector3();
 const _v2$3 = /*@__PURE__*/ new Vector3();
 const _v3$1 = /*@__PURE__*/ new Vector3();
 
-class DirectionalLightHelper extends Object3D {
+class DirectionalLightHelper extends (/* unused pure expression or super */ null && (Object3D)) {
 
 	constructor( light, size, color ) {
 
@@ -111702,7 +111702,7 @@ function addKeywordText(scene) {
  *  This helper must be added as a child of the light
  */
 
-function RectAreaLightHelper( light, color ) {
+function RectAreaLightHelper_RectAreaLightHelper( light, color ) {
 
 	this.light = light;
 
@@ -111734,10 +111734,10 @@ function RectAreaLightHelper( light, color ) {
 
 }
 
-RectAreaLightHelper.prototype = Object.create( Line.prototype );
-RectAreaLightHelper.prototype.constructor = RectAreaLightHelper;
+RectAreaLightHelper_RectAreaLightHelper.prototype = Object.create( Line.prototype );
+RectAreaLightHelper_RectAreaLightHelper.prototype.constructor = RectAreaLightHelper_RectAreaLightHelper;
 
-RectAreaLightHelper.prototype.update = function () {
+RectAreaLightHelper_RectAreaLightHelper.prototype.update = function () {
 
 	this.scale.set( 0.5 * this.light.width, 0.5 * this.light.height, 1 );
 
@@ -111761,7 +111761,7 @@ RectAreaLightHelper.prototype.update = function () {
 
 };
 
-RectAreaLightHelper.prototype.dispose = function () {
+RectAreaLightHelper_RectAreaLightHelper.prototype.dispose = function () {
 
 	this.geometry.dispose();
 	this.material.dispose();
@@ -111777,19 +111777,19 @@ RectAreaLightHelper.prototype.dispose = function () {
 
 
 function addLights(scene) {
-  const sphere = new SphereBufferGeometry(0.05, 5, 5);
+  const sphere = new THREE.SphereBufferGeometry(0.05, 5, 5);
 
   // const amLight = new THREE.AmbientLight("#6a0d83", 0.3); // soft white light#
   // const amLight = new THREE.AmbientLight("#6a0d83", 0.05); // soft white light#
-  const amLight = new AmbientLight("white", 1.05); // soft white light#
+  const amLight = new THREE.AmbientLight("white", 1.05); // soft white light#
   ////////////////////////////////////////////////////////////////////////////////////////////////
 
   // const plane = scene.getObjectByName("wall");
   // // plane.material.side = THREE.DoubleSide;
 
   var windowref = scene.getObjectByName("windowLight", true);
-  var bbox = new Box3().setFromObject(windowref);
-  const window = new RectAreaLight(
+  var bbox = new THREE.Box3().setFromObject(windowref);
+  const window = new THREE.RectAreaLight(
     "#e47025",
     10,
     bbox.max.y - bbox.min.y,
@@ -111800,20 +111800,20 @@ function addLights(scene) {
   const whelper = new RectAreaLightHelper(window);
 
   windowref.visible = false;
-  const newtempWorldPosition3 = new Vector3();
-  const newtempWorldQ3 = new Quaternion();
+  const newtempWorldPosition3 = new THREE.Vector3();
+  const newtempWorldQ3 = new THREE.Quaternion();
 
   window.position.copy(windowref.getWorldPosition(newtempWorldPosition3));
   whelper.position.copy(windowref.getWorldPosition(newtempWorldPosition3));
   window.quaternion.copy(windowref.getWorldQuaternion(newtempWorldQ3));
   whelper.quaternion.copy(windowref.getWorldQuaternion(newtempWorldQ3));
-  window.rotateX(MathUtils.degToRad(90));
-  whelper.rotateX(MathUtils.degToRad(90));
+  window.rotateX(THREE.Math.degToRad(90));
+  whelper.rotateX(THREE.Math.degToRad(90));
   window.name = "window";
   whelper.name = "windowhelper";
   whelper.castShadow=false
   //////////////////////////////////////////////////////////////////////////////////////////////
-  const gradientArtSpotLight = new SpotLight(0xffffff, 1, 0, 0.2, 0.4);
+  const gradientArtSpotLight = new THREE.SpotLight(0xffffff, 1, 0, 0.2, 0.4);
 
   const gradientArt = scene.getObjectByName("gradientGraphicArt");
   gradientArtSpotLight.castShadow = true;
@@ -111824,7 +111824,7 @@ function addLights(scene) {
   );
   gradientArtSpotLight.target = gradientArt;
   //////////////////////////////////////////////////////////////////////////////////////////////
-  const artGroupSpotLight = new SpotLight(0xffffff, 0.5, 0, 0.35, 0.4);
+  const artGroupSpotLight = new THREE.SpotLight(0xffffff, 0.5, 0, 0.35, 0.4);
 
   const artGroup = scene.getObjectByName("ArtCenter");
   artGroup.visible = false;
@@ -111837,9 +111837,9 @@ function addLights(scene) {
   );
   artGroupSpotLight.target = artGroup;
 
-  const spotLightHelper = new SpotLightHelper(artGroupSpotLight);
+  const spotLightHelper = new THREE.SpotLightHelper(artGroupSpotLight);
   //////////////////////////////////////////////////////////////////////////////////////////////
-  const deskSpotLight = new SpotLight(0xffffff, 3, 0, 0.2, 0.4);
+  const deskSpotLight = new THREE.SpotLight(0xffffff, 3, 0, 0.2, 0.4);
 
   const desk = scene.getObjectByName("desk");
   deskSpotLight.castShadow = true;
@@ -111850,7 +111850,7 @@ function addLights(scene) {
   );
   deskSpotLight.target = desk;
   //////////////////////////////////////////////////////////////////////////////////////////////
-  const whiteboardSpotLight = new SpotLight(0xffffff, 3, 0, 0.2, 0.4);
+  const whiteboardSpotLight = new THREE.SpotLight(0xffffff, 3, 0, 0.2, 0.4);
 
   const whiteboard = scene.getObjectByName("whiteboard");
   whiteboardSpotLight.castShadow = true;
@@ -111861,7 +111861,7 @@ function addLights(scene) {
   );
   whiteboardSpotLight.target = whiteboard;
   //////////////////////////////////////////////////////////////////////////////////////////////
-  const paintingSpotLight = new SpotLight(0xffffff, 0.5, 0, 0.35, 0.4);
+  const paintingSpotLight = new THREE.SpotLight(0xffffff, 0.5, 0, 0.35, 0.4);
 
   const painting = scene.getObjectByName("painting");
   console.log(scene);
@@ -111875,7 +111875,7 @@ function addLights(scene) {
   );
   paintingSpotLight.target = painting;
   //////////////////////////////////////////////////////////////////////////////////////////////
-  const palantirSpotLight = new SpotLight(0xffffff, 1, 0, 0.15, 0.9);
+  const palantirSpotLight = new THREE.SpotLight(0xffffff, 1, 0, 0.15, 0.9);
   palantirSpotLight.castShadow = true;
 
   // palantirSpotLight.add(
@@ -111892,13 +111892,13 @@ function addLights(scene) {
   );
   palantirSpotLight.target = palantirPlace;
   //////////////////////////////////////////////////////////////////////////////////////////////
-  const monitorLight1 = new RectAreaLight(0xffffff, 3, 0.29, 0.19);
+  const monitorLight1 = new THREE.RectAreaLight(0xffffff, 3, 0.29, 0.19);
 
   var monitor_screen = scene.getObjectByName("monitor_screen1", true);
 
   monitor_screen.visible = false;
-  const newtempWorldPosition = new Vector3();
-  const newtempWorldQ = new Quaternion();
+  const newtempWorldPosition = new THREE.Vector3();
+  const newtempWorldQ = new THREE.Quaternion();
 
   monitorLight1.position.copy(
     monitor_screen.getWorldPosition(newtempWorldPosition)
@@ -111906,15 +111906,15 @@ function addLights(scene) {
   monitorLight1.quaternion.copy(
     monitor_screen.getWorldQuaternion(newtempWorldQ)
   );
-  monitorLight1.rotateX(MathUtils.degToRad(90));
+  monitorLight1.rotateX(THREE.Math.degToRad(90));
   monitorLight1.name = "monitorLight1";
   ////////////////////////////////////////////////////////////////////////////////////////////////
-  const monitorLight2 = new RectAreaLight(0xffffff, 3, 0.29, 0.19);
+  const monitorLight2 = new THREE.RectAreaLight(0xffffff, 3, 0.29, 0.19);
   var monitor_screen2 = scene.getObjectByName("monitor_screen2", true);
   monitor_screen2.visible = false;
 
-  const newtempWorldPosition2 = new Vector3();
-  const newtempWorldQ2 = new Quaternion();
+  const newtempWorldPosition2 = new THREE.Vector3();
+  const newtempWorldQ2 = new THREE.Quaternion();
 
   monitorLight2.position.copy(
     monitor_screen2.getWorldPosition(newtempWorldPosition2)
@@ -111922,7 +111922,7 @@ function addLights(scene) {
   monitorLight2.quaternion.copy(
     monitor_screen2.getWorldQuaternion(newtempWorldQ2)
   );
-  monitorLight2.rotateX(MathUtils.degToRad(90));
+  monitorLight2.rotateX(THREE.Math.degToRad(90));
 
   const monitorLightHelper1 = new RectAreaLightHelper(monitorLight1);
 
@@ -111932,8 +111932,8 @@ function addLights(scene) {
 
   monitorLight2.add(monitorLightHelper2);
   //////////////////////////////////////////////////////////////////////////////////////////////
-  const directionalLight = new DirectionalLight("#e47025", 2);
-  const dlHelper = new DirectionalLightHelper(directionalLight, 1);
+  const directionalLight = new THREE.DirectionalLight("#e47025", 2);
+  const dlHelper = new THREE.DirectionalLightHelper(directionalLight, 1);
   //  windowref.visible= false
   directionalLight.castShadow = true;
   directionalLight.position.copy(
@@ -111956,7 +111956,7 @@ function addLights(scene) {
   // scene.add(directionalLight);
 
     //Create a SpotLight and turn on shadows for the light
-    const windowSpotlight = new SpotLight("#e47025");
+    const windowSpotlight = new THREE.SpotLight("#e47025");
     windowSpotlight.angle = 0.1;
     windowSpotlight.castShadow = true;
     windowSpotlight.shadow.mapSize.width = 250;
@@ -111981,15 +111981,15 @@ function addLights(scene) {
     //   windowref.getWorldPosition(newtempWorldPosition3)
     // );
     // wSLShelper.translateX(-0.1)
-    const light = new HemisphereLight( '#6a0d83', 'black', 0.5 );
-    const helper = new HemisphereLightHelper( light, 5 );
+    const light = new THREE.HemisphereLight( '#6a0d83', 'black', 0.5 );
+    const helper = new THREE.HemisphereLightHelper( light, 5 );
     light.translateY(0.3);
 
     // scene.add( helper );
 
 // console.log(light)
   
-  const windowSpotlightHelper = new SpotLightHelper(windowSpotlight);
+  const windowSpotlightHelper = new THREE.SpotLightHelper(windowSpotlight);
     scene.add( light );
 
   scene.add(windowSpotlight);
@@ -112019,29 +112019,6 @@ function addLights(scene) {
 
   // scene.add(rectlight);
   // scene.add(cylinderShadow);
-
-}
-
-;// CONCATENATED MODULE: ./src/addShadow.js
-function addShadow(scene, renderer) {
-  scene.traverse(function (child) {
-    if (child.isMesh) {
-      child.castShadow = true;
-      child.receiveShadow = true;
-    }
-  });
-  
-  const theException = scene.getObjectByName('windowhelper')
-  // console.log(theException)
-  if(theException){
-  theException.children[0].castShadow= false
-  theException.children[0].receiveShadow= false}
-  
-  // let theException1 = scene.getObjectByName('weatherMaterial')
-  // theException1.castShadow = false;
-  // theException1.receiveShadow = false;
-
-  renderer.shadowMap.needsUpdate = true
 
 }
 
@@ -112950,8 +112927,8 @@ async function main() {
   addClock(scene);
   addKeywordText(scene);
 
-  addLights(scene);
-  addShadow(scene, renderer);
+  // addLights(scene);
+  // addShadow(scene, renderer);
 
   // removeShadow(scene)
   // detect mobile
