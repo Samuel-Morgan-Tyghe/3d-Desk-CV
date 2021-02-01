@@ -6,31 +6,31 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 export function addArt(scene, renderer) {
   var manager = new THREE.LoadingManager();
   manager.onStart = function (url, itemsLoaded, itemsTotal) {
-    console.log(
-      "Started loading file: " +
-        url +
-        ".\nLoaded " +
-        itemsLoaded +
-        " of " +
-        itemsTotal +
-        " files."
-    );
+    // console.log(
+    //   "Started loading file: " +
+    //     url +
+    //     ".\nLoaded " +
+    //     itemsLoaded +
+    //     " of " +
+    //     itemsTotal +
+    //     " files."
+    // );
   };
 
   manager.onLoad = function () {
-    console.log("Loading complete!");
+    // console.log("Loading complete!");
   };
 
   manager.onProgress = function (url, itemsLoaded, itemsTotal) {
-    console.log(
-      "Loading file: " +
-        url +
-        ".\nLoaded " +
-        itemsLoaded +
-        " of " +
-        itemsTotal +
-        " files."
-    );
+    // console.log(
+    //   "Loading file: " +
+    //     url +
+    //     ".\nLoaded " +
+    //     itemsLoaded +
+    //     " of " +
+    //     itemsTotal +
+    //     " files."
+    // );
   };
 
   var palantirPlace = scene.getObjectByName("palantirPlace", true);
@@ -138,6 +138,7 @@ export function addArt(scene, renderer) {
     //insync with lights use MeshLambertMaterial / MeshBasicMaterial
     const mat = new THREE.MeshBasicMaterial({ map: texture });
     painting.material = mat;
+    painting.name = 'painting'
     console.log(painting);
     function paintingOpen() {
       setTimeout(function () {

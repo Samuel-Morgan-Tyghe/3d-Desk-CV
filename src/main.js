@@ -18,11 +18,13 @@ import { computerLightBlink } from "./computerLightBlink";
 import { keyboardLightAnimate } from "./keyboardLightAnimate";
 // import { onMouseClick } from "./onMouseClick";
 // import { onMouseMove } from "./onMouseMove";
-import { resetCameraToScene } from "./resetCameraToScene";
 import { addLightMap } from "./addLightMap";
 import { addAutomatedArt } from "./addAutomatedArt";
 import { onClickMoveCamera } from "./onClickMoveCamera";
 import { matrixAutoUpdate } from "./matrixAutoUpdate";
+
+import { THREEx } from "../vendor/threex.domevents";
+
 let INTERSECTED;
 let animationToggle;
 var stats;
@@ -81,8 +83,8 @@ function createStats() {
 
 const scene = new THREE.Scene();
 console.log(scene);
-// scene.background = new THREE.Color("#FFBA70");
-scene.background = new THREE.Color("grey");
+scene.background = new THREE.Color("#FFBA70");
+// scene.background = new THREE.Color("grey");
 
 const camera = new THREE.PerspectiveCamera(
   50,
@@ -90,17 +92,23 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   9
 );
-camera.position.set(1.5, 2, 2);
+camera.position.set(0, 1, 2);
 
 const controls = new OrbitControls(camera, renderer2.domElement);
-// controls.target.set
-// controls.enablePan = false;
-// controls.enableZoom = false;
-// controls.enableDamping = true;
-// controls.minPolarAngle = 0.8;
-// controls.maxPolarAngle = 2.4;
-// controls.dampingFactor = 0.07;
-// controls.rotateSpeed = 0.07;
+// controls.target.set(scene)
+controls.maxDistance = 0;
+controls.maxDistance = 5;
+
+console.log(controls);
+
+controls.enableDamping = true;
+controls.minPolarAngle = 0.2;
+controls.maxPolarAngle = 1.85;
+controls.minAzimuthAngle = -1; // radians
+controls.maxAzimuthAngle = 1;
+controls.dampingFactor = 0.07;
+// controls.rotateSpeed = 0.2;
+controls.target.set(0,0.8, 0);
 controls.update();
 
 //  addModel();
@@ -110,17 +118,17 @@ async function main() {
 
   scene.add(gltfData.scene);
 
-  addLightMap(scene, renderer);
+  // addLightMap(scene, renderer);
   addWeather(scene);
-  resetCameraToScene(scene, controls);
   keyboardLightAnimate(scene);
   computerLightBlink(scene);
   addArt(scene, renderer);
   addClock(scene);
-  addKeywordText(scene);
 
-  // addLights(scene);
-  // addShadow(scene, renderer);
+  addLights(scene);
+  addShadow(scene, renderer);
+
+  addKeywordText(scene);
 
   // removeShadow(scene)
   // detect mobile
@@ -130,8 +138,8 @@ async function main() {
       navigator.userAgent.indexOf("IEMobile") !== -1
     )
   ) {
-    console.log(window.innerWidth);
-    console.log(window.innerHeight);
+    // console.log(window.innerWidth);
+    // console.log(window.innerHeight);
     addAutomatedArt(scene);
     addIFrames(scene);
     addIFramesCV(scene);
@@ -139,7 +147,7 @@ async function main() {
   }
   matrixAutoUpdate(scene);
   // scene.overrideMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-  console.log("Scene polycount:", renderer.info);
+  // console.log("Scene polycount:", renderer.info);
 }
 
 main().catch((error) => {
@@ -148,6 +156,8 @@ main().catch((error) => {
 
 let raycaster = new THREE.Raycaster();
 let mouse = new THREE.Vector2();
+// var domEvents = new THREEx.DomEvents(camera, renderer.domElement);
+// domEvents.addEventListener(cube, 'mousedown', onDocumentMouseDown, false);
 
 window.addEventListener("click", onMouseClick);
 window.addEventListener("mousemove", onMouseMove);
@@ -211,6 +221,8 @@ function onMouseClick(event) {
       element.src = projectSrcArray[number];
     }
     if (intersects[i].object.name == "painting") {
+      let keywordGroup = scene.getObjectByName("keywordGroup");
+      keywordGroup.visible = true;
       object = "painting";
       x = 0;
       y = 0;
@@ -218,6 +230,7 @@ function onMouseClick(event) {
       onClickMoveCamera(scene, camera, controls, object, x, y, z);
     }
     if (intersects[i].object.parent.name == "monitor") {
+      scene.getObjectByName("projects").visible = true;
       object = "monitor_screen1";
       x = 0.2;
       y = 0;
@@ -225,6 +238,8 @@ function onMouseClick(event) {
       onClickMoveCamera(scene, camera, controls, object, x, y, z);
     }
     if (intersects[i].object.parent.name == "monitor_1") {
+      scene.getObjectByName("cv").visible = true;
+
       object = "monitor_screen2";
       x = -0.15;
       y = 0;
@@ -232,6 +247,7 @@ function onMouseClick(event) {
       onClickMoveCamera(scene, camera, controls, object, x, y, z);
     }
     if (intersects[i].object.parent.name == "whiteboard") {
+      scene.getObjectByName("whiteboard p5js").visible = true;
       object = "whiteboard";
       x = 0;
       y = 0;
@@ -244,6 +260,7 @@ function onMouseClick(event) {
 function onMouseMove(event) {
   event.preventDefault();
   let weatherAppText = scene.getObjectByName("weatherAppText");
+  let painting = scene.getObjectByName("painting");
 
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -253,15 +270,18 @@ function onMouseMove(event) {
   var intersects = raycaster.intersectObjects(scene.children, true);
 
   if (intersects.length > 0) {
-    for (var i = 0; i < intersects.length; i++) {
-      if (intersects[i].object.name == "weather") {
-        weatherAppText.visible = true;
-      }
-      if (INTERSECTED != intersects[i].object) {
-        if (intersects[i].object.name == "painting") {
-          // scene.getObjectByName('Wall_Art_Classical_Plane').material.wireframe = true
-        }
-      }
+    //permanent change
+
+    if (intersects[0].object.name == "weather") {
+      weatherAppText.visible = true;
+    }
+
+    //////////////////////
+    //temporary change
+    if (intersects[0].object.name == "painting") {
+      painting.visible = false;
+    } else {
+      painting.visible = true;
     }
   }
 }

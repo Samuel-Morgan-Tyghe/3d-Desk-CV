@@ -4,6 +4,11 @@ const newtempWorldPosition2= new THREE.Vector3();
 
 export function addKeywordText(scene) {
   let artGroup = scene.getObjectByName("NickHarper").getWorldPosition(newtempWorldPosition);
+  const keywordGroup = new THREE.Group();
+  keywordGroup.visible = false
+  keywordGroup.name = 'keywordGroup'
+
+  scene.add(keywordGroup)
 
   const artistTextLoader = new THREE.FontLoader();
   artistTextLoader.load("./assets/fonts/Alata_Regular.json", function (font) {
@@ -33,7 +38,7 @@ export function addKeywordText(scene) {
     // artistText.rotation.set(0, 0.45, 0);
     artistText.name = "Fine Artist";
     // artistText.visible = false
-    scene.add(artistText);
+    keywordGroup.add(artistText);
   });
 
   const creativeTextLoader = new THREE.FontLoader();
@@ -65,7 +70,7 @@ export function addKeywordText(scene) {
     // creativeText.rotation.set(0, 0.45, 0);
     creativeText.name = "CREATIVE";
     // creativeText.visible = false
-    scene.add(creativeText);
+    keywordGroup.add(creativeText);
   });
 
   const inventiveTextLoader = new THREE.FontLoader();
@@ -99,7 +104,7 @@ export function addKeywordText(scene) {
       // inventiveText.rotation.set(0, 0.45, 0);
       inventiveText.name = "INVENTIVE";
       // inventiveText.visible = false
-      scene.add(inventiveText);
+      keywordGroup.add(inventiveText);
     }
   );
 
@@ -131,7 +136,7 @@ export function addKeywordText(scene) {
     // adaptiveText.rotation.set(0, 0.45, 0);
     adaptiveText.name = "adaptive";
     // adaptiveText.visible = false
-    scene.add(adaptiveText);
+    keywordGroup.add(adaptiveText);
   });
 
   const weatherAppTextLoader = new THREE.FontLoader();
@@ -170,4 +175,6 @@ export function addKeywordText(scene) {
       scene.add(weatherAppText);
     }
   );
+
+  
 }

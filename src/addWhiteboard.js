@@ -3,7 +3,8 @@ import * as THREE from "../vendor/three";
 
 export function addWhiteboard(scene) {
   const obj = new THREE.Object3D();
-  console.log(obj);
+  
+  // console.log(obj);
   // //
   var div = document.createElement("div");
   div.style.width = "980px";
@@ -55,6 +56,9 @@ export function addWhiteboard(scene) {
   // //
   const objectCopy = scene.getObjectByName("whiteboardScreen");
   var css3dObject = new CSS3DObject(div);
+
+  css3dObject.name = 'whiteboard p5js'
+  // css3dObject.visible = false
   // css3dObject.position.set(-70, 725, -90);
 
   // obj.scale.copy(objectCopy.getWorldScale());

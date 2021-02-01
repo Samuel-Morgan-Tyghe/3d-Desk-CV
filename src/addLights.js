@@ -13,6 +13,12 @@ export function addLights(scene) {
   // // plane.material.side = THREE.DoubleSide;
 
   var windowref = scene.getObjectByName("windowLight", true);
+  windowref.rotateX(THREE.Math.degToRad(180));
+  windowref.material.side = 0;
+  windowref.visible = false;
+  // windowref.material.color.setHex(0xe47025)
+  // windowref.material.emissive.setHex(0xe47025)
+
   var bbox = new THREE.Box3().setFromObject(windowref);
   const window = new THREE.RectAreaLight(
     "#e47025",
@@ -21,10 +27,9 @@ export function addLights(scene) {
     bbox.max.z - bbox.min.z
   );
 
-  console.log(window);
+  // console.log(window);
   const whelper = new RectAreaLightHelper(window);
 
-  windowref.visible = false;
   const newtempWorldPosition3 = new THREE.Vector3();
   const newtempWorldQ3 = new THREE.Quaternion();
 
@@ -32,11 +37,14 @@ export function addLights(scene) {
   whelper.position.copy(windowref.getWorldPosition(newtempWorldPosition3));
   window.quaternion.copy(windowref.getWorldQuaternion(newtempWorldQ3));
   whelper.quaternion.copy(windowref.getWorldQuaternion(newtempWorldQ3));
-  window.rotateX(THREE.Math.degToRad(90));
-  whelper.rotateX(THREE.Math.degToRad(90));
+  window.rotateX(THREE.Math.degToRad(-90));
+  whelper.rotateX(THREE.Math.degToRad(-90));
+  window.translateZ(-0.01);
+  whelper.translateZ(-0.01);
+
   window.name = "window";
   whelper.name = "windowhelper";
-  whelper.castShadow=false
+  whelper.castShadow = false;
   //////////////////////////////////////////////////////////////////////////////////////////////
   const gradientArtSpotLight = new THREE.SpotLight(0xffffff, 1, 0, 0.2, 0.4);
 
@@ -90,7 +98,7 @@ export function addLights(scene) {
 
   const painting = scene.getObjectByName("painting");
   console.log(scene);
-  console.log(painting);
+  // console.log(painting);
 
   paintingSpotLight.castShadow = true;
   paintingSpotLight.position.set(
@@ -174,52 +182,52 @@ export function addLights(scene) {
   directionalLight.shadow.mapSize.height = 512; // default
   directionalLight.shadow.camera.near = 0.5; // default
   directionalLight.shadow.camera.far = 2; // default
-  console.log(directionalLight);
+  // console.log(directionalLight);
   // // dlHelper.translateX(5)
   directionalLight.target = windowref;
   // scene.add(dlHelper);
   // scene.add(directionalLight);
 
-    //Create a SpotLight and turn on shadows for the light
-    const windowSpotlight = new THREE.SpotLight("#e47025");
-    windowSpotlight.angle = 0.1;
-    windowSpotlight.castShadow = true;
-    windowSpotlight.shadow.mapSize.width = 250;
-    windowSpotlight.shadow.mapSize.height = 250;
-    windowSpotlight.shadow.camera.near = 5.9;
-    windowSpotlight.shadow.camera.far = 10
-    // windowSpotlight.prenumbra = 0.3
-    windowSpotlight.shadow.camera.fov = 0
-    // windowSpotlight.shadow.camera.position=windowSpotlight.position
-  windowSpotlight.target = windowref
+  //Create a SpotLight and turn on shadows for the light
+  const windowSpotlight = new THREE.SpotLight("#e47025");
+  windowSpotlight.angle = 0.1;
+  windowSpotlight.castShadow = true;
+  windowSpotlight.shadow.mapSize.width = 250;
+  windowSpotlight.shadow.mapSize.height = 250;
+  windowSpotlight.shadow.camera.near = 5.9;
+  windowSpotlight.shadow.camera.far = 10;
+  // windowSpotlight.prenumbra = 0.3
+  windowSpotlight.shadow.camera.fov = 0;
+  // windowSpotlight.shadow.camera.position=windowSpotlight.position
+  windowSpotlight.target = windowref;
 
-    // windowSpotlight.target = scene.getObjectByName('window')
-    // windowSpotlight.shadow = new THREE.SpotLightShadow(new THREE.PerspectiveCamera(20, 1, 1, 250));
+  // windowSpotlight.target = scene.getObjectByName('window')
+  // windowSpotlight.shadow = new THREE.SpotLightShadow(new THREE.PerspectiveCamera(20, 1, 1, 250));
 
-    windowSpotlight.position.copy(
-      windowref.getWorldPosition(newtempWorldPosition3)
-    );
-    windowSpotlight.translateX(5)
-    windowSpotlight.translateZ(4)
+  windowSpotlight.position.copy(
+    windowref.getWorldPosition(newtempWorldPosition3)
+  );
+  windowSpotlight.translateX(5);
+  windowSpotlight.translateZ(4);
 
-    // wSLShelper.position.copy(
-    //   windowref.getWorldPosition(newtempWorldPosition3)
-    // );
-    // wSLShelper.translateX(-0.1)
-    const light = new THREE.HemisphereLight( '#6a0d83', 'black', 0.5 );
-    const helper = new THREE.HemisphereLightHelper( light, 5 );
-    light.translateY(0.3);
+  // wSLShelper.position.copy(
+  //   windowref.getWorldPosition(newtempWorldPosition3)
+  // );
+  // wSLShelper.translateX(-0.1)
+  const light = new THREE.HemisphereLight("#6a0d83", "black", 0.5);
+  const helper = new THREE.HemisphereLightHelper(light, 5);
+  light.translateY(0.3);
 
-    // scene.add( helper );
+  // scene.add( helper );
 
-// console.log(light)
-  
+  // console.log(light)
+
   const windowSpotlightHelper = new THREE.SpotLightHelper(windowSpotlight);
-    scene.add( light );
+  scene.add(light);
 
   scene.add(windowSpotlight);
   // scene.add(windowSpotlightHelper);
- scene.add(whelper);
+  //  scene.add(whelper);
   scene.add(window);
 
   // scene.add(amLight);
@@ -228,8 +236,7 @@ export function addLights(scene) {
   // scene.add(light2);
   // scene.add(sun)
 
-// console.log(whelper)
- 
+  // console.log(whelper)
 
   // scene.add(monitorLight1);
   // scene.add(monitorLight2);
@@ -244,5 +251,4 @@ export function addLights(scene) {
 
   // scene.add(rectlight);
   // scene.add(cylinderShadow);
-
 }

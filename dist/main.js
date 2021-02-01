@@ -51911,6 +51911,463 @@ module.exports = {
 });
 
 
+/***/ }),
+
+/***/ 552:
+/***/ (() => {
+
+// This THREEx helper makes it easy to handle the mouse events in your 3D scene
+//
+// * CHANGES NEEDED
+//   * handle drag/drop
+//   * notify events not object3D - like DOM
+//     * so single object with property
+//   * DONE bubling implement bubling/capturing
+//   * DONE implement event.stopPropagation()
+//   * DONE implement event.type = "click" and co
+//   * DONE implement event.target
+//
+// # Lets get started
+//
+// First you include it in your page
+//
+// ```<script src='threex.domevent.js'>< /script>```
+//
+// # use the object oriented api
+//
+// You bind an event like this
+// 
+// ```mesh.on('click', function(object3d){ ... })```
+//
+// To unbind an event, just do
+//
+// ```mesh.off('click', function(object3d){ ... })```
+//
+// As an alternative, there is another naming closer DOM events.
+// Pick the one you like, they are doing the same thing
+//
+// ```mesh.addEventListener('click', function(object3d){ ... })```
+// ```mesh.removeEventListener('click', function(object3d){ ... })```
+//
+// # Supported Events
+//
+// Always in a effort to stay close to usual pratices, the events name are the same as in DOM.
+// The semantic is the same too.
+// Currently, the available events are
+// [click, dblclick, mouseup, mousedown](http://www.quirksmode.org/dom/events/click.html),
+// [mouseover and mouse out](http://www.quirksmode.org/dom/events/mouseover.html).
+//
+// # use the standalone api
+//
+// The object-oriented api modifies THREE.Object3D class.
+// It is a global class, so it may be legitimatly considered unclean by some people.
+// If this bother you, simply do ```THREEx.DomEvents.noConflict()``` and use the
+// standalone API. In fact, the object oriented API is just a thin wrapper
+// on top of the standalone API.
+//
+// First, you instanciate the object
+//
+// ```var domEvent = new THREEx.DomEvent();```
+// 
+// Then you bind an event like this
+//
+// ```domEvent.bind(mesh, 'click', function(object3d){ object3d.scale.x *= 2; });```
+//
+// To unbind an event, just do
+//
+// ```domEvent.unbind(mesh, 'click', callback);```
+//
+// 
+// # Code
+
+//
+
+/** @namespace */
+var THREEx		= THREEx 		|| {};
+
+// # Constructor
+THREEx.DomEvents	= function(camera, domElement)
+{
+	this._camera	= camera || null;
+	this._domElement= domElement || document;
+	this._raycaster = new THREE.Raycaster();
+	this._selected	= null;
+	this._boundObjs	= {};
+	// Bind dom event for mouse and touch
+	var _this	= this;
+
+	this._$onClick		= function(){ _this._onClick.apply(_this, arguments);		};
+	this._$onDblClick	= function(){ _this._onDblClick.apply(_this, arguments);	};
+	this._$onMouseMove	= function(){ _this._onMouseMove.apply(_this, arguments);	};
+	this._$onMouseDown	= function(){ _this._onMouseDown.apply(_this, arguments);	};
+	this._$onMouseUp	= function(){ _this._onMouseUp.apply(_this, arguments);		};
+	this._$onTouchMove	= function(){ _this._onTouchMove.apply(_this, arguments);	};
+	this._$onTouchStart	= function(){ _this._onTouchStart.apply(_this, arguments);	};
+	this._$onTouchEnd	= function(){ _this._onTouchEnd.apply(_this, arguments);	};
+	this._$onContextmenu	= function(){ _this._onContextmenu.apply(_this, arguments);	};
+	this._domElement.addEventListener( 'click'	, this._$onClick	, false );
+	this._domElement.addEventListener( 'dblclick'	, this._$onDblClick	, false );
+	this._domElement.addEventListener( 'mousemove'	, this._$onMouseMove	, false );
+	this._domElement.addEventListener( 'mousedown'	, this._$onMouseDown	, false );
+	this._domElement.addEventListener( 'mouseup'	, this._$onMouseUp	, false );
+	this._domElement.addEventListener( 'touchmove'	, this._$onTouchMove	, false );
+	this._domElement.addEventListener( 'touchstart'	, this._$onTouchStart	, false );
+	this._domElement.addEventListener( 'touchend'	, this._$onTouchEnd	, false );
+	this._domElement.addEventListener( 'contextmenu', this._$onContextmenu	, false );
+	
+}
+
+// # Destructor
+THREEx.DomEvents.prototype.destroy	= function()
+{
+	// unBind dom event for mouse and touch
+	this._domElement.removeEventListener( 'click'		, this._$onClick	, false );
+	this._domElement.removeEventListener( 'dblclick'	, this._$onDblClick	, false );
+	this._domElement.removeEventListener( 'mousemove'	, this._$onMouseMove	, false );
+	this._domElement.removeEventListener( 'mousedown'	, this._$onMouseDown	, false );
+	this._domElement.removeEventListener( 'mouseup'		, this._$onMouseUp	, false );
+	this._domElement.removeEventListener( 'touchmove'	, this._$onTouchMove	, false );
+	this._domElement.removeEventListener( 'touchstart'	, this._$onTouchStart	, false );
+	this._domElement.removeEventListener( 'touchend'	, this._$onTouchEnd	, false );
+	this._domElement.removeEventListener( 'contextmenu'	, this._$onContextmenu	, false );
+}
+
+THREEx.DomEvents.eventNames	= [
+	"click",
+	"dblclick",
+	"mouseover",
+	"mouseout",
+	"mousemove",
+	"mousedown",
+	"mouseup",
+	"contextmenu",
+	"touchstart",
+	"touchend"
+];
+
+THREEx.DomEvents.prototype._getRelativeMouseXY	= function(domEvent){
+	var element = domEvent.target || domEvent.srcElement;
+	if (element.nodeType === 3) {
+		element = element.parentNode; // Safari fix -- see http://www.quirksmode.org/js/events_properties.html
+	}
+	
+	//get the real position of an element relative to the page starting point (0, 0)
+	//credits go to brainjam on answering http://stackoverflow.com/questions/5755312/getting-mouse-position-relative-to-content-area-of-an-element
+	var elPosition	= { x : 0 , y : 0};
+	var tmpElement	= element;
+	//store padding
+	var style	= getComputedStyle(tmpElement, null);
+	elPosition.y += parseInt(style.getPropertyValue("padding-top"), 10);
+	elPosition.x += parseInt(style.getPropertyValue("padding-left"), 10);
+	//add positions
+	do {
+		elPosition.x	+= tmpElement.offsetLeft;
+		elPosition.y	+= tmpElement.offsetTop;
+		style		= getComputedStyle(tmpElement, null);
+
+		elPosition.x	+= parseInt(style.getPropertyValue("border-left-width"), 10);
+		elPosition.y	+= parseInt(style.getPropertyValue("border-top-width"), 10);
+	} while(tmpElement = tmpElement.offsetParent);
+	
+	var elDimension	= {
+		width	: (element === window) ? window.innerWidth	: element.offsetWidth,
+		height	: (element === window) ? window.innerHeight	: element.offsetHeight
+	};
+	
+	return {
+		x : +((domEvent.pageX - elPosition.x) / elDimension.width ) * 2 - 1,
+		y : -((domEvent.pageY - elPosition.y) / elDimension.height) * 2 + 1
+	};
+};
+
+
+/********************************************************************************/
+/*		domevent context						*/
+/********************************************************************************/
+
+// handle domevent context in object3d instance
+
+THREEx.DomEvents.prototype._objectCtxInit	= function(object3d){
+	object3d._3xDomEvent = {};
+}
+THREEx.DomEvents.prototype._objectCtxDeinit	= function(object3d){
+	delete object3d._3xDomEvent;
+}
+THREEx.DomEvents.prototype._objectCtxIsInit	= function(object3d){
+	return object3d._3xDomEvent ? true : false;
+}
+THREEx.DomEvents.prototype._objectCtxGet		= function(object3d){
+	return object3d._3xDomEvent;
+}
+
+/********************************************************************************/
+/*										*/
+/********************************************************************************/
+
+/**
+ * Getter/Setter for camera
+*/
+THREEx.DomEvents.prototype.camera	= function(value)
+{
+	if( value )	this._camera	= value;
+	return this._camera;
+}
+
+THREEx.DomEvents.prototype.bind	= function(object3d, eventName, callback, useCapture)
+{
+	console.assert( THREEx.DomEvents.eventNames.indexOf(eventName) !== -1, "not available events:"+eventName );
+
+	if( !this._objectCtxIsInit(object3d) )	this._objectCtxInit(object3d);
+	var objectCtx	= this._objectCtxGet(object3d);	
+	if( !objectCtx[eventName+'Handlers'] )	objectCtx[eventName+'Handlers']	= [];
+
+	objectCtx[eventName+'Handlers'].push({
+		callback	: callback,
+		useCapture	: useCapture
+	});
+	
+	// add this object in this._boundObjs
+	if( this._boundObjs[eventName] === undefined ){
+		this._boundObjs[eventName]	= [];	
+	}
+	this._boundObjs[eventName].push(object3d);
+}
+THREEx.DomEvents.prototype.addEventListener	= THREEx.DomEvents.prototype.bind
+
+THREEx.DomEvents.prototype.unbind	= function(object3d, eventName, callback, useCapture)
+{
+	console.assert( THREEx.DomEvents.eventNames.indexOf(eventName) !== -1, "not available events:"+eventName );
+
+	if( !this._objectCtxIsInit(object3d) )	this._objectCtxInit(object3d);
+
+	var objectCtx	= this._objectCtxGet(object3d);
+	if( !objectCtx[eventName+'Handlers'] )	objectCtx[eventName+'Handlers']	= [];
+
+	var handlers	= objectCtx[eventName+'Handlers'];
+	for(var i = 0; i < handlers.length; i++){
+		var handler	= handlers[i];
+		if( callback != handler.callback )	continue;
+		if( useCapture != handler.useCapture )	continue;
+		handlers.splice(i, 1)
+		break;
+	}
+	// from this object from this._boundObjs
+	var index	= this._boundObjs[eventName].indexOf(object3d);
+	console.assert( index !== -1 );
+	this._boundObjs[eventName].splice(index, 1);
+}
+THREEx.DomEvents.prototype.removeEventListener	= THREEx.DomEvents.prototype.unbind
+
+THREEx.DomEvents.prototype._bound	= function(eventName, object3d)
+{
+	var objectCtx	= this._objectCtxGet(object3d);
+	if( !objectCtx )	return false;
+	return objectCtx[eventName+'Handlers'] ? true : false;
+}
+
+/********************************************************************************/
+/*		onMove								*/
+/********************************************************************************/
+
+// # handle mousemove kind of events
+
+THREEx.DomEvents.prototype._onMove	= function(eventName, mouseX, mouseY, origDomEvent)
+{
+//console.log('eventName', eventName, 'boundObjs', this._boundObjs[eventName])
+	// get objects bound to this event
+	var boundObjs	= this._boundObjs[eventName];
+	if( boundObjs === undefined || boundObjs.length === 0 )	return;
+	// compute the intersection
+	var vector = new THREE.Vector2();
+
+	// update the picking ray with the camera and mouse position
+	vector.set( mouseX, mouseY );
+	this._raycaster.setFromCamera( vector, this._camera );	
+
+	var intersects = this._raycaster.intersectObjects( boundObjs );
+
+	var oldSelected	= this._selected;
+	
+	if( intersects.length > 0 ){
+		var notifyOver, notifyOut, notifyMove;
+		var intersect	= intersects[ 0 ];
+		var newSelected	= intersect.object;
+		this._selected	= newSelected;
+		// if newSelected bound mousemove, notify it
+		notifyMove	= this._bound('mousemove', newSelected);
+
+		if( oldSelected != newSelected ){
+			// if newSelected bound mouseenter, notify it
+			notifyOver	= this._bound('mouseover', newSelected);
+			// if there is a oldSelect and oldSelected bound mouseleave, notify it
+			notifyOut	= oldSelected && this._bound('mouseout', oldSelected);
+		}
+	}else{
+		// if there is a oldSelect and oldSelected bound mouseleave, notify it
+		notifyOut	= oldSelected && this._bound('mouseout', oldSelected);
+		this._selected	= null;
+	}
+
+
+	// notify mouseMove - done at the end with a copy of the list to allow callback to remove handlers
+	notifyMove && this._notify('mousemove', newSelected, origDomEvent, intersect);
+	// notify mouseEnter - done at the end with a copy of the list to allow callback to remove handlers
+	notifyOver && this._notify('mouseover', newSelected, origDomEvent, intersect);
+	// notify mouseLeave - done at the end with a copy of the list to allow callback to remove handlers
+	notifyOut  && this._notify('mouseout' , oldSelected, origDomEvent, intersect);
+}
+
+
+/********************************************************************************/
+/*		onEvent								*/
+/********************************************************************************/
+
+// # handle click kind of events
+
+THREEx.DomEvents.prototype._onEvent	= function(eventName, mouseX, mouseY, origDomEvent)
+{
+	//console.log('eventName', eventName, 'boundObjs', this._boundObjs[eventName])
+	// get objects bound to this event
+	var boundObjs	= this._boundObjs[eventName];
+	if( boundObjs === undefined || boundObjs.length === 0 )	return;
+	// compute the intersection
+	var vector = new THREE.Vector2();
+
+	// update the picking ray with the camera and mouse position
+	vector.set( mouseX, mouseY );
+	this._raycaster.setFromCamera( vector, this._camera );	
+
+	var intersects = this._raycaster.intersectObjects( boundObjs, true);
+	// if there are no intersections, return now
+	if( intersects.length === 0 )	return;
+
+	// init some variables
+	var intersect	= intersects[0];
+	var object3d	= intersect.object;
+	var objectCtx	= this._objectCtxGet(object3d);
+	var objectParent = object3d.parent;
+
+	while ( typeof(objectCtx) == 'undefined' && objectParent )
+	{
+	    objectCtx = this._objectCtxGet(objectParent);
+	    objectParent = objectParent.parent;
+	}
+	if( !objectCtx )	return;
+
+	// notify handlers
+	this._notify(eventName, object3d, origDomEvent, intersect);
+}
+
+THREEx.DomEvents.prototype._notify	= function(eventName, object3d, origDomEvent, intersect)
+{
+	var objectCtx	= this._objectCtxGet(object3d);
+	var handlers	= objectCtx ? objectCtx[eventName+'Handlers'] : null;
+	
+	// parameter check
+	console.assert(arguments.length === 4)
+
+	// do bubbling
+	if( !objectCtx || !handlers || handlers.length === 0 ){
+		object3d.parent && this._notify(eventName, object3d.parent, origDomEvent, intersect);
+		return;
+	}
+	
+	// notify all handlers
+	var handlers	= objectCtx[eventName+'Handlers'];
+	for(var i = 0; i < handlers.length; i++){
+		var handler	= handlers[i];
+		var toPropagate	= true;
+		handler.callback({
+			type		: eventName,
+			target		: object3d,
+			origDomEvent	: origDomEvent,
+			intersect	: intersect,
+			stopPropagation	: function(){
+				toPropagate	= false;
+			}
+		});
+		if( !toPropagate )	continue;
+		// do bubbling
+		if( handler.useCapture === false ){
+			object3d.parent && this._notify(eventName, object3d.parent, origDomEvent, intersect);
+		}
+	}
+}
+
+/********************************************************************************/
+/*		handle mouse events						*/
+/********************************************************************************/
+// # handle mouse events
+
+THREEx.DomEvents.prototype._onMouseDown	= function(event){ return this._onMouseEvent('mousedown', event);	}
+THREEx.DomEvents.prototype._onMouseUp	= function(event){ return this._onMouseEvent('mouseup'	, event);	}
+
+
+THREEx.DomEvents.prototype._onMouseEvent	= function(eventName, domEvent)
+{
+	var mouseCoords = this._getRelativeMouseXY(domEvent);
+	this._onEvent(eventName, mouseCoords.x, mouseCoords.y, domEvent);
+}
+
+THREEx.DomEvents.prototype._onMouseMove	= function(domEvent)
+{
+	var mouseCoords = this._getRelativeMouseXY(domEvent);
+	this._onMove('mousemove', mouseCoords.x, mouseCoords.y, domEvent);
+	this._onMove('mouseover', mouseCoords.x, mouseCoords.y, domEvent);
+	this._onMove('mouseout' , mouseCoords.x, mouseCoords.y, domEvent);
+}
+
+THREEx.DomEvents.prototype._onClick		= function(event)
+{
+	// TODO handle touch ?
+	this._onMouseEvent('click'	, event);
+}
+THREEx.DomEvents.prototype._onDblClick		= function(event)
+{
+	// TODO handle touch ?
+	this._onMouseEvent('dblclick'	, event);
+}
+
+THREEx.DomEvents.prototype._onContextmenu	= function(event)
+{
+	//TODO don't have a clue about how this should work with touch..
+	this._onMouseEvent('contextmenu'	, event);
+}
+
+/********************************************************************************/
+/*		handle touch events						*/
+/********************************************************************************/
+// # handle touch events
+
+
+THREEx.DomEvents.prototype._onTouchStart	= function(event){ return this._onTouchEvent('touchstart', event);	}
+THREEx.DomEvents.prototype._onTouchEnd	= function(event){ return this._onTouchEvent('touchend'	, event);	}
+
+THREEx.DomEvents.prototype._onTouchMove	= function(domEvent)
+{
+	if( domEvent.touches.length != 1 )	return undefined;
+
+	domEvent.preventDefault();
+
+	var mouseX	= +(domEvent.touches[ 0 ].pageX / window.innerWidth ) * 2 - 1;
+	var mouseY	= -(domEvent.touches[ 0 ].pageY / window.innerHeight) * 2 + 1;
+	this._onMove('mousemove', mouseX, mouseY, domEvent);
+	this._onMove('mouseover', mouseX, mouseY, domEvent);
+	this._onMove('mouseout' , mouseX, mouseY, domEvent);
+}
+
+THREEx.DomEvents.prototype._onTouchEvent	= function(eventName, domEvent)
+{
+	if( domEvent.touches.length != 1 )	return undefined;
+
+	domEvent.preventDefault();
+
+	var mouseX	= +(domEvent.touches[ 0 ].pageX / window.innerWidth ) * 2 - 1;
+	var mouseY	= -(domEvent.touches[ 0 ].pageY / window.innerHeight) * 2 + 1;
+	this._onEvent(eventName, mouseX, mouseY, domEvent);	
+}
+
+
 /***/ })
 
 /******/ 	});
@@ -51947,8 +52404,8 @@ module.exports = {
 /******/ 		// getDefaultExport function for compatibility with non-harmony modules
 /******/ 		__webpack_require__.n = (module) => {
 /******/ 			var getter = module && module.__esModule ?
-/******/ 				() => module['default'] :
-/******/ 				() => module;
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
 /******/ 			__webpack_require__.d(getter, { a: getter });
 /******/ 			return getter;
 /******/ 		};
@@ -51968,7 +52425,7 @@ module.exports = {
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
-/******/ 		__webpack_require__.o = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop)
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/node module decorator */
@@ -99221,7 +99678,7 @@ ImmediateRenderObject.prototype.isImmediateRenderObject = true;
 
 const _vector$9 = /*@__PURE__*/ new Vector3();
 
-class SpotLightHelper extends (/* unused pure expression or super */ null && (Object3D)) {
+class SpotLightHelper extends Object3D {
 
 	constructor( light, color ) {
 
@@ -99500,7 +99957,7 @@ const _vector$b = /*@__PURE__*/ new Vector3();
 const _color1 = /*@__PURE__*/ new Color();
 const _color2 = /*@__PURE__*/ new Color();
 
-class HemisphereLightHelper extends (/* unused pure expression or super */ null && (Object3D)) {
+class HemisphereLightHelper extends Object3D {
 
 	constructor( light, size, color ) {
 
@@ -99692,7 +100149,7 @@ const _v1$6 = /*@__PURE__*/ new Vector3();
 const _v2$3 = /*@__PURE__*/ new Vector3();
 const _v3$1 = /*@__PURE__*/ new Vector3();
 
-class DirectionalLightHelper extends (/* unused pure expression or super */ null && (Object3D)) {
+class DirectionalLightHelper extends Object3D {
 
 	constructor( light, size, color ) {
 
@@ -106380,31 +106837,31 @@ DRACOLoader.getDecoderModule = function () {
 function addArt(scene, renderer) {
   var manager = new three.LoadingManager();
   manager.onStart = function (url, itemsLoaded, itemsTotal) {
-    console.log(
-      "Started loading file: " +
-        url +
-        ".\nLoaded " +
-        itemsLoaded +
-        " of " +
-        itemsTotal +
-        " files."
-    );
+    // console.log(
+    //   "Started loading file: " +
+    //     url +
+    //     ".\nLoaded " +
+    //     itemsLoaded +
+    //     " of " +
+    //     itemsTotal +
+    //     " files."
+    // );
   };
 
   manager.onLoad = function () {
-    console.log("Loading complete!");
+    // console.log("Loading complete!");
   };
 
   manager.onProgress = function (url, itemsLoaded, itemsTotal) {
-    console.log(
-      "Loading file: " +
-        url +
-        ".\nLoaded " +
-        itemsLoaded +
-        " of " +
-        itemsTotal +
-        " files."
-    );
+    // console.log(
+    //   "Loading file: " +
+    //     url +
+    //     ".\nLoaded " +
+    //     itemsLoaded +
+    //     " of " +
+    //     itemsTotal +
+    //     " files."
+    // );
   };
 
   var palantirPlace = scene.getObjectByName("palantirPlace", true);
@@ -106512,6 +106969,7 @@ function addArt(scene, renderer) {
     //insync with lights use MeshLambertMaterial / MeshBasicMaterial
     const mat = new three.MeshBasicMaterial({ map: texture });
     painting.material = mat;
+    painting.name = 'painting'
     console.log(painting);
     function paintingOpen() {
       setTimeout(function () {
@@ -111325,7 +111783,8 @@ function addModel(renderer) {
 
   return new Promise((resolve, reject) => {
     gltfLoader.load(
-      "../dist/assets/models/output/gt.gltf",
+            "../dist/assets/models/DeskScene5.1.glb",
+      // "../dist/assets/models/output/gt.gltf",
       // "../dist/assets/models/test for threejs/untitled2.gltf",
 
       (data) => resolve(data),
@@ -111341,6 +111800,8 @@ function addModel(renderer) {
 
 function addIFrames(scene) {
   const obj = new three.Object3D();
+  
+
   // //
   var div = document.createElement("div");
   div.style.width = "1080px";
@@ -111362,7 +111823,9 @@ function addIFrames(scene) {
   // //
   const objectCopy = scene.getObjectByName("monitor_screen1");
   var css3dObject = new CSS3DObject(div);
-  console.log(css3dObject)
+  css3dObject.name = 'projects'
+  // css3dObject.visible = false
+  // console.log(css3dObject)
   // css3dObject.position.set(-70, 725, -90);
 
   // obj.scale.copy(objectCopy.getWorldScale());
@@ -111392,7 +111855,8 @@ function addIFrames(scene) {
 
 function addWhiteboard(scene) {
   const obj = new three.Object3D();
-  console.log(obj);
+  
+  // console.log(obj);
   // //
   var div = document.createElement("div");
   div.style.width = "980px";
@@ -111444,6 +111908,9 @@ function addWhiteboard(scene) {
   // //
   const objectCopy = scene.getObjectByName("whiteboardScreen");
   var css3dObject = new CSS3DObject(div);
+
+  css3dObject.name = 'whiteboard p5js'
+  // css3dObject.visible = false
   // css3dObject.position.set(-70, 725, -90);
 
   // obj.scale.copy(objectCopy.getWorldScale());
@@ -111474,7 +111941,11 @@ function addWhiteboard(scene) {
 
 function addIFramesCV(scene) {
   const obj = new three.Object3D();
-  console.log(obj)
+  // obj.name = 'cv'
+  // obj.visible = false
+
+
+  // console.log(obj)
   // //
   var div = document.createElement("div");
   div.style.width = "1080px";
@@ -111497,6 +111968,10 @@ function addIFramesCV(scene) {
   // //
   const objectCopy = scene.getObjectByName("monitor_screen2");
   var css3dObject = new CSS3DObject(div);
+  css3dObject.name = 'cv'
+  // css3dObject.visible = false
+
+
   // css3dObject.position.set(-70, 725, -90);
 
   // obj.scale.copy(objectCopy.getWorldScale());
@@ -111527,6 +112002,11 @@ const newtempWorldPosition2= new three.Vector3();
 
 function addKeywordText(scene) {
   let artGroup = scene.getObjectByName("NickHarper").getWorldPosition(newtempWorldPosition);
+  const keywordGroup = new three.Group();
+  keywordGroup.visible = false
+  keywordGroup.name = 'keywordGroup'
+
+  scene.add(keywordGroup)
 
   const artistTextLoader = new three.FontLoader();
   artistTextLoader.load("./assets/fonts/Alata_Regular.json", function (font) {
@@ -111556,7 +112036,7 @@ function addKeywordText(scene) {
     // artistText.rotation.set(0, 0.45, 0);
     artistText.name = "Fine Artist";
     // artistText.visible = false
-    scene.add(artistText);
+    keywordGroup.add(artistText);
   });
 
   const creativeTextLoader = new three.FontLoader();
@@ -111588,7 +112068,7 @@ function addKeywordText(scene) {
     // creativeText.rotation.set(0, 0.45, 0);
     creativeText.name = "CREATIVE";
     // creativeText.visible = false
-    scene.add(creativeText);
+    keywordGroup.add(creativeText);
   });
 
   const inventiveTextLoader = new three.FontLoader();
@@ -111622,7 +112102,7 @@ function addKeywordText(scene) {
       // inventiveText.rotation.set(0, 0.45, 0);
       inventiveText.name = "INVENTIVE";
       // inventiveText.visible = false
-      scene.add(inventiveText);
+      keywordGroup.add(inventiveText);
     }
   );
 
@@ -111654,7 +112134,7 @@ function addKeywordText(scene) {
     // adaptiveText.rotation.set(0, 0.45, 0);
     adaptiveText.name = "adaptive";
     // adaptiveText.visible = false
-    scene.add(adaptiveText);
+    keywordGroup.add(adaptiveText);
   });
 
   const weatherAppTextLoader = new three.FontLoader();
@@ -111693,6 +112173,8 @@ function addKeywordText(scene) {
       scene.add(weatherAppText);
     }
   );
+
+  
 }
 
 ;// CONCATENATED MODULE: ./node_modules/three/examples/jsm/helpers/RectAreaLightHelper.js
@@ -111702,7 +112184,7 @@ function addKeywordText(scene) {
  *  This helper must be added as a child of the light
  */
 
-function RectAreaLightHelper_RectAreaLightHelper( light, color ) {
+function RectAreaLightHelper( light, color ) {
 
 	this.light = light;
 
@@ -111734,10 +112216,10 @@ function RectAreaLightHelper_RectAreaLightHelper( light, color ) {
 
 }
 
-RectAreaLightHelper_RectAreaLightHelper.prototype = Object.create( Line.prototype );
-RectAreaLightHelper_RectAreaLightHelper.prototype.constructor = RectAreaLightHelper_RectAreaLightHelper;
+RectAreaLightHelper.prototype = Object.create( Line.prototype );
+RectAreaLightHelper.prototype.constructor = RectAreaLightHelper;
 
-RectAreaLightHelper_RectAreaLightHelper.prototype.update = function () {
+RectAreaLightHelper.prototype.update = function () {
 
 	this.scale.set( 0.5 * this.light.width, 0.5 * this.light.height, 1 );
 
@@ -111761,7 +112243,7 @@ RectAreaLightHelper_RectAreaLightHelper.prototype.update = function () {
 
 };
 
-RectAreaLightHelper_RectAreaLightHelper.prototype.dispose = function () {
+RectAreaLightHelper.prototype.dispose = function () {
 
 	this.geometry.dispose();
 	this.material.dispose();
@@ -111777,43 +112259,51 @@ RectAreaLightHelper_RectAreaLightHelper.prototype.dispose = function () {
 
 
 function addLights(scene) {
-  const sphere = new THREE.SphereBufferGeometry(0.05, 5, 5);
+  const sphere = new SphereBufferGeometry(0.05, 5, 5);
 
   // const amLight = new THREE.AmbientLight("#6a0d83", 0.3); // soft white light#
   // const amLight = new THREE.AmbientLight("#6a0d83", 0.05); // soft white light#
-  const amLight = new THREE.AmbientLight("white", 1.05); // soft white light#
+  const amLight = new AmbientLight("white", 1.05); // soft white light#
   ////////////////////////////////////////////////////////////////////////////////////////////////
 
   // const plane = scene.getObjectByName("wall");
   // // plane.material.side = THREE.DoubleSide;
 
   var windowref = scene.getObjectByName("windowLight", true);
-  var bbox = new THREE.Box3().setFromObject(windowref);
-  const window = new THREE.RectAreaLight(
+  windowref.rotateX(MathUtils.degToRad(180));
+  windowref.material.side = 0;
+  windowref.visible = false;
+  // windowref.material.color.setHex(0xe47025)
+  // windowref.material.emissive.setHex(0xe47025)
+
+  var bbox = new Box3().setFromObject(windowref);
+  const window = new RectAreaLight(
     "#e47025",
     10,
     bbox.max.y - bbox.min.y,
     bbox.max.z - bbox.min.z
   );
 
-  console.log(window);
+  // console.log(window);
   const whelper = new RectAreaLightHelper(window);
 
-  windowref.visible = false;
-  const newtempWorldPosition3 = new THREE.Vector3();
-  const newtempWorldQ3 = new THREE.Quaternion();
+  const newtempWorldPosition3 = new Vector3();
+  const newtempWorldQ3 = new Quaternion();
 
   window.position.copy(windowref.getWorldPosition(newtempWorldPosition3));
   whelper.position.copy(windowref.getWorldPosition(newtempWorldPosition3));
   window.quaternion.copy(windowref.getWorldQuaternion(newtempWorldQ3));
   whelper.quaternion.copy(windowref.getWorldQuaternion(newtempWorldQ3));
-  window.rotateX(THREE.Math.degToRad(90));
-  whelper.rotateX(THREE.Math.degToRad(90));
+  window.rotateX(MathUtils.degToRad(-90));
+  whelper.rotateX(MathUtils.degToRad(-90));
+  window.translateZ(-0.01);
+  whelper.translateZ(-0.01);
+
   window.name = "window";
   whelper.name = "windowhelper";
-  whelper.castShadow=false
+  whelper.castShadow = false;
   //////////////////////////////////////////////////////////////////////////////////////////////
-  const gradientArtSpotLight = new THREE.SpotLight(0xffffff, 1, 0, 0.2, 0.4);
+  const gradientArtSpotLight = new SpotLight(0xffffff, 1, 0, 0.2, 0.4);
 
   const gradientArt = scene.getObjectByName("gradientGraphicArt");
   gradientArtSpotLight.castShadow = true;
@@ -111824,7 +112314,7 @@ function addLights(scene) {
   );
   gradientArtSpotLight.target = gradientArt;
   //////////////////////////////////////////////////////////////////////////////////////////////
-  const artGroupSpotLight = new THREE.SpotLight(0xffffff, 0.5, 0, 0.35, 0.4);
+  const artGroupSpotLight = new SpotLight(0xffffff, 0.5, 0, 0.35, 0.4);
 
   const artGroup = scene.getObjectByName("ArtCenter");
   artGroup.visible = false;
@@ -111837,9 +112327,9 @@ function addLights(scene) {
   );
   artGroupSpotLight.target = artGroup;
 
-  const spotLightHelper = new THREE.SpotLightHelper(artGroupSpotLight);
+  const spotLightHelper = new SpotLightHelper(artGroupSpotLight);
   //////////////////////////////////////////////////////////////////////////////////////////////
-  const deskSpotLight = new THREE.SpotLight(0xffffff, 3, 0, 0.2, 0.4);
+  const deskSpotLight = new SpotLight(0xffffff, 3, 0, 0.2, 0.4);
 
   const desk = scene.getObjectByName("desk");
   deskSpotLight.castShadow = true;
@@ -111850,7 +112340,7 @@ function addLights(scene) {
   );
   deskSpotLight.target = desk;
   //////////////////////////////////////////////////////////////////////////////////////////////
-  const whiteboardSpotLight = new THREE.SpotLight(0xffffff, 3, 0, 0.2, 0.4);
+  const whiteboardSpotLight = new SpotLight(0xffffff, 3, 0, 0.2, 0.4);
 
   const whiteboard = scene.getObjectByName("whiteboard");
   whiteboardSpotLight.castShadow = true;
@@ -111861,11 +112351,11 @@ function addLights(scene) {
   );
   whiteboardSpotLight.target = whiteboard;
   //////////////////////////////////////////////////////////////////////////////////////////////
-  const paintingSpotLight = new THREE.SpotLight(0xffffff, 0.5, 0, 0.35, 0.4);
+  const paintingSpotLight = new SpotLight(0xffffff, 0.5, 0, 0.35, 0.4);
 
   const painting = scene.getObjectByName("painting");
   console.log(scene);
-  console.log(painting);
+  // console.log(painting);
 
   paintingSpotLight.castShadow = true;
   paintingSpotLight.position.set(
@@ -111875,7 +112365,7 @@ function addLights(scene) {
   );
   paintingSpotLight.target = painting;
   //////////////////////////////////////////////////////////////////////////////////////////////
-  const palantirSpotLight = new THREE.SpotLight(0xffffff, 1, 0, 0.15, 0.9);
+  const palantirSpotLight = new SpotLight(0xffffff, 1, 0, 0.15, 0.9);
   palantirSpotLight.castShadow = true;
 
   // palantirSpotLight.add(
@@ -111892,13 +112382,13 @@ function addLights(scene) {
   );
   palantirSpotLight.target = palantirPlace;
   //////////////////////////////////////////////////////////////////////////////////////////////
-  const monitorLight1 = new THREE.RectAreaLight(0xffffff, 3, 0.29, 0.19);
+  const monitorLight1 = new RectAreaLight(0xffffff, 3, 0.29, 0.19);
 
   var monitor_screen = scene.getObjectByName("monitor_screen1", true);
 
   monitor_screen.visible = false;
-  const newtempWorldPosition = new THREE.Vector3();
-  const newtempWorldQ = new THREE.Quaternion();
+  const newtempWorldPosition = new Vector3();
+  const newtempWorldQ = new Quaternion();
 
   monitorLight1.position.copy(
     monitor_screen.getWorldPosition(newtempWorldPosition)
@@ -111906,15 +112396,15 @@ function addLights(scene) {
   monitorLight1.quaternion.copy(
     monitor_screen.getWorldQuaternion(newtempWorldQ)
   );
-  monitorLight1.rotateX(THREE.Math.degToRad(90));
+  monitorLight1.rotateX(MathUtils.degToRad(90));
   monitorLight1.name = "monitorLight1";
   ////////////////////////////////////////////////////////////////////////////////////////////////
-  const monitorLight2 = new THREE.RectAreaLight(0xffffff, 3, 0.29, 0.19);
+  const monitorLight2 = new RectAreaLight(0xffffff, 3, 0.29, 0.19);
   var monitor_screen2 = scene.getObjectByName("monitor_screen2", true);
   monitor_screen2.visible = false;
 
-  const newtempWorldPosition2 = new THREE.Vector3();
-  const newtempWorldQ2 = new THREE.Quaternion();
+  const newtempWorldPosition2 = new Vector3();
+  const newtempWorldQ2 = new Quaternion();
 
   monitorLight2.position.copy(
     monitor_screen2.getWorldPosition(newtempWorldPosition2)
@@ -111922,7 +112412,7 @@ function addLights(scene) {
   monitorLight2.quaternion.copy(
     monitor_screen2.getWorldQuaternion(newtempWorldQ2)
   );
-  monitorLight2.rotateX(THREE.Math.degToRad(90));
+  monitorLight2.rotateX(MathUtils.degToRad(90));
 
   const monitorLightHelper1 = new RectAreaLightHelper(monitorLight1);
 
@@ -111932,8 +112422,8 @@ function addLights(scene) {
 
   monitorLight2.add(monitorLightHelper2);
   //////////////////////////////////////////////////////////////////////////////////////////////
-  const directionalLight = new THREE.DirectionalLight("#e47025", 2);
-  const dlHelper = new THREE.DirectionalLightHelper(directionalLight, 1);
+  const directionalLight = new DirectionalLight("#e47025", 2);
+  const dlHelper = new DirectionalLightHelper(directionalLight, 1);
   //  windowref.visible= false
   directionalLight.castShadow = true;
   directionalLight.position.copy(
@@ -111949,52 +112439,52 @@ function addLights(scene) {
   directionalLight.shadow.mapSize.height = 512; // default
   directionalLight.shadow.camera.near = 0.5; // default
   directionalLight.shadow.camera.far = 2; // default
-  console.log(directionalLight);
+  // console.log(directionalLight);
   // // dlHelper.translateX(5)
   directionalLight.target = windowref;
   // scene.add(dlHelper);
   // scene.add(directionalLight);
 
-    //Create a SpotLight and turn on shadows for the light
-    const windowSpotlight = new THREE.SpotLight("#e47025");
-    windowSpotlight.angle = 0.1;
-    windowSpotlight.castShadow = true;
-    windowSpotlight.shadow.mapSize.width = 250;
-    windowSpotlight.shadow.mapSize.height = 250;
-    windowSpotlight.shadow.camera.near = 5.9;
-    windowSpotlight.shadow.camera.far = 10
-    // windowSpotlight.prenumbra = 0.3
-    windowSpotlight.shadow.camera.fov = 0
-    // windowSpotlight.shadow.camera.position=windowSpotlight.position
-  windowSpotlight.target = windowref
+  //Create a SpotLight and turn on shadows for the light
+  const windowSpotlight = new SpotLight("#e47025");
+  windowSpotlight.angle = 0.1;
+  windowSpotlight.castShadow = true;
+  windowSpotlight.shadow.mapSize.width = 250;
+  windowSpotlight.shadow.mapSize.height = 250;
+  windowSpotlight.shadow.camera.near = 5.9;
+  windowSpotlight.shadow.camera.far = 10;
+  // windowSpotlight.prenumbra = 0.3
+  windowSpotlight.shadow.camera.fov = 0;
+  // windowSpotlight.shadow.camera.position=windowSpotlight.position
+  windowSpotlight.target = windowref;
 
-    // windowSpotlight.target = scene.getObjectByName('window')
-    // windowSpotlight.shadow = new THREE.SpotLightShadow(new THREE.PerspectiveCamera(20, 1, 1, 250));
+  // windowSpotlight.target = scene.getObjectByName('window')
+  // windowSpotlight.shadow = new THREE.SpotLightShadow(new THREE.PerspectiveCamera(20, 1, 1, 250));
 
-    windowSpotlight.position.copy(
-      windowref.getWorldPosition(newtempWorldPosition3)
-    );
-    windowSpotlight.translateX(5)
-    windowSpotlight.translateZ(4)
+  windowSpotlight.position.copy(
+    windowref.getWorldPosition(newtempWorldPosition3)
+  );
+  windowSpotlight.translateX(5);
+  windowSpotlight.translateZ(4);
 
-    // wSLShelper.position.copy(
-    //   windowref.getWorldPosition(newtempWorldPosition3)
-    // );
-    // wSLShelper.translateX(-0.1)
-    const light = new THREE.HemisphereLight( '#6a0d83', 'black', 0.5 );
-    const helper = new THREE.HemisphereLightHelper( light, 5 );
-    light.translateY(0.3);
+  // wSLShelper.position.copy(
+  //   windowref.getWorldPosition(newtempWorldPosition3)
+  // );
+  // wSLShelper.translateX(-0.1)
+  const light = new HemisphereLight("#6a0d83", "black", 0.5);
+  const helper = new HemisphereLightHelper(light, 5);
+  light.translateY(0.3);
 
-    // scene.add( helper );
+  // scene.add( helper );
 
-// console.log(light)
-  
-  const windowSpotlightHelper = new THREE.SpotLightHelper(windowSpotlight);
-    scene.add( light );
+  // console.log(light)
+
+  const windowSpotlightHelper = new SpotLightHelper(windowSpotlight);
+  scene.add(light);
 
   scene.add(windowSpotlight);
   // scene.add(windowSpotlightHelper);
- scene.add(whelper);
+  //  scene.add(whelper);
   scene.add(window);
 
   // scene.add(amLight);
@@ -112003,8 +112493,7 @@ function addLights(scene) {
   // scene.add(light2);
   // scene.add(sun)
 
-// console.log(whelper)
- 
+  // console.log(whelper)
 
   // scene.add(monitorLight1);
   // scene.add(monitorLight2);
@@ -112019,7 +112508,32 @@ function addLights(scene) {
 
   // scene.add(rectlight);
   // scene.add(cylinderShadow);
+}
 
+;// CONCATENATED MODULE: ./src/addShadow.js
+function addShadow(scene, renderer) {
+  scene.traverse(function (child) {
+    if (child.isMesh) {
+      child.castShadow = true;
+      child.receiveShadow = true;
+    }
+  });
+  const theException = scene.getObjectByName("windowLight");
+
+  theException.castShadow = false;
+  theException.receiveShadow = false;
+
+  // const theException = scene.getObjectByName('windowhelper')
+  // // console.log(theException)
+  // if(theException){
+  // theException.children[0].castShadow= false
+  // theException.children[0].receiveShadow= false}
+
+  // let theException1 = scene.getObjectByName('weatherMaterial')
+  // theException1.castShadow = false;
+  // theException1.receiveShadow = false;
+
+  renderer.shadowMap.needsUpdate = true;
 }
 
 // EXTERNAL MODULE: ./node_modules/axios/index.js
@@ -112101,7 +112615,7 @@ function addWeather(scene) {
         // tempMesh.rotation.set(-35, 1, 1);
         tempMesh.rotation.set(-0.45, 0.45, 0.2);
         //  alarmClockText.rotation.set(100, 100.25, 100.35);
-
+        tempMesh.name = 'temperature '
         scene.add(tempMesh);
       }
     );
@@ -112146,18 +112660,6 @@ function keyboardLightAnimate(scene) {
   setInterval(lightChanging, 3 * 1000);
 }
 
-
-;// CONCATENATED MODULE: ./src/resetCameraToScene.js
-
-
-function resetCameraToScene(scene, controls) {
-  const center = new Vector3();
-
-  var bbox = new Box3().setFromObject(scene);
-  let targetReset = bbox.getCenter(center);
-  controls.target.set(targetReset.x, targetReset.y, targetReset.z);
-  controls.update;
-}
 
 ;// CONCATENATED MODULE: ./node_modules/three/examples/jsm/loaders/RGBELoader.js
 
@@ -112645,21 +113147,41 @@ RGBELoader.prototype = Object.assign( Object.create( DataTextureLoader.prototype
 
 
 function addLightMap(scene, renderer) {
-  var pmremGenerator = new three.PMREMGenerator(renderer);
+  const light = new THREE.AmbientLight( 0x404040 ); // soft white light
+  // scene.add( light );
 
-  scene.traverse(function (object) {
-    if (object.isMesh) {
-      var name = object.name.toString().replace(/_/g, ".") + "_baked.hdr";
-
-      const texture = new RGBELoader()
-        .setDataType(three.UnsignedByteType)
-        .load("./assets/img/hdr/" + name);
-      object.geometry.attributes.uv2 = object.geometry.attributes.uv;
-
+  let object = scene.getObjectByName("wall_1");
+console.log(object)
+  const texture = new THREE.TextureLoader().load(
+    "./assets/img/bake/Lightmap_AO_Denoise.png"
+  );
+  const texture2 = new THREE.TextureLoader().load(
+    "./assets/img/bake/Lightmap_NOISY_Denoise.png"
+  );
       object.material.side = 2;
-      object.material.lightMap = texture;
-    }
-  });
+
+      object.material.lightMap = texture2;
+      object.material.lightMap.flipY = false;
+      // object.material.emissiveMap = texture2;
+      object.material.aoMap = texture;
+      object.material.aoMap.flipY = false;
+
+
+  // var pmremGenerator = new THREE.PMREMGenerator(renderer);
+
+  // scene.traverse(function (object) {
+  //   if (object.isMesh) {
+  //     var name = object.name.toString().replace(/_/g, ".") + "_filtered.hdr";
+
+  //     const texture = new RGBELoader()
+  //       .setDataType(THREE.UnsignedByteType)
+  //       .load("./assets/img/hdr/" + name);
+  //     object.geometry.attributes.uv2 = object.geometry.attributes.uv;
+
+  //     object.material.side = 2;
+  //     object.material.lightMap = texture;
+  //   }
+  // });
 }
 
 ;// CONCATENATED MODULE: ./src/addAutomatedArt.js
@@ -112720,6 +113242,7 @@ function addAutomatedArt(scene) {
     mesh.translateY(1);
     mesh.translateZ(0.05);
     mesh.scale.set(0.3, 0.3, 0.3);
+    mesh.name = 'automatedArt'
     scene.add(mesh);
 
     function fn60sec() {
@@ -112805,6 +113328,8 @@ function matrixAutoUpdate(scene) {
 
 }
 
+// EXTERNAL MODULE: ./vendor/threex.domevents.js
+var threex_domevents = __webpack_require__(552);
 ;// CONCATENATED MODULE: ./src/main.js
 
 
@@ -112826,6 +113351,8 @@ function matrixAutoUpdate(scene) {
 
 // import { onMouseClick } from "./onMouseClick";
 // import { onMouseMove } from "./onMouseMove";
+
+
 
 
 
@@ -112889,8 +113416,8 @@ function createStats() {
 
 const scene = new three.Scene();
 console.log(scene);
-// scene.background = new THREE.Color("#FFBA70");
-scene.background = new three.Color("grey");
+scene.background = new three.Color("#FFBA70");
+// scene.background = new THREE.Color("grey");
 
 const camera = new three.PerspectiveCamera(
   50,
@@ -112898,17 +113425,23 @@ const camera = new three.PerspectiveCamera(
   0.1,
   9
 );
-camera.position.set(1.5, 2, 2);
+camera.position.set(0, 1, 2);
 
 const controls = new OrbitControls(camera, renderer2.domElement);
-// controls.target.set
-// controls.enablePan = false;
-// controls.enableZoom = false;
-// controls.enableDamping = true;
-// controls.minPolarAngle = 0.8;
-// controls.maxPolarAngle = 2.4;
-// controls.dampingFactor = 0.07;
-// controls.rotateSpeed = 0.07;
+// controls.target.set(scene)
+controls.maxDistance = 0;
+controls.maxDistance = 5;
+
+console.log(controls);
+
+controls.enableDamping = true;
+controls.minPolarAngle = 0.2;
+controls.maxPolarAngle = 1.85;
+controls.minAzimuthAngle = -1; // radians
+controls.maxAzimuthAngle = 1;
+controls.dampingFactor = 0.07;
+// controls.rotateSpeed = 0.2;
+controls.target.set(0,0.8, 0);
 controls.update();
 
 //  addModel();
@@ -112918,17 +113451,17 @@ async function main() {
 
   scene.add(gltfData.scene);
 
-  addLightMap(scene, renderer);
+  // addLightMap(scene, renderer);
   addWeather(scene);
-  resetCameraToScene(scene, controls);
   keyboardLightAnimate(scene);
   computerLightBlink(scene);
   addArt(scene, renderer);
   addClock(scene);
-  addKeywordText(scene);
 
-  // addLights(scene);
-  // addShadow(scene, renderer);
+  addLights(scene);
+  addShadow(scene, renderer);
+
+  addKeywordText(scene);
 
   // removeShadow(scene)
   // detect mobile
@@ -112938,8 +113471,8 @@ async function main() {
       navigator.userAgent.indexOf("IEMobile") !== -1
     )
   ) {
-    console.log(window.innerWidth);
-    console.log(window.innerHeight);
+    // console.log(window.innerWidth);
+    // console.log(window.innerHeight);
     addAutomatedArt(scene);
     addIFrames(scene);
     addIFramesCV(scene);
@@ -112947,7 +113480,7 @@ async function main() {
   }
   matrixAutoUpdate(scene);
   // scene.overrideMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-  console.log("Scene polycount:", renderer.info);
+  // console.log("Scene polycount:", renderer.info);
 }
 
 main().catch((error) => {
@@ -112956,6 +113489,8 @@ main().catch((error) => {
 
 let raycaster = new three.Raycaster();
 let mouse = new three.Vector2();
+// var domEvents = new THREEx.DomEvents(camera, renderer.domElement);
+// domEvents.addEventListener(cube, 'mousedown', onDocumentMouseDown, false);
 
 window.addEventListener("click", onMouseClick);
 window.addEventListener("mousemove", onMouseMove);
@@ -113019,6 +113554,8 @@ function onMouseClick(event) {
       element.src = projectSrcArray[number];
     }
     if (intersects[i].object.name == "painting") {
+      let keywordGroup = scene.getObjectByName("keywordGroup");
+      keywordGroup.visible = true;
       object = "painting";
       x = 0;
       y = 0;
@@ -113026,6 +113563,7 @@ function onMouseClick(event) {
       onClickMoveCamera(scene, camera, controls, object, x, y, z);
     }
     if (intersects[i].object.parent.name == "monitor") {
+      scene.getObjectByName("projects").visible = true;
       object = "monitor_screen1";
       x = 0.2;
       y = 0;
@@ -113033,6 +113571,8 @@ function onMouseClick(event) {
       onClickMoveCamera(scene, camera, controls, object, x, y, z);
     }
     if (intersects[i].object.parent.name == "monitor_1") {
+      scene.getObjectByName("cv").visible = true;
+
       object = "monitor_screen2";
       x = -0.15;
       y = 0;
@@ -113040,6 +113580,7 @@ function onMouseClick(event) {
       onClickMoveCamera(scene, camera, controls, object, x, y, z);
     }
     if (intersects[i].object.parent.name == "whiteboard") {
+      scene.getObjectByName("whiteboard p5js").visible = true;
       object = "whiteboard";
       x = 0;
       y = 0;
@@ -113052,6 +113593,7 @@ function onMouseClick(event) {
 function onMouseMove(event) {
   event.preventDefault();
   let weatherAppText = scene.getObjectByName("weatherAppText");
+  let painting = scene.getObjectByName("painting");
 
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -113061,15 +113603,18 @@ function onMouseMove(event) {
   var intersects = raycaster.intersectObjects(scene.children, true);
 
   if (intersects.length > 0) {
-    for (var i = 0; i < intersects.length; i++) {
-      if (intersects[i].object.name == "weather") {
-        weatherAppText.visible = true;
-      }
-      if (INTERSECTED != intersects[i].object) {
-        if (intersects[i].object.name == "painting") {
-          // scene.getObjectByName('Wall_Art_Classical_Plane').material.wireframe = true
-        }
-      }
+    //permanent change
+
+    if (intersects[0].object.name == "weather") {
+      weatherAppText.visible = true;
+    }
+
+    //////////////////////
+    //temporary change
+    if (intersects[0].object.name == "painting") {
+      painting.visible = false;
+    } else {
+      painting.visible = true;
     }
   }
 }

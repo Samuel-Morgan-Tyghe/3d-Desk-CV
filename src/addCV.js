@@ -3,7 +3,11 @@ import * as THREE from "../vendor/three";
 
 export function addIFramesCV(scene) {
   const obj = new THREE.Object3D();
-  console.log(obj)
+  // obj.name = 'cv'
+  // obj.visible = false
+
+
+  // console.log(obj)
   // //
   var div = document.createElement("div");
   div.style.width = "1080px";
@@ -26,6 +30,10 @@ export function addIFramesCV(scene) {
   // //
   const objectCopy = scene.getObjectByName("monitor_screen2");
   var css3dObject = new CSS3DObject(div);
+  css3dObject.name = 'cv'
+  // css3dObject.visible = false
+
+
   // css3dObject.position.set(-70, 725, -90);
 
   // obj.scale.copy(objectCopy.getWorldScale());
