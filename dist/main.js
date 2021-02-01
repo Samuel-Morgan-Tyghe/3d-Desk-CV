@@ -113612,9 +113612,9 @@ function onMouseMove(event) {
     //////////////////////
     //temporary change
     if (intersects[0].object.name == "painting") {
-      painting.visible = false;
+      // painting.material.emissive = '#FFFFFF';
     } else {
-      painting.visible = true;
+      // painting.material.emissive = '#000000';
     }
   }
 }
