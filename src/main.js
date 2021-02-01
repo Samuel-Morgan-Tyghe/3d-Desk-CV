@@ -141,9 +141,9 @@ async function main() {
     // console.log(window.innerWidth);
     // console.log(window.innerHeight);
     addAutomatedArt(scene);
+    addWhiteboard(scene);
     addIFrames(scene);
     addIFramesCV(scene);
-    addWhiteboard(scene);
   }
   matrixAutoUpdate(scene);
   // scene.overrideMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
