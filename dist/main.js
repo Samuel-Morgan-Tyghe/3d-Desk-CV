@@ -111778,8 +111778,8 @@ function addModel(renderer) {
 
   return new Promise((resolve, reject) => {
     gltfLoader.load(
-      "../dist/assets/models/DeskScene5.3.glb",
-      // "../dist/assets/models/output/gt.gltf",
+      // "../dist/assets/models/DeskScene5.3.glb",
+      "../dist/assets/models/output/gt.gltf",
       // "../dist/assets/models/test for threejs/untitled2.gltf",
 
       (data) => resolve(data),
@@ -113554,7 +113554,8 @@ function onMouseMove(scene, refArray, mouse, raycaster, camera) {
     //permanent change
     // console.log(intersects)
     if (intersects[0].object.name == "weather") {
-      refArray[0].visible = true;
+        //replace this
+        scene.getObjectByName("weatherAppText").visible = true;
     }
 
     //////////////////////
