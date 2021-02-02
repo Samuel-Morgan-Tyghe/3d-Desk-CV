@@ -113269,51 +113269,6 @@ function addAutomatedArt(scene) {
   }
 }
 
-;// CONCATENATED MODULE: ./src/onClickMoveCamera.js
-
-
-
-
-function onClickMoveCamera(scene, camera,controls, object, x, y, z) {
-  const center = new three.Vector3();
-
-  var bbox = new three.Box3().setFromObject(
-    scene.getObjectByName(object, true)
-  );
-
-  let targetReset = bbox.getCenter(center);
-
-  scene.tl1 = new gsap_min.TimelineMax().delay(0.1);
-  scene.tl1.to(
-    camera.position,
-    1,
-    {
-      x: targetReset.x+x,
-      y: targetReset.y+y,
-      z: targetReset.z+z ,
-      ease: Expo.easeOut,
-      onUpdate: function () {
-        camera.updateProjectionMatrix();
-      },
-    },
-    0
-  );
-  scene.tl1.to(
-    controls.target,
-    1,
-    {
-      x: targetReset.x,
-      y: targetReset.y,
-      z: targetReset.z,
-      ease: Expo.easeOut,
-      onUpdate: function () {
-        controls.update();
-      },
-    },
-    0
-  );
-}
-
 ;// CONCATENATED MODULE: ./src/matrixAutoUpdate.js
 function matrixAutoUpdate(scene) {
   scene.traverse(function (child) {
@@ -113596,6 +113551,180 @@ mesh.rotation.set(0,-0.5,0)
 mesh.add( sound );
 
 }
+;// CONCATENATED MODULE: ./src/mouseOver.js
+
+
+function onMouseMove(scene, refArray, mouse, raycaster, camera) {
+    event.preventDefault();
+  
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  
+    raycaster.setFromCamera(mouse, camera);
+  
+    var intersects = raycaster.intersectObjects(scene.children, true);
+  
+    if (intersects.length > 0) {
+      //permanent change
+      // console.log(intersects)
+      if (intersects[0].object.name == "weather") {
+        refArray[0].visible = true;
+      }
+  
+      //////////////////////
+      // temporary change
+      if (intersects[0].object.parent.name == "art1wireframe") {
+        refArray[1].visible = true;
+      } else {
+        refArray[1].visible = false;
+      }
+      if (intersects[0].object.parent.name == "monitorLeft") {
+        refArray[2].visible = true;
+      } else {
+        refArray[2].visible = false;
+      }
+  
+      if (intersects[0].object.parent.name == "monitorRight") {
+        refArray[3].visible = true;
+      } else {
+        refArray[3].visible = false;
+      }
+  
+      if (intersects[0].object.parent.name == "whiteboardwireframe") {
+        refArray[4].visible = true;
+      } else {
+        refArray[4].visible = false;
+      }
+    }
+  }
+  
+;// CONCATENATED MODULE: ./src/onClickMoveCamera.js
+
+
+
+
+function onClickMoveCamera(scene, camera,controls, object, x, y, z) {
+  const center = new three.Vector3();
+
+  var bbox = new three.Box3().setFromObject(
+    scene.getObjectByName(object, true)
+  );
+
+  let targetReset = bbox.getCenter(center);
+
+  scene.tl1 = new gsap_min.TimelineMax().delay(0.1);
+  scene.tl1.to(
+    camera.position,
+    1,
+    {
+      x: targetReset.x+x,
+      y: targetReset.y+y,
+      z: targetReset.z+z ,
+      ease: Expo.easeOut,
+      onUpdate: function () {
+        camera.updateProjectionMatrix();
+      },
+    },
+    0
+  );
+  scene.tl1.to(
+    controls.target,
+    1,
+    {
+      x: targetReset.x,
+      y: targetReset.y,
+      z: targetReset.z,
+      ease: Expo.easeOut,
+      onUpdate: function () {
+        controls.update();
+      },
+    },
+    0
+  );
+}
+
+;// CONCATENATED MODULE: ./src/onMouseClick.js
+
+
+
+
+let number = 0;
+
+function onMouseClick(scene, mouse, raycaster, camera, controls) {
+  event.preventDefault();
+  let object, x, y, z;
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  let projectSrcArray = [
+    "https://samuel-morgan-tyghe.github.io/Weather-App/",
+    "https://samuel-morgan-tyghe.github.io/Basic-Website-To-React",
+    "https://samuel-morgan-tyghe.github.io/Creative-Portfolio/",
+    "https://automated-art.co.uk/",
+  ];
+  function getSrcNumber(add) {
+    number = number + add;
+    if (number < 0) {
+      number = 3;
+    }
+    if (number > 3) {
+      number = 0;
+    }
+
+    return number;
+  }
+
+  raycaster.setFromCamera(mouse, camera);
+
+  var intersects = raycaster.intersectObjects(scene.children, true);
+  for (var i = 0; i < intersects.length; i++) {
+    if (intersects[i].object.name == "Prism_2") {
+      const element = document.getElementById("projects");
+      number = getSrcNumber(+1);
+      element.src = projectSrcArray[number];
+    }
+    if (intersects[i].object.name == "Prism_3") {
+      const element = document.getElementById("projects");
+      number = getSrcNumber(-1);
+      element.src = projectSrcArray[number];
+    }
+    if (intersects[i].object.name == "painting") {
+      let keywordGroup = scene.getObjectByName("keywordGroup");
+      keywordGroup.visible = true;
+      object = "painting";
+      x = 0;
+      y = 0;
+      z = window.innerWidth / 1980;
+      onClickMoveCamera(scene, camera, controls, object, x, y, z);
+    }
+    if (intersects[i].object.parent.name == "monitorLeft") {
+      scene.getObjectByName("projects").visible = true;
+      object = "monitor_screen1";
+      x = 0.2;
+      y = 0;
+      z = 0.3;
+      onClickMoveCamera(scene, camera, controls, object, x, y, z);
+    }
+    if (intersects[i].object.parent.name == "monitorRight") {
+      scene.getObjectByName("cv").visible = true;
+
+      object = "monitor_screen2";
+      x = -0.15;
+      y = 0;
+      z = 0.3;
+      onClickMoveCamera(scene, camera, controls, object, x, y, z);
+    }
+    if (intersects[i].object.parent.name == "whiteboard") {
+      scene.getObjectByName("whiteboard p5js").visible = true;
+      object = "whiteboard";
+      x = 0;
+      y = 0;
+      z = window.innerWidth / 1980;
+      onClickMoveCamera(scene, camera, controls, object, x, y, z);
+    }
+  }
+}
+
+
 // EXTERNAL MODULE: ./vendor/threex.domevents.js
 var threex_domevents = __webpack_require__(552);
 ;// CONCATENATED MODULE: ./src/main.js
@@ -113631,6 +113760,7 @@ var threex_domevents = __webpack_require__(552);
 let INTERSECTED;
 let animationToggle;
 var stats;
+let hoverRefArray;
 
 let pixelRatio = window.devicePixelRatio;
 let AA = true;
@@ -113749,24 +113879,44 @@ async function main() {
     addWhiteboard(scene);
     addIFrames(scene);
     addIFramesCV(scene);
-    addAudio(camera, scene)
+    addAudio(camera, scene);
   }
   matrixAutoUpdate(scene);
   // scene.overrideMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
   // console.log("Scene polycount:", renderer.info);
+
+
+  const weatherAppText = scene.getObjectByName("weatherAppText");
+const monitorLeftwireframe = scene.getObjectByName("monitorLeftwireframe");
+const monitorRightwireframe = scene.getObjectByName("monitorRightwireframe");
+const art1wireframe = scene.getObjectByName("art1wireframe");
+const whiteboardwireframe = scene.getObjectByName("whiteboardwireframe");
+hoverRefArray = [
+  weatherAppText,
+  art1wireframe,
+  monitorLeftwireframe,
+  monitorRightwireframe,
+  whiteboardwireframe,
+];
 }
 
 main().catch((error) => {
   console.error(error);
 });
 
+
+
 let raycaster = new three.Raycaster();
 let mouse = new three.Vector2();
 // var domEvents = new THREEx.DomEvents(camera, renderer.domElement);
 // domEvents.addEventListener(cube, 'mousedown', onDocumentMouseDown, false);
 
-window.addEventListener("click", onMouseClick);
-window.addEventListener("mousemove", onMouseMove);
+window.addEventListener("click", function () {
+  onMouseClick(scene, mouse, raycaster, camera,controls);
+});
+window.addEventListener("mousemove", function () {
+  onMouseMove(scene,hoverRefArray, mouse, raycaster, camera);
+});
 window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer2.setSize(window.innerWidth, window.innerHeight);
@@ -113785,134 +113935,6 @@ const animate = function () {
 
 animate();
 
-/////////////////////////////////////////////////////////////////////////
-
-let number = 0;
-
-function onMouseClick(event) {
-  event.preventDefault();
-  let object, x, y, z;
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-  let projectSrcArray = [
-    "https://samuel-morgan-tyghe.github.io/Weather-App/",
-    "https://samuel-morgan-tyghe.github.io/Basic-Website-To-React",
-    "https://samuel-morgan-tyghe.github.io/Creative-Portfolio/",
-    "https://automated-art.co.uk/",
-  ];
-  function getSrcNumber(add) {
-    number = number + add;
-    if (number < 0) {
-      number = 3;
-    }
-    if (number > 3) {
-      number = 0;
-    }
-
-    return number;
-  }
-
-  raycaster.setFromCamera(mouse, camera);
-
-  var intersects = raycaster.intersectObjects(scene.children, true);
-  for (var i = 0; i < intersects.length; i++) {
-    if (intersects[i].object.name == "Prism_2") {
-      const element = document.getElementById("projects");
-      number = getSrcNumber(+1);
-      element.src = projectSrcArray[number];
-    }
-    if (intersects[i].object.name == "Prism_3") {
-      const element = document.getElementById("projects");
-      number = getSrcNumber(-1);
-      element.src = projectSrcArray[number];
-    }
-    if (intersects[i].object.name == "painting") {
-      let keywordGroup = scene.getObjectByName("keywordGroup");
-      keywordGroup.visible = true;
-      object = "painting";
-      x = 0;
-      y = 0;
-      z = window.innerWidth / 1980;
-      onClickMoveCamera(scene, camera, controls, object, x, y, z);
-    }
-    if (intersects[i].object.parent.name == "monitorLeft") {
-      scene.getObjectByName("projects").visible = true;
-      object = "monitor_screen1";
-      x = 0.2;
-      y = 0;
-      z = 0.3;
-      onClickMoveCamera(scene, camera, controls, object, x, y, z);
-    }
-    if (intersects[i].object.parent.name == "monitorRight") {
-      scene.getObjectByName("cv").visible = true;
-
-      object = "monitor_screen2";
-      x = -0.15;
-      y = 0;
-      z = 0.3;
-      onClickMoveCamera(scene, camera, controls, object, x, y, z);
-    }
-    if (intersects[i].object.parent.name == "whiteboard") {
-      scene.getObjectByName("whiteboard p5js").visible = true;
-      object = "whiteboard";
-      x = 0;
-      y = 0;
-      z = window.innerWidth / 1980;
-      onClickMoveCamera(scene, camera, controls, object, x, y, z);
-    }
-  }
-}
-
-function onMouseMove(event) {
-  event.preventDefault();
-  let weatherAppText = scene.getObjectByName("weatherAppText");
-
-
-  const monitorLeftwireframe = scene.getObjectByName("monitorLeftwireframe");
-  const monitorRightwireframe = scene.getObjectByName("monitorRightwireframe");
-  const art1wireframe = scene.getObjectByName("art1wireframe");
-  const whiteboardwireframe = scene.getObjectByName("whiteboardwireframe");
-
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-  raycaster.setFromCamera(mouse, camera);
-
-  var intersects = raycaster.intersectObjects(scene.children, true);
-
-  if (intersects.length > 0) {
-    //permanent change
-    // console.log(intersects)
-    if (intersects[0].object.name == "weather") {
-      weatherAppText.visible = true;
-    }
-
-    //////////////////////
-    // temporary change
-    if (intersects[0].object.parent.name == "art1wireframe") {
-      art1wireframe.visible = true;
-    } else {
-      art1wireframe.visible = false;
-    }
-    if (intersects[0].object.parent.name == "monitorLeft") {
-      monitorLeftwireframe.visible = true;
-    } else {
-      monitorLeftwireframe.visible = false;
-    }
-
-    if (intersects[0].object.parent.name == "monitorRight") {
-      monitorRightwireframe.visible = true;
-    } else {
-      monitorRightwireframe.visible = false;
-    }
-
-    if (intersects[0].object.parent.name == "whiteboardwireframe") {
-      whiteboardwireframe.visible = true;
-    } else {
-      whiteboardwireframe.visible = false;
-    }
-  }
-}
 
 })();
 
