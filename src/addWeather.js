@@ -73,7 +73,7 @@ export function addWeather(scene) {
         // tempMesh.rotation.set(-35, 1, 1);
         tempMesh.rotation.set(-0.45, 0.45, 0.2);
         //  alarmClockText.rotation.set(100, 100.25, 100.35);
-        tempMesh.name = 'temperature '
+        tempMesh.name = "temperature ";
         scene.add(tempMesh);
       }
     );

@@ -1,8 +1,7 @@
 import { TimelineMax } from "../vendor/gsap.min.js";
 import * as THREE from "../vendor/three";
 
-
-export function onClickMoveCamera(scene, camera,controls, object, x, y, z) {
+export function onClickMoveCamera(scene, camera, controls, object, x, y, z) {
   const center = new THREE.Vector3();
 
   var bbox = new THREE.Box3().setFromObject(
@@ -16,9 +15,9 @@ export function onClickMoveCamera(scene, camera,controls, object, x, y, z) {
     camera.position,
     1,
     {
-      x: targetReset.x+x,
-      y: targetReset.y+y,
-      z: targetReset.z+z ,
+      x: targetReset.x + x,
+      y: targetReset.y + y,
+      z: targetReset.z + z,
       ease: Expo.easeOut,
       onUpdate: function () {
         camera.updateProjectionMatrix();

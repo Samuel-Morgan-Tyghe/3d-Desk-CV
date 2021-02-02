@@ -55,7 +55,7 @@ export function addAutomatedArt(scene) {
     mesh.translateY(1);
     mesh.translateZ(0.05);
     mesh.scale.set(0.3, 0.3, 0.3);
-    mesh.name = 'automatedArt'
+    mesh.name = "automatedArt";
     scene.add(mesh);
 
     function fn60sec() {

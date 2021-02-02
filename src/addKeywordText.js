@@ -1,14 +1,16 @@
 import * as THREE from "../vendor/three";
-const newtempWorldPosition= new THREE.Vector3();
-const newtempWorldPosition2= new THREE.Vector3();
+const newtempWorldPosition = new THREE.Vector3();
+const newtempWorldPosition2 = new THREE.Vector3();
 
 export function addKeywordText(scene) {
-  let artGroup = scene.getObjectByName("NickHarper").getWorldPosition(newtempWorldPosition);
+  let artGroup = scene
+    .getObjectByName("NickHarper")
+    .getWorldPosition(newtempWorldPosition);
   const keywordGroup = new THREE.Group();
-  keywordGroup.visible = false
-  keywordGroup.name = 'keywordGroup'
+  keywordGroup.visible = false;
+  keywordGroup.name = "keywordGroup";
 
-  scene.add(keywordGroup)
+  scene.add(keywordGroup);
 
   const artistTextLoader = new THREE.FontLoader();
   artistTextLoader.load("./assets/fonts/Alata_Regular.json", function (font) {
@@ -160,21 +162,21 @@ export function addKeywordText(scene) {
         weatherAppTextMaterial
       );
       weatherAppText.scale.set(0.1, 0.1, 1);
-      const weatherAppTetPosRef= scene.getObjectByName('wIconStand').getWorldPosition(newtempWorldPosition2)
+      const weatherAppTetPosRef = scene
+        .getObjectByName("wIconStand")
+        .getWorldPosition(newtempWorldPosition2);
       weatherAppText.position.copy(weatherAppTetPosRef);
 
       var bbox = new THREE.Box3().setFromObject(weatherAppText);
-// bbox.max - bbox.min 
+      // bbox.max - bbox.min
 
-      weatherAppText.translateX( -(bbox.max.x - bbox.min.x )/2);
+      weatherAppText.translateX(-(bbox.max.x - bbox.min.x) / 2);
       weatherAppText.translateY(0.125);
-      weatherAppText.translateZ((bbox.max.y - bbox.min.y));
+      weatherAppText.translateZ(bbox.max.y - bbox.min.y);
       weatherAppText.rotation.set(0, 0.45, 0);
       weatherAppText.name = "weatherAppText";
       weatherAppText.visible = false;
       scene.add(weatherAppText);
     }
   );
-
-  
 }

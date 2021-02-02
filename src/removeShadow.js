@@ -5,7 +5,7 @@ export function removeShadow(scene) {
       child.receiveShadow = false;
     }
   });
-  const theException = scene.getObjectByName('blendLayer')
+  const theException = scene.getObjectByName("blendLayer");
   theException.castShadow = false;
   theException.receiveShadow = false;
 

@@ -6,7 +6,6 @@ export function addIFramesCV(scene) {
   // obj.name = 'cv'
   // obj.visible = false
 
-
   // console.log(obj)
   // //
   var div = document.createElement("div");
@@ -17,7 +16,7 @@ export function addIFramesCV(scene) {
   // //
 
   var iframe = document.createElement("iframe");
-  iframe.id = 'cv'
+  iframe.id = "cv";
 
   iframe.style.width = "1080px";
   iframe.style.height = "890px";
@@ -30,9 +29,8 @@ export function addIFramesCV(scene) {
   // //
   const objectCopy = scene.getObjectByName("monitor_screen2");
   var css3dObject = new CSS3DObject(div);
-  css3dObject.name = 'cv'
-  css3dObject.visible = false
-
+  css3dObject.name = "cv";
+  css3dObject.visible = false;
 
   // css3dObject.position.set(-70, 725, -90);
 

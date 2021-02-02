@@ -22,19 +22,21 @@ export function addOutlines(scene) {
 }
 
 function outlineObject(obj) {
-  const copyObj = obj.clone()
+  const copyObj = obj.clone();
   // copyObj.material = new THREE.MeshBasicMaterial()
   copyObj.name = copyObj.name + "wireframe";
   copyObj.scale.x = copyObj.scale.x + 0.001;
   copyObj.scale.y = copyObj.scale.y + 0.001;
   // copyObj.scale.z = copyObj.scale.z + 0.01;
-    copyObj.traverse(function (child) {
+  copyObj.traverse(function (child) {
     if (child.isMesh) {
-      child.material = new THREE.MeshBasicMaterial( {color: Math.random() * 0xffffff,})
-      child.material.wireframe = true
+      child.material = new THREE.MeshBasicMaterial({
+        color: Math.random() * 0xffffff,
+      });
+      child.material.wireframe = true;
     }
-  })
-  copyObj.visible = false
+  });
+  copyObj.visible = false;
   return copyObj;
 }
 

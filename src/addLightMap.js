@@ -2,25 +2,24 @@ import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 import * as THREE from "../vendor/three";
 
 export function addLightMap(scene, renderer) {
-  const light = new THREE.AmbientLight( 0x404040 ); // soft white light
+  const light = new THREE.AmbientLight(0x404040); // soft white light
   // scene.add( light );
 
   let object = scene.getObjectByName("wall_1");
-console.log(object)
+  console.log(object);
   const texture = new THREE.TextureLoader().load(
     "./assets/img/bake/Lightmap_AO_Denoise.png"
   );
   const texture2 = new THREE.TextureLoader().load(
     "./assets/img/bake/Lightmap_NOISY_Denoise.png"
   );
-      object.material.side = 2;
+  object.material.side = 2;
 
-      object.material.lightMap = texture2;
-      object.material.lightMap.flipY = false;
-      // object.material.emissiveMap = texture2;
-      object.material.aoMap = texture;
-      object.material.aoMap.flipY = false;
-
+  object.material.lightMap = texture2;
+  object.material.lightMap.flipY = false;
+  // object.material.emissiveMap = texture2;
+  object.material.aoMap = texture;
+  object.material.aoMap.flipY = false;
 
   // var pmremGenerator = new THREE.PMREMGenerator(renderer);
 

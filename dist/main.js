@@ -106954,14 +106954,11 @@ function addArt(scene, renderer) {
     }
   );
   ///////////////////////////////////////////////////
-  let texture2 
-   basisLoader.load(
-    "./assets/img/basis/blink.basis",
-    function (texture) {
-      texture.flipY = false;
-      texture2 = texture;
-    }
-  );
+  let texture2;
+  basisLoader.load("./assets/img/basis/blink.basis", function (texture) {
+    texture.flipY = false;
+    texture2 = texture;
+  });
 
   basisLoader.load("./assets/img/basis/Embrizer.basis", function (texture) {
     texture.flipY = false;
@@ -106969,7 +106966,7 @@ function addArt(scene, renderer) {
     //insync with lights use MeshLambertMaterial / MeshBasicMaterial
     const mat = new three.MeshBasicMaterial({ map: texture });
     painting.material = mat;
-    painting.name = 'painting'
+    painting.name = "painting";
     console.log(painting);
     function paintingOpen() {
       setTimeout(function () {
@@ -111774,16 +111771,14 @@ class KTX2BufferReader {
 
 
 function addModel(renderer) {
-
   const gltfLoader = new GLTFLoader()
     .setCrossOrigin("anonymous")
     .setDRACOLoader(new DRACOLoader().setDecoderPath("../vendor/draco/"))
     .setKTX2Loader(new KTX2Loader().detectSupport(renderer));
 
-
   return new Promise((resolve, reject) => {
     gltfLoader.load(
-            "../dist/assets/models/DeskScene5.3.glb",
+      "../dist/assets/models/DeskScene5.3.glb",
       // "../dist/assets/models/output/gt.gltf",
       // "../dist/assets/models/test for threejs/untitled2.gltf",
 
@@ -111800,7 +111795,6 @@ function addModel(renderer) {
 
 function addIFrames(scene) {
   const obj = new three.Object3D();
-  
 
   // //
   var div = document.createElement("div");
@@ -111811,7 +111805,7 @@ function addIFrames(scene) {
   // //
 
   var iframe = document.createElement("iframe");
-  iframe.id = 'projects'
+  iframe.id = "projects";
   iframe.style.width = "1080px";
   iframe.style.height = "890px";
   iframe.style.border = "0px";
@@ -111823,8 +111817,8 @@ function addIFrames(scene) {
   // //
   const objectCopy = scene.getObjectByName("monitor_screen1");
   var css3dObject = new CSS3DObject(div);
-  css3dObject.name = 'projects'
-  css3dObject.visible = false
+  css3dObject.name = "projects";
+  css3dObject.visible = false;
   // console.log(css3dObject)
   // css3dObject.position.set(-70, 725, -90);
 
@@ -111855,7 +111849,7 @@ function addIFrames(scene) {
 
 function addWhiteboard(scene) {
   const obj = new three.Object3D();
-  
+
   // console.log(obj);
   // //
   var div = document.createElement("div");
@@ -111909,8 +111903,8 @@ function addWhiteboard(scene) {
   const objectCopy = scene.getObjectByName("whiteboardScreen");
   var css3dObject = new CSS3DObject(div);
 
-  css3dObject.name = 'whiteboard p5js'
-  css3dObject.visible = false
+  css3dObject.name = "whiteboard p5js";
+  css3dObject.visible = false;
   // css3dObject.position.set(-70, 725, -90);
 
   // obj.scale.copy(objectCopy.getWorldScale());
@@ -111944,7 +111938,6 @@ function addIFramesCV(scene) {
   // obj.name = 'cv'
   // obj.visible = false
 
-
   // console.log(obj)
   // //
   var div = document.createElement("div");
@@ -111955,7 +111948,7 @@ function addIFramesCV(scene) {
   // //
 
   var iframe = document.createElement("iframe");
-  iframe.id = 'cv'
+  iframe.id = "cv";
 
   iframe.style.width = "1080px";
   iframe.style.height = "890px";
@@ -111968,9 +111961,8 @@ function addIFramesCV(scene) {
   // //
   const objectCopy = scene.getObjectByName("monitor_screen2");
   var css3dObject = new CSS3DObject(div);
-  css3dObject.name = 'cv'
-  css3dObject.visible = false
-
+  css3dObject.name = "cv";
+  css3dObject.visible = false;
 
   // css3dObject.position.set(-70, 725, -90);
 
@@ -111997,16 +111989,18 @@ function addIFramesCV(scene) {
 
 ;// CONCATENATED MODULE: ./src/addKeywordText.js
 
-const newtempWorldPosition= new three.Vector3();
-const newtempWorldPosition2= new three.Vector3();
+const newtempWorldPosition = new three.Vector3();
+const newtempWorldPosition2 = new three.Vector3();
 
 function addKeywordText(scene) {
-  let artGroup = scene.getObjectByName("NickHarper").getWorldPosition(newtempWorldPosition);
+  let artGroup = scene
+    .getObjectByName("NickHarper")
+    .getWorldPosition(newtempWorldPosition);
   const keywordGroup = new three.Group();
-  keywordGroup.visible = false
-  keywordGroup.name = 'keywordGroup'
+  keywordGroup.visible = false;
+  keywordGroup.name = "keywordGroup";
 
-  scene.add(keywordGroup)
+  scene.add(keywordGroup);
 
   const artistTextLoader = new three.FontLoader();
   artistTextLoader.load("./assets/fonts/Alata_Regular.json", function (font) {
@@ -112158,23 +112152,23 @@ function addKeywordText(scene) {
         weatherAppTextMaterial
       );
       weatherAppText.scale.set(0.1, 0.1, 1);
-      const weatherAppTetPosRef= scene.getObjectByName('wIconStand').getWorldPosition(newtempWorldPosition2)
+      const weatherAppTetPosRef = scene
+        .getObjectByName("wIconStand")
+        .getWorldPosition(newtempWorldPosition2);
       weatherAppText.position.copy(weatherAppTetPosRef);
 
       var bbox = new three.Box3().setFromObject(weatherAppText);
-// bbox.max - bbox.min 
+      // bbox.max - bbox.min
 
-      weatherAppText.translateX( -(bbox.max.x - bbox.min.x )/2);
+      weatherAppText.translateX(-(bbox.max.x - bbox.min.x) / 2);
       weatherAppText.translateY(0.125);
-      weatherAppText.translateZ((bbox.max.y - bbox.min.y));
+      weatherAppText.translateZ(bbox.max.y - bbox.min.y);
       weatherAppText.rotation.set(0, 0.45, 0);
       weatherAppText.name = "weatherAppText";
       weatherAppText.visible = false;
       scene.add(weatherAppText);
     }
   );
-
-  
 }
 
 ;// CONCATENATED MODULE: ./node_modules/three/examples/jsm/helpers/RectAreaLightHelper.js
@@ -112615,7 +112609,7 @@ function addWeather(scene) {
         // tempMesh.rotation.set(-35, 1, 1);
         tempMesh.rotation.set(-0.45, 0.45, 0.2);
         //  alarmClockText.rotation.set(100, 100.25, 100.35);
-        tempMesh.name = 'temperature '
+        tempMesh.name = "temperature ";
         scene.add(tempMesh);
       }
     );
@@ -112623,17 +112617,16 @@ function addWeather(scene) {
 }
 
 ;// CONCATENATED MODULE: ./src/computerLightBlink.js
-function computerLightBlink(scene){
+function computerLightBlink(scene) {
   let pLightEmmissive = scene.getObjectByName("powerLight");
 
-    function computerBlink() {
-        pLightEmmissive.visible = !pLightEmmissive.visible;
-      }
-      computerBlink();
-      setInterval(computerBlink, 1 * 1000);
-  
-
+  function computerBlink() {
+    pLightEmmissive.visible = !pLightEmmissive.visible;
+  }
+  computerBlink();
+  setInterval(computerBlink, 1 * 1000);
 }
+
 ;// CONCATENATED MODULE: ./src/keyboardLightAnimate.js
 
 function keyboardLightAnimate(scene) {
@@ -112659,7 +112652,6 @@ function keyboardLightAnimate(scene) {
   lightChanging();
   setInterval(lightChanging, 3 * 1000);
 }
-
 
 ;// CONCATENATED MODULE: ./node_modules/three/examples/jsm/loaders/RGBELoader.js
 
@@ -113147,25 +113139,24 @@ RGBELoader.prototype = Object.assign( Object.create( DataTextureLoader.prototype
 
 
 function addLightMap(scene, renderer) {
-  const light = new THREE.AmbientLight( 0x404040 ); // soft white light
+  const light = new THREE.AmbientLight(0x404040); // soft white light
   // scene.add( light );
 
   let object = scene.getObjectByName("wall_1");
-console.log(object)
+  console.log(object);
   const texture = new THREE.TextureLoader().load(
     "./assets/img/bake/Lightmap_AO_Denoise.png"
   );
   const texture2 = new THREE.TextureLoader().load(
     "./assets/img/bake/Lightmap_NOISY_Denoise.png"
   );
-      object.material.side = 2;
+  object.material.side = 2;
 
-      object.material.lightMap = texture2;
-      object.material.lightMap.flipY = false;
-      // object.material.emissiveMap = texture2;
-      object.material.aoMap = texture;
-      object.material.aoMap.flipY = false;
-
+  object.material.lightMap = texture2;
+  object.material.lightMap.flipY = false;
+  // object.material.emissiveMap = texture2;
+  object.material.aoMap = texture;
+  object.material.aoMap.flipY = false;
 
   // var pmremGenerator = new THREE.PMREMGenerator(renderer);
 
@@ -113242,7 +113233,7 @@ function addAutomatedArt(scene) {
     mesh.translateY(1);
     mesh.translateZ(0.05);
     mesh.scale.set(0.3, 0.3, 0.3);
-    mesh.name = 'automatedArt'
+    mesh.name = "automatedArt";
     scene.add(mesh);
 
     function fn60sec() {
@@ -113273,14 +113264,12 @@ function addAutomatedArt(scene) {
 function matrixAutoUpdate(scene) {
   scene.traverse(function (child) {
     if (child.isMesh) {
-      child.matrixAutoUpdate = false
-      child.updateMatrix()
+      child.matrixAutoUpdate = false;
+      child.updateMatrix();
     }
   });
-  const theException = scene.getObjectByName('palantirPlace')
-  theException.matrixAutoUpdate = true
-
-
+  const theException = scene.getObjectByName("palantirPlace");
+  theException.matrixAutoUpdate = true;
 }
 
 ;// CONCATENATED MODULE: ./src/addOutlines.js
@@ -113308,19 +113297,21 @@ function addOutlines(scene) {
 }
 
 function outlineObject(obj) {
-  const copyObj = obj.clone()
+  const copyObj = obj.clone();
   // copyObj.material = new THREE.MeshBasicMaterial()
   copyObj.name = copyObj.name + "wireframe";
   copyObj.scale.x = copyObj.scale.x + 0.001;
   copyObj.scale.y = copyObj.scale.y + 0.001;
   // copyObj.scale.z = copyObj.scale.z + 0.01;
-    copyObj.traverse(function (child) {
+  copyObj.traverse(function (child) {
     if (child.isMesh) {
-      child.material = new three.MeshBasicMaterial( {color: Math.random() * 0xffffff,})
-      child.material.wireframe = true
+      child.material = new three.MeshBasicMaterial({
+        color: Math.random() * 0xffffff,
+      });
+      child.material.wireframe = true;
     }
-  })
-  copyObj.visible = false
+  });
+  copyObj.visible = false;
   return copyObj;
 }
 
@@ -113471,139 +113462,133 @@ PositionalAudioHelper.prototype.dispose = function () {
 
 
 
-
-function addAudio(camera, scene){
-
-    addBirds(camera,scene)
-    addComputer(camera,scene)
-
+function addAudio(camera, scene) {
+  addBirds(camera, scene);
+  addComputer(camera, scene);
 }
 
-function addBirds(camera,scene){
+function addBirds(camera, scene) {
+  // create an AudioListener and add it to the camera
+  const listener = new three.AudioListener();
+  camera.add(listener);
 
-    // create an AudioListener and add it to the camera
-const listener = new three.AudioListener();
-camera.add( listener );
+  // create a global audio source
+  const sound = new three.PositionalAudio(listener);
 
-// create a global audio source
-const sound = new three.PositionalAudio( listener );
+  // load a sound and set it as the Audio object's buffer
+  const audioLoader = new three.AudioLoader();
+  audioLoader.load(
+    "./assets/audio/Sunny Day-SoundBible.com-2064222612.mp3",
+    function (buffer) {
+      sound.setBuffer(buffer);
+      sound.setLoop(true);
+      sound.setVolume(0.05);
+      sound.play();
+    }
+  );
+  // sound.context.resume();
 
-// load a sound and set it as the Audio object's buffer
-const audioLoader = new three.AudioLoader();
-audioLoader.load( './assets/audio/Sunny Day-SoundBible.com-2064222612.mp3', function( buffer ) {
-	sound.setBuffer( buffer );
-	sound.setLoop( true );
-	sound.setVolume( 0.05 );
-	sound.play();
-});
-// sound.context.resume();
+  sound.setDirectionalCone(180, 230, 0.1);
+  console.log(sound);
+  // const helper = new PositionalAudioHelper( sound );
+  // sound.add( helper );
 
-sound.setDirectionalCone( 180, 230, 0.1 );
-console.log(sound)
-// const helper = new PositionalAudioHelper( sound );
-// sound.add( helper );
+  const sphere = new three.SphereGeometry(20, 32, 16);
+  const material = new three.MeshPhongMaterial({ color: 0xff2200 });
+  const mesh = new three.Mesh(sphere, material);
+  mesh.name = "audio";
+  scene.add(mesh);
 
-const sphere = new three.SphereGeometry( 20, 32, 16 );
-const material = new three.MeshPhongMaterial( { color: 0xff2200 } );
-const mesh = new three.Mesh( sphere, material );
-mesh.name = 'audio'
-scene.add( mesh );
-
-// const monitor = scene.getObjectByName('window')
-mesh.position.set(5,0.6,0)
-mesh.rotation.set(0,-1.5,0)
-mesh.add( sound );
-
+  // const monitor = scene.getObjectByName('window')
+  mesh.position.set(5, 0.6, 0);
+  mesh.rotation.set(0, -1.5, 0);
+  mesh.add(sound);
 }
 
-function addComputer(camera,scene){
+function addComputer(camera, scene) {
+  // create an AudioListener and add it to the camera
+  const listener = new three.AudioListener();
+  camera.add(listener);
 
-    // create an AudioListener and add it to the camera
-const listener = new three.AudioListener();
-camera.add( listener );
+  // create a global audio source
+  const sound = new three.PositionalAudio(listener);
 
-// create a global audio source
-const sound = new three.PositionalAudio( listener );
+  // load a sound and set it as the Audio object's buffer
+  const audioLoader = new three.AudioLoader();
+  audioLoader.load("./assets/audio/computer.mp3", function (buffer) {
+    sound.setBuffer(buffer);
+    sound.setLoop(true);
+    sound.setVolume(0.5);
+    sound.play();
+  });
 
-// load a sound and set it as the Audio object's buffer
-const audioLoader = new three.AudioLoader();
-audioLoader.load( './assets/audio/computer.mp3', function( buffer ) {
-	sound.setBuffer( buffer );
-	sound.setLoop( true );
-	sound.setVolume( 0.5 );
-	sound.play();
-});
+  sound.setDirectionalCone(180, 230, 0.1);
 
-sound.setDirectionalCone( 180, 230, 0.1 );
+  // const helper = new PositionalAudioHelper( sound );
+  // sound.add( helper );
 
-// const helper = new PositionalAudioHelper( sound );
-// sound.add( helper );
+  const sphere = new three.SphereGeometry(20, 32, 16);
+  const material = new three.MeshPhongMaterial({ color: 0xff2200 });
+  const mesh = new three.Mesh(sphere, material);
+  mesh.name = "audio";
+  scene.add(mesh);
 
-const sphere = new three.SphereGeometry( 20, 32, 16 );
-const material = new three.MeshPhongMaterial( { color: 0xff2200 } );
-const mesh = new three.Mesh( sphere, material );
-mesh.name = 'audio'
-scene.add( mesh );
-
-// const monitor = scene.getObjectByName('window')
-mesh.position.set(0.58,0.3,-1)
-mesh.rotation.set(0,-0.5,0)
-mesh.add( sound );
-
+  // const monitor = scene.getObjectByName('window')
+  mesh.position.set(0.58, 0.3, -1);
+  mesh.rotation.set(0, -0.5, 0);
+  mesh.add(sound);
 }
+
 ;// CONCATENATED MODULE: ./src/mouseOver.js
-
-
 function onMouseMove(scene, refArray, mouse, raycaster, camera) {
-    event.preventDefault();
-  
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-  
-    raycaster.setFromCamera(mouse, camera);
-  
-    var intersects = raycaster.intersectObjects(scene.children, true);
-  
-    if (intersects.length > 0) {
-      //permanent change
-      // console.log(intersects)
-      if (intersects[0].object.name == "weather") {
-        refArray[0].visible = true;
-      }
-  
-      //////////////////////
-      // temporary change
-      if (intersects[0].object.parent.name == "art1wireframe") {
-        refArray[1].visible = true;
-      } else {
-        refArray[1].visible = false;
-      }
-      if (intersects[0].object.parent.name == "monitorLeft") {
-        refArray[2].visible = true;
-      } else {
-        refArray[2].visible = false;
-      }
-  
-      if (intersects[0].object.parent.name == "monitorRight") {
-        refArray[3].visible = true;
-      } else {
-        refArray[3].visible = false;
-      }
-  
-      if (intersects[0].object.parent.name == "whiteboardwireframe") {
-        refArray[4].visible = true;
-      } else {
-        refArray[4].visible = false;
-      }
+  event.preventDefault();
+
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+
+  var intersects = raycaster.intersectObjects(scene.children, true);
+
+  if (intersects.length > 0) {
+    //permanent change
+    // console.log(intersects)
+    if (intersects[0].object.name == "weather") {
+      refArray[0].visible = true;
+    }
+
+    //////////////////////
+    // temporary change
+    if (intersects[0].object.parent.name == "art1wireframe") {
+      refArray[1].visible = true;
+    } else {
+      refArray[1].visible = false;
+    }
+    if (intersects[0].object.parent.name == "monitorLeft") {
+      refArray[2].visible = true;
+    } else {
+      refArray[2].visible = false;
+    }
+
+    if (intersects[0].object.parent.name == "monitorRight") {
+      refArray[3].visible = true;
+    } else {
+      refArray[3].visible = false;
+    }
+
+    if (intersects[0].object.parent.name == "whiteboardwireframe") {
+      refArray[4].visible = true;
+    } else {
+      refArray[4].visible = false;
     }
   }
-  
+}
+
 ;// CONCATENATED MODULE: ./src/onClickMoveCamera.js
 
 
 
-
-function onClickMoveCamera(scene, camera,controls, object, x, y, z) {
+function onClickMoveCamera(scene, camera, controls, object, x, y, z) {
   const center = new three.Vector3();
 
   var bbox = new three.Box3().setFromObject(
@@ -113617,9 +113602,9 @@ function onClickMoveCamera(scene, camera,controls, object, x, y, z) {
     camera.position,
     1,
     {
-      x: targetReset.x+x,
-      y: targetReset.y+y,
-      z: targetReset.z+z ,
+      x: targetReset.x + x,
+      y: targetReset.y + y,
+      z: targetReset.z + z,
       ease: Expo.easeOut,
       onUpdate: function () {
         camera.updateProjectionMatrix();
@@ -113644,8 +113629,6 @@ function onClickMoveCamera(scene, camera,controls, object, x, y, z) {
 }
 
 ;// CONCATENATED MODULE: ./src/onMouseClick.js
-
-
 
 
 let number = 0;
@@ -113723,7 +113706,6 @@ function onMouseClick(scene, mouse, raycaster, camera, controls) {
     }
   }
 }
-
 
 // EXTERNAL MODULE: ./vendor/threex.domevents.js
 var threex_domevents = __webpack_require__(552);
@@ -113885,26 +113867,23 @@ async function main() {
   // scene.overrideMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
   // console.log("Scene polycount:", renderer.info);
 
-
   const weatherAppText = scene.getObjectByName("weatherAppText");
-const monitorLeftwireframe = scene.getObjectByName("monitorLeftwireframe");
-const monitorRightwireframe = scene.getObjectByName("monitorRightwireframe");
-const art1wireframe = scene.getObjectByName("art1wireframe");
-const whiteboardwireframe = scene.getObjectByName("whiteboardwireframe");
-hoverRefArray = [
-  weatherAppText,
-  art1wireframe,
-  monitorLeftwireframe,
-  monitorRightwireframe,
-  whiteboardwireframe,
-];
+  const monitorLeftwireframe = scene.getObjectByName("monitorLeftwireframe");
+  const monitorRightwireframe = scene.getObjectByName("monitorRightwireframe");
+  const art1wireframe = scene.getObjectByName("art1wireframe");
+  const whiteboardwireframe = scene.getObjectByName("whiteboardwireframe");
+  hoverRefArray = [
+    weatherAppText,
+    art1wireframe,
+    monitorLeftwireframe,
+    monitorRightwireframe,
+    whiteboardwireframe,
+  ];
 }
 
 main().catch((error) => {
   console.error(error);
 });
-
-
 
 let raycaster = new three.Raycaster();
 let mouse = new three.Vector2();
@@ -113912,10 +113891,10 @@ let mouse = new three.Vector2();
 // domEvents.addEventListener(cube, 'mousedown', onDocumentMouseDown, false);
 
 window.addEventListener("click", function () {
-  onMouseClick(scene, mouse, raycaster, camera,controls);
+  onMouseClick(scene, mouse, raycaster, camera, controls);
 });
 window.addEventListener("mousemove", function () {
-  onMouseMove(scene,hoverRefArray, mouse, raycaster, camera);
+  onMouseMove(scene, hoverRefArray, mouse, raycaster, camera);
 });
 window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -113934,7 +113913,6 @@ const animate = function () {
 };
 
 animate();
-
 
 })();
 

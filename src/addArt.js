@@ -123,14 +123,11 @@ export function addArt(scene, renderer) {
     }
   );
   ///////////////////////////////////////////////////
-  let texture2 
-   basisLoader.load(
-    "./assets/img/basis/blink.basis",
-    function (texture) {
-      texture.flipY = false;
-      texture2 = texture;
-    }
-  );
+  let texture2;
+  basisLoader.load("./assets/img/basis/blink.basis", function (texture) {
+    texture.flipY = false;
+    texture2 = texture;
+  });
 
   basisLoader.load("./assets/img/basis/Embrizer.basis", function (texture) {
     texture.flipY = false;
@@ -138,7 +135,7 @@ export function addArt(scene, renderer) {
     //insync with lights use MeshLambertMaterial / MeshBasicMaterial
     const mat = new THREE.MeshBasicMaterial({ map: texture });
     painting.material = mat;
-    painting.name = 'painting'
+    painting.name = "painting";
     console.log(painting);
     function paintingOpen() {
       setTimeout(function () {

@@ -1,6 +1,4 @@
-
 import { onClickMoveCamera } from "./onClickMoveCamera";
-
 
 let number = 0;
 
@@ -77,4 +75,3 @@ export function onMouseClick(scene, mouse, raycaster, camera, controls) {
     }
   }
 }
-

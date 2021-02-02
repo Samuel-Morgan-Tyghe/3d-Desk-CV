@@ -23,8 +23,8 @@ import { addAutomatedArt } from "./addAutomatedArt";
 import { matrixAutoUpdate } from "./matrixAutoUpdate";
 import { addOutlines } from "./addOutlines";
 import { addAudio } from "./addAudio";
-import {onMouseMove} from './mouseOver'
-import {onMouseClick} from './onMouseClick'
+import { onMouseMove } from "./mouseOver";
+import { onMouseClick } from "./onMouseClick";
 import { THREEx } from "../vendor/threex.domevents";
 
 let INTERSECTED;
@@ -155,26 +155,23 @@ async function main() {
   // scene.overrideMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
   // console.log("Scene polycount:", renderer.info);
 
-
   const weatherAppText = scene.getObjectByName("weatherAppText");
-const monitorLeftwireframe = scene.getObjectByName("monitorLeftwireframe");
-const monitorRightwireframe = scene.getObjectByName("monitorRightwireframe");
-const art1wireframe = scene.getObjectByName("art1wireframe");
-const whiteboardwireframe = scene.getObjectByName("whiteboardwireframe");
-hoverRefArray = [
-  weatherAppText,
-  art1wireframe,
-  monitorLeftwireframe,
-  monitorRightwireframe,
-  whiteboardwireframe,
-];
+  const monitorLeftwireframe = scene.getObjectByName("monitorLeftwireframe");
+  const monitorRightwireframe = scene.getObjectByName("monitorRightwireframe");
+  const art1wireframe = scene.getObjectByName("art1wireframe");
+  const whiteboardwireframe = scene.getObjectByName("whiteboardwireframe");
+  hoverRefArray = [
+    weatherAppText,
+    art1wireframe,
+    monitorLeftwireframe,
+    monitorRightwireframe,
+    whiteboardwireframe,
+  ];
 }
 
 main().catch((error) => {
   console.error(error);
 });
-
-
 
 let raycaster = new THREE.Raycaster();
 let mouse = new THREE.Vector2();
@@ -182,10 +179,10 @@ let mouse = new THREE.Vector2();
 // domEvents.addEventListener(cube, 'mousedown', onDocumentMouseDown, false);
 
 window.addEventListener("click", function () {
-  onMouseClick(scene, mouse, raycaster, camera,controls);
+  onMouseClick(scene, mouse, raycaster, camera, controls);
 });
 window.addEventListener("mousemove", function () {
-  onMouseMove(scene,hoverRefArray, mouse, raycaster, camera);
+  onMouseMove(scene, hoverRefArray, mouse, raycaster, camera);
 });
 window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -204,4 +201,3 @@ const animate = function () {
 };
 
 animate();
-

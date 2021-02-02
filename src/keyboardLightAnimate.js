@@ -22,4 +22,3 @@ export function keyboardLightAnimate(scene) {
   lightChanging();
   setInterval(lightChanging, 3 * 1000);
 }
-
