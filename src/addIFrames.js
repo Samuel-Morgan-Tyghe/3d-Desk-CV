@@ -27,7 +27,7 @@ export function addIFrames(scene) {
   const objectCopy = scene.getObjectByName("monitor_screen1");
   var css3dObject = new CSS3DObject(div);
   css3dObject.name = 'projects'
-  // css3dObject.visible = false
+  css3dObject.visible = false
   // console.log(css3dObject)
   // css3dObject.position.set(-70, 725, -90);
 

@@ -111783,7 +111783,7 @@ function addModel(renderer) {
 
   return new Promise((resolve, reject) => {
     gltfLoader.load(
-            "../dist/assets/models/DeskScene5.1.glb",
+            "../dist/assets/models/DeskScene5.3.glb",
       // "../dist/assets/models/output/gt.gltf",
       // "../dist/assets/models/test for threejs/untitled2.gltf",
 
@@ -111824,7 +111824,7 @@ function addIFrames(scene) {
   const objectCopy = scene.getObjectByName("monitor_screen1");
   var css3dObject = new CSS3DObject(div);
   css3dObject.name = 'projects'
-  // css3dObject.visible = false
+  css3dObject.visible = false
   // console.log(css3dObject)
   // css3dObject.position.set(-70, 725, -90);
 
@@ -111910,7 +111910,7 @@ function addWhiteboard(scene) {
   var css3dObject = new CSS3DObject(div);
 
   css3dObject.name = 'whiteboard p5js'
-  // css3dObject.visible = false
+  css3dObject.visible = false
   // css3dObject.position.set(-70, 725, -90);
 
   // obj.scale.copy(objectCopy.getWorldScale());
@@ -111969,7 +111969,7 @@ function addIFramesCV(scene) {
   const objectCopy = scene.getObjectByName("monitor_screen2");
   var css3dObject = new CSS3DObject(div);
   css3dObject.name = 'cv'
-  // css3dObject.visible = false
+  css3dObject.visible = false
 
 
   // css3dObject.position.set(-70, 725, -90);
@@ -113328,6 +113328,274 @@ function matrixAutoUpdate(scene) {
 
 }
 
+;// CONCATENATED MODULE: ./src/addOutlines.js
+
+
+function addOutlines(scene) {
+  // const monitorLeftOutline =  outlineObject(scene,'monitor_screen1')
+  // const monitorRightOutline =  outlineObject(scene,'monitor_screen2')
+  // const whiteboardOutline =  outlineObject(scene,'whiteboardScreen')
+  // const paintingOutline =  outlineObject(scene,'Wall_Art_Classical_Plane')
+
+  const monitorLeftOutline = outlineObject(
+    scene.getObjectByName("monitorLeft")
+  );
+  const monitorRightOutline = outlineObject(
+    scene.getObjectByName("monitorRight")
+  );
+  const whiteboardOutline = outlineObject(scene.getObjectByName("whiteboard"));
+  const paintingOutline = outlineObject(scene.getObjectByName("art1"));
+
+  scene.add(monitorLeftOutline);
+  scene.add(monitorRightOutline);
+  scene.add(whiteboardOutline);
+  scene.add(paintingOutline);
+}
+
+function outlineObject(obj) {
+  const copyObj = obj.clone()
+  // copyObj.material = new THREE.MeshBasicMaterial()
+  copyObj.name = copyObj.name + "wireframe";
+  copyObj.scale.x = copyObj.scale.x + 0.001;
+  copyObj.scale.y = copyObj.scale.y + 0.001;
+  // copyObj.scale.z = copyObj.scale.z + 0.01;
+    copyObj.traverse(function (child) {
+    if (child.isMesh) {
+      child.material = new three.MeshBasicMaterial( {color: Math.random() * 0xffffff,})
+      child.material.wireframe = true
+    }
+  })
+  copyObj.visible = false
+  return copyObj;
+}
+
+// function outlineObject(obj) {
+//   const group = new THREE.Group();
+
+//   obj.traverse(function (child) {
+//     if (child.isMesh) {
+//       const geometry = child.geometry;
+//       const edges = new THREE.EdgesGeometry(geometry);
+//       // const lineMat = new THREE.LineDashedMaterial({
+//       //   color: Math.random() * 0xffffff,
+//       //   linewidth: Math.random() * (5 - 1) + 1,
+//       //   dashSize: Math.random() / 100,
+//       //   gapSize: Math.random() / 100,
+//       //   scale: Math.random() * (5 - 1) + 1,
+//       // });
+
+//       const lineMat = new THREE.LineBasicMaterial( )
+
+//       const line = new THREE.LineSegments(edges, lineMat);
+
+//       const newtempWorldPosition3 = new THREE.Vector3();
+//       const newtempWorldQ3 = new THREE.Quaternion();
+
+//       line.position.copy(child.getWorldPosition(newtempWorldPosition3));
+//       line.quaternion.copy(child.getWorldQuaternion(newtempWorldQ3));
+//       line.scale.copy(child.getWorldScale());
+//       line.scale.x = line.scale.x + 0.01;
+//       line.scale.y = line.scale.y + 0.01;
+//       line.scale.z = line.scale.z + 0.01;
+//       line.name = child.name + "Line";
+//       line.computeLineDistances();
+//       group.add(line);
+//     }
+//   });
+//   group.name = obj.name + "Lines";
+//   group.visible = false
+
+//   return group;
+// }
+
+;// CONCATENATED MODULE: ./node_modules/three/examples/jsm/helpers/PositionalAudioHelper.js
+
+
+function PositionalAudioHelper( audio, range, divisionsInnerAngle, divisionsOuterAngle ) {
+
+	this.audio = audio;
+	this.range = range || 1;
+	this.divisionsInnerAngle = divisionsInnerAngle || 16;
+	this.divisionsOuterAngle = divisionsOuterAngle || 2;
+
+	var geometry = new BufferGeometry();
+	var divisions = this.divisionsInnerAngle + this.divisionsOuterAngle * 2;
+	var positions = new Float32Array( ( divisions * 3 + 3 ) * 3 );
+	geometry.setAttribute( 'position', new BufferAttribute( positions, 3 ) );
+
+	var materialInnerAngle = new LineBasicMaterial( { color: 0x00ff00 } );
+	var materialOuterAngle = new LineBasicMaterial( { color: 0xffff00 } );
+
+	Line.call( this, geometry, [ materialOuterAngle, materialInnerAngle ] );
+
+	this.type = 'PositionalAudioHelper';
+
+	this.update();
+
+}
+
+PositionalAudioHelper.prototype = Object.create( Line.prototype );
+PositionalAudioHelper.prototype.constructor = PositionalAudioHelper;
+
+PositionalAudioHelper.prototype.update = function () {
+
+	var audio = this.audio;
+	var range = this.range;
+	var divisionsInnerAngle = this.divisionsInnerAngle;
+	var divisionsOuterAngle = this.divisionsOuterAngle;
+
+	var coneInnerAngle = MathUtils.degToRad( audio.panner.coneInnerAngle );
+	var coneOuterAngle = MathUtils.degToRad( audio.panner.coneOuterAngle );
+
+	var halfConeInnerAngle = coneInnerAngle / 2;
+	var halfConeOuterAngle = coneOuterAngle / 2;
+
+	var start = 0;
+	var count = 0;
+	var i, stride;
+
+	var geometry = this.geometry;
+	var positionAttribute = geometry.attributes.position;
+
+	geometry.clearGroups();
+
+	//
+
+	function generateSegment( from, to, divisions, materialIndex ) {
+
+		var step = ( to - from ) / divisions;
+
+		positionAttribute.setXYZ( start, 0, 0, 0 );
+		count ++;
+
+		for ( i = from; i < to; i += step ) {
+
+			stride = start + count;
+
+			positionAttribute.setXYZ( stride, Math.sin( i ) * range, 0, Math.cos( i ) * range );
+			positionAttribute.setXYZ( stride + 1, Math.sin( Math.min( i + step, to ) ) * range, 0, Math.cos( Math.min( i + step, to ) ) * range );
+			positionAttribute.setXYZ( stride + 2, 0, 0, 0 );
+
+			count += 3;
+
+		}
+
+		geometry.addGroup( start, count, materialIndex );
+
+		start += count;
+		count = 0;
+
+	}
+
+	//
+
+	generateSegment( - halfConeOuterAngle, - halfConeInnerAngle, divisionsOuterAngle, 0 );
+	generateSegment( - halfConeInnerAngle, halfConeInnerAngle, divisionsInnerAngle, 1 );
+	generateSegment( halfConeInnerAngle, halfConeOuterAngle, divisionsOuterAngle, 0 );
+
+	//
+
+	positionAttribute.needsUpdate = true;
+
+	if ( coneInnerAngle === coneOuterAngle ) this.material[ 0 ].visible = false;
+
+};
+
+PositionalAudioHelper.prototype.dispose = function () {
+
+	this.geometry.dispose();
+	this.material[ 0 ].dispose();
+	this.material[ 1 ].dispose();
+
+};
+
+
+
+
+;// CONCATENATED MODULE: ./src/addAudio.js
+
+
+
+
+function addAudio(camera, scene){
+
+    addBirds(camera,scene)
+    addComputer(camera,scene)
+
+}
+
+function addBirds(camera,scene){
+
+    // create an AudioListener and add it to the camera
+const listener = new three.AudioListener();
+camera.add( listener );
+
+// create a global audio source
+const sound = new three.PositionalAudio( listener );
+
+// load a sound and set it as the Audio object's buffer
+const audioLoader = new three.AudioLoader();
+audioLoader.load( './assets/audio/Sunny Day-SoundBible.com-2064222612.mp3', function( buffer ) {
+	sound.setBuffer( buffer );
+	sound.setLoop( true );
+	sound.setVolume( 0.05 );
+	sound.play();
+});
+// sound.context.resume();
+
+sound.setDirectionalCone( 180, 230, 0.1 );
+console.log(sound)
+// const helper = new PositionalAudioHelper( sound );
+// sound.add( helper );
+
+const sphere = new three.SphereGeometry( 20, 32, 16 );
+const material = new three.MeshPhongMaterial( { color: 0xff2200 } );
+const mesh = new three.Mesh( sphere, material );
+mesh.name = 'audio'
+scene.add( mesh );
+
+// const monitor = scene.getObjectByName('window')
+mesh.position.set(5,0.6,0)
+mesh.rotation.set(0,-1.5,0)
+mesh.add( sound );
+
+}
+
+function addComputer(camera,scene){
+
+    // create an AudioListener and add it to the camera
+const listener = new three.AudioListener();
+camera.add( listener );
+
+// create a global audio source
+const sound = new three.PositionalAudio( listener );
+
+// load a sound and set it as the Audio object's buffer
+const audioLoader = new three.AudioLoader();
+audioLoader.load( './assets/audio/computer.mp3', function( buffer ) {
+	sound.setBuffer( buffer );
+	sound.setLoop( true );
+	sound.setVolume( 0.5 );
+	sound.play();
+});
+
+sound.setDirectionalCone( 180, 230, 0.1 );
+
+// const helper = new PositionalAudioHelper( sound );
+// sound.add( helper );
+
+const sphere = new three.SphereGeometry( 20, 32, 16 );
+const material = new three.MeshPhongMaterial( { color: 0xff2200 } );
+const mesh = new three.Mesh( sphere, material );
+mesh.name = 'audio'
+scene.add( mesh );
+
+// const monitor = scene.getObjectByName('window')
+mesh.position.set(0.58,0.3,-1)
+mesh.rotation.set(0,-0.5,0)
+mesh.add( sound );
+
+}
 // EXTERNAL MODULE: ./vendor/threex.domevents.js
 var threex_domevents = __webpack_require__(552);
 ;// CONCATENATED MODULE: ./src/main.js
@@ -113351,6 +113619,8 @@ var threex_domevents = __webpack_require__(552);
 
 // import { onMouseClick } from "./onMouseClick";
 // import { onMouseMove } from "./onMouseMove";
+
+
 
 
 
@@ -113441,7 +113711,7 @@ controls.minAzimuthAngle = -1; // radians
 controls.maxAzimuthAngle = 1;
 controls.dampingFactor = 0.07;
 // controls.rotateSpeed = 0.2;
-controls.target.set(0,0.8, 0);
+controls.target.set(0, 0.8, 0);
 controls.update();
 
 //  addModel();
@@ -113461,6 +113731,8 @@ async function main() {
   addLights(scene);
   addShadow(scene, renderer);
 
+  addOutlines(scene);
+
   addKeywordText(scene);
 
   // removeShadow(scene)
@@ -113477,6 +113749,7 @@ async function main() {
     addWhiteboard(scene);
     addIFrames(scene);
     addIFramesCV(scene);
+    addAudio(camera, scene)
   }
   matrixAutoUpdate(scene);
   // scene.overrideMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
@@ -113562,7 +113835,7 @@ function onMouseClick(event) {
       z = window.innerWidth / 1980;
       onClickMoveCamera(scene, camera, controls, object, x, y, z);
     }
-    if (intersects[i].object.parent.name == "monitor") {
+    if (intersects[i].object.parent.name == "monitorLeft") {
       scene.getObjectByName("projects").visible = true;
       object = "monitor_screen1";
       x = 0.2;
@@ -113570,7 +113843,7 @@ function onMouseClick(event) {
       z = 0.3;
       onClickMoveCamera(scene, camera, controls, object, x, y, z);
     }
-    if (intersects[i].object.parent.name == "monitor_1") {
+    if (intersects[i].object.parent.name == "monitorRight") {
       scene.getObjectByName("cv").visible = true;
 
       object = "monitor_screen2";
@@ -113593,7 +113866,12 @@ function onMouseClick(event) {
 function onMouseMove(event) {
   event.preventDefault();
   let weatherAppText = scene.getObjectByName("weatherAppText");
-  let painting = scene.getObjectByName("painting");
+
+
+  const monitorLeftwireframe = scene.getObjectByName("monitorLeftwireframe");
+  const monitorRightwireframe = scene.getObjectByName("monitorRightwireframe");
+  const art1wireframe = scene.getObjectByName("art1wireframe");
+  const whiteboardwireframe = scene.getObjectByName("whiteboardwireframe");
 
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -113604,17 +113882,34 @@ function onMouseMove(event) {
 
   if (intersects.length > 0) {
     //permanent change
-
+    // console.log(intersects)
     if (intersects[0].object.name == "weather") {
       weatherAppText.visible = true;
     }
 
     //////////////////////
-    //temporary change
-    if (intersects[0].object.name == "painting") {
-      // painting.material.emissive = '#FFFFFF';
+    // temporary change
+    if (intersects[0].object.parent.name == "art1wireframe") {
+      art1wireframe.visible = true;
     } else {
-      // painting.material.emissive = '#000000';
+      art1wireframe.visible = false;
+    }
+    if (intersects[0].object.parent.name == "monitorLeft") {
+      monitorLeftwireframe.visible = true;
+    } else {
+      monitorLeftwireframe.visible = false;
+    }
+
+    if (intersects[0].object.parent.name == "monitorRight") {
+      monitorRightwireframe.visible = true;
+    } else {
+      monitorRightwireframe.visible = false;
+    }
+
+    if (intersects[0].object.parent.name == "whiteboardwireframe") {
+      whiteboardwireframe.visible = true;
+    } else {
+      whiteboardwireframe.visible = false;
     }
   }
 }

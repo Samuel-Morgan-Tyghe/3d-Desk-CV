@@ -58,7 +58,7 @@ export function addWhiteboard(scene) {
   var css3dObject = new CSS3DObject(div);
 
   css3dObject.name = 'whiteboard p5js'
-  // css3dObject.visible = false
+  css3dObject.visible = false
   // css3dObject.position.set(-70, 725, -90);
 
   // obj.scale.copy(objectCopy.getWorldScale());

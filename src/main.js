@@ -22,6 +22,8 @@ import { addLightMap } from "./addLightMap";
 import { addAutomatedArt } from "./addAutomatedArt";
 import { onClickMoveCamera } from "./onClickMoveCamera";
 import { matrixAutoUpdate } from "./matrixAutoUpdate";
+import { addOutlines } from "./addOutlines";
+import {addAudio} from './addAudio'
 
 import { THREEx } from "../vendor/threex.domevents";
 
@@ -108,7 +110,7 @@ controls.minAzimuthAngle = -1; // radians
 controls.maxAzimuthAngle = 1;
 controls.dampingFactor = 0.07;
 // controls.rotateSpeed = 0.2;
-controls.target.set(0,0.8, 0);
+controls.target.set(0, 0.8, 0);
 controls.update();
 
 //  addModel();
@@ -128,6 +130,8 @@ async function main() {
   addLights(scene);
   addShadow(scene, renderer);
 
+  addOutlines(scene);
+
   addKeywordText(scene);
 
   // removeShadow(scene)
@@ -144,6 +148,7 @@ async function main() {
     addWhiteboard(scene);
     addIFrames(scene);
     addIFramesCV(scene);
+    addAudio(camera, scene)
   }
   matrixAutoUpdate(scene);
   // scene.overrideMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
@@ -229,7 +234,7 @@ function onMouseClick(event) {
       z = window.innerWidth / 1980;
       onClickMoveCamera(scene, camera, controls, object, x, y, z);
     }
-    if (intersects[i].object.parent.name == "monitor") {
+    if (intersects[i].object.parent.name == "monitorLeft") {
       scene.getObjectByName("projects").visible = true;
       object = "monitor_screen1";
       x = 0.2;
@@ -237,7 +242,7 @@ function onMouseClick(event) {
       z = 0.3;
       onClickMoveCamera(scene, camera, controls, object, x, y, z);
     }
-    if (intersects[i].object.parent.name == "monitor_1") {
+    if (intersects[i].object.parent.name == "monitorRight") {
       scene.getObjectByName("cv").visible = true;
 
       object = "monitor_screen2";
@@ -260,7 +265,12 @@ function onMouseClick(event) {
 function onMouseMove(event) {
   event.preventDefault();
   let weatherAppText = scene.getObjectByName("weatherAppText");
-  let painting = scene.getObjectByName("painting");
+
+
+  const monitorLeftwireframe = scene.getObjectByName("monitorLeftwireframe");
+  const monitorRightwireframe = scene.getObjectByName("monitorRightwireframe");
+  const art1wireframe = scene.getObjectByName("art1wireframe");
+  const whiteboardwireframe = scene.getObjectByName("whiteboardwireframe");
 
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -271,17 +281,34 @@ function onMouseMove(event) {
 
   if (intersects.length > 0) {
     //permanent change
-
+    // console.log(intersects)
     if (intersects[0].object.name == "weather") {
       weatherAppText.visible = true;
     }
 
     //////////////////////
-    //temporary change
-    if (intersects[0].object.name == "painting") {
-      // painting.material.emissive = '#FFFFFF';
+    // temporary change
+    if (intersects[0].object.parent.name == "art1wireframe") {
+      art1wireframe.visible = true;
     } else {
-      // painting.material.emissive = '#000000';
+      art1wireframe.visible = false;
+    }
+    if (intersects[0].object.parent.name == "monitorLeft") {
+      monitorLeftwireframe.visible = true;
+    } else {
+      monitorLeftwireframe.visible = false;
+    }
+
+    if (intersects[0].object.parent.name == "monitorRight") {
+      monitorRightwireframe.visible = true;
+    } else {
+      monitorRightwireframe.visible = false;
+    }
+
+    if (intersects[0].object.parent.name == "whiteboardwireframe") {
+      whiteboardwireframe.visible = true;
+    } else {
+      whiteboardwireframe.visible = false;
     }
   }
 }

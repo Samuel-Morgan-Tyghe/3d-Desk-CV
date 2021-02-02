@@ -12,7 +12,7 @@ export function addModel(renderer) {
 
   return new Promise((resolve, reject) => {
     gltfLoader.load(
-            "../dist/assets/models/DeskScene5.1.glb",
+            "../dist/assets/models/DeskScene5.3.glb",
       // "../dist/assets/models/output/gt.gltf",
       // "../dist/assets/models/test for threejs/untitled2.gltf",
 
