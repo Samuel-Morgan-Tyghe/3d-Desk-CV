@@ -1,12 +1,12 @@
 import * as THREE from "../vendor/three";
 import { PositionalAudioHelper } from "three/examples/jsm/helpers/PositionalAudioHelper.js";
 
-export function addAudio(camera, scene) {
-  addBirds(camera, scene);
-  addComputer(camera, scene);
+export function addAudio(camera, scene, manager) {
+  addBirds(camera, scene, manager);
+  addComputer(camera, scene, manager);
 }
 
-function addBirds(camera, scene) {
+function addBirds(camera, scene, manager) {
   // create an AudioListener and add it to the camera
   const listener = new THREE.AudioListener();
   camera.add(listener);
@@ -15,7 +15,7 @@ function addBirds(camera, scene) {
   const sound = new THREE.PositionalAudio(listener);
 
   // load a sound and set it as the Audio object's buffer
-  const audioLoader = new THREE.AudioLoader();
+  const audioLoader = new THREE.AudioLoader(manager);
   audioLoader.load(
     "./assets/audio/Sunny Day-SoundBible.com-2064222612.mp3",
     function (buffer) {
@@ -28,7 +28,6 @@ function addBirds(camera, scene) {
   // sound.context.resume();
 
   sound.setDirectionalCone(180, 230, 0.1);
-  console.log(sound);
   // const helper = new PositionalAudioHelper( sound );
   // sound.add( helper );
 
@@ -44,7 +43,7 @@ function addBirds(camera, scene) {
   mesh.add(sound);
 }
 
-function addComputer(camera, scene) {
+function addComputer(camera, scene, manager) {
   // create an AudioListener and add it to the camera
   const listener = new THREE.AudioListener();
   camera.add(listener);
@@ -53,7 +52,7 @@ function addComputer(camera, scene) {
   const sound = new THREE.PositionalAudio(listener);
 
   // load a sound and set it as the Audio object's buffer
-  const audioLoader = new THREE.AudioLoader();
+  const audioLoader = new THREE.AudioLoader(manager);
   audioLoader.load("./assets/audio/computer.mp3", function (buffer) {
     sound.setBuffer(buffer);
     sound.setLoop(true);

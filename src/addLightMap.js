@@ -1,16 +1,15 @@
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 import * as THREE from "../vendor/three";
 
-export function addLightMap(scene, renderer) {
+export function addLightMap(scene, renderer, manager) {
   const light = new THREE.AmbientLight(0x404040); // soft white light
   // scene.add( light );
 
   let object = scene.getObjectByName("wall_1");
-  console.log(object);
-  const texture = new THREE.TextureLoader().load(
+  const texture = new THREE.TextureLoader(manager).load(
     "./assets/img/bake/Lightmap_AO_Denoise.png"
   );
-  const texture2 = new THREE.TextureLoader().load(
+  const texture2 = new THREE.TextureLoader(manager).load(
     "./assets/img/bake/Lightmap_NOISY_Denoise.png"
   );
   object.material.side = 2;

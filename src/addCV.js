@@ -6,7 +6,6 @@ export function addIFramesCV(scene) {
   // obj.name = 'cv'
   // obj.visible = false
 
-  // console.log(obj)
   // //
   var div = document.createElement("div");
   div.style.width = "1080px";

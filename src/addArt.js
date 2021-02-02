@@ -3,36 +3,7 @@ import { TimelineMax } from "../vendor/gsap.min.js";
 import { BasisTextureLoader } from "three/examples/jsm/loaders/BasisTextureLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 
-export function addArt(scene, renderer) {
-  var manager = new THREE.LoadingManager();
-  manager.onStart = function (url, itemsLoaded, itemsTotal) {
-    // console.log(
-    //   "Started loading file: " +
-    //     url +
-    //     ".\nLoaded " +
-    //     itemsLoaded +
-    //     " of " +
-    //     itemsTotal +
-    //     " files."
-    // );
-  };
-
-  manager.onLoad = function () {
-    // console.log("Loading complete!");
-  };
-
-  manager.onProgress = function (url, itemsLoaded, itemsTotal) {
-    // console.log(
-    //   "Loading file: " +
-    //     url +
-    //     ".\nLoaded " +
-    //     itemsLoaded +
-    //     " of " +
-    //     itemsTotal +
-    //     " files."
-    // );
-  };
-
+export function addArt(scene, renderer, manager) {
   var palantirPlace = scene.getObjectByName("palantirPlace", true);
 
   // var art = new THREE.TextureLoader().load("./assets/img/Palantiri.webp");
@@ -136,7 +107,6 @@ export function addArt(scene, renderer) {
     const mat = new THREE.MeshBasicMaterial({ map: texture });
     painting.material = mat;
     painting.name = "painting";
-    console.log(painting);
     function paintingOpen() {
       setTimeout(function () {
         painting.material.map = texture2;

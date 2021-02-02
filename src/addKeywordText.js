@@ -2,7 +2,7 @@ import * as THREE from "../vendor/three";
 const newtempWorldPosition = new THREE.Vector3();
 const newtempWorldPosition2 = new THREE.Vector3();
 
-export function addKeywordText(scene) {
+export function addKeywordText(scene, manager) {
   let artGroup = scene
     .getObjectByName("NickHarper")
     .getWorldPosition(newtempWorldPosition);
@@ -12,7 +12,7 @@ export function addKeywordText(scene) {
 
   scene.add(keywordGroup);
 
-  const artistTextLoader = new THREE.FontLoader();
+  const artistTextLoader = new THREE.FontLoader(manager);
   artistTextLoader.load("./assets/fonts/Alata_Regular.json", function (font) {
     const artistTextBufferGeometry = new THREE.TextBufferGeometry(
       "FINE ARTIST",
@@ -43,7 +43,7 @@ export function addKeywordText(scene) {
     keywordGroup.add(artistText);
   });
 
-  const creativeTextLoader = new THREE.FontLoader();
+  const creativeTextLoader = new THREE.FontLoader(manager);
   creativeTextLoader.load("./assets/fonts/Alata_Regular.json", function (font) {
     const creativeTextBufferGeometry = new THREE.TextBufferGeometry(
       "CREATIVE",
@@ -75,7 +75,7 @@ export function addKeywordText(scene) {
     keywordGroup.add(creativeText);
   });
 
-  const inventiveTextLoader = new THREE.FontLoader();
+  const inventiveTextLoader = new THREE.FontLoader(manager);
   inventiveTextLoader.load(
     "./assets/fonts/Alata_Regular.json",
     function (font) {
@@ -110,7 +110,7 @@ export function addKeywordText(scene) {
     }
   );
 
-  const adaptiveTextLoader = new THREE.FontLoader();
+  const adaptiveTextLoader = new THREE.FontLoader(manager);
   adaptiveTextLoader.load("./assets/fonts/Alata_Regular.json", function (font) {
     const adaptiveTextBufferGeometry = new THREE.TextBufferGeometry(
       "ADAPTIVE",
@@ -141,7 +141,7 @@ export function addKeywordText(scene) {
     keywordGroup.add(adaptiveText);
   });
 
-  const weatherAppTextLoader = new THREE.FontLoader();
+  const weatherAppTextLoader = new THREE.FontLoader(manager);
   weatherAppTextLoader.load(
     "./assets/fonts/Bebas Neue_Regular (1).json",
     function (font) {

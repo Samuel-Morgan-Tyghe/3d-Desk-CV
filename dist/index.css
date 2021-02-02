@@ -1,5 +1,42 @@
 #whiteboard * {
-
-    overflow: hidden;
+  overflow: hidden;
 }
 
+#loading-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  z-index: 2;
+  margin: auto;
+  width: 100%;
+  height: 100%;
+  background-color: #f0a00d;
+  opacity: 1;
+  transition: 1s opacity;
+}
+
+#loader {
+  margin: auto;
+  width: 50%;
+  height: 50%;
+  border: 3px dotted rgb(0, 0, 0);
+  padding: 5vw;
+  text-align: center;
+}
+
+#loading-screen.animatedFade {
+  animation: Fade 3s linear 1s forwards;
+}
+
+@keyframes Fade {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    display: none;
+    z-index: -2;
+  }
+}

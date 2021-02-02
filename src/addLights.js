@@ -27,7 +27,6 @@ export function addLights(scene) {
     bbox.max.z - bbox.min.z
   );
 
-  // console.log(window);
   const whelper = new RectAreaLightHelper(window);
 
   const newtempWorldPosition3 = new THREE.Vector3();
@@ -97,8 +96,6 @@ export function addLights(scene) {
   const paintingSpotLight = new THREE.SpotLight(0xffffff, 0.5, 0, 0.35, 0.4);
 
   const painting = scene.getObjectByName("painting");
-  console.log(scene);
-  // console.log(painting);
 
   paintingSpotLight.castShadow = true;
   paintingSpotLight.position.set(

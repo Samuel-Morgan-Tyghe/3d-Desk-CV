@@ -25,6 +25,7 @@ import { addOutlines } from "./addOutlines";
 import { addAudio } from "./addAudio";
 import { onMouseMove } from "./mouseOver";
 import { onMouseClick } from "./onMouseClick";
+import { createManager } from "./createManager";
 import { THREEx } from "../vendor/threex.domevents";
 
 let INTERSECTED;
@@ -102,8 +103,6 @@ const controls = new OrbitControls(camera, renderer2.domElement);
 controls.maxDistance = 0;
 controls.maxDistance = 5;
 
-console.log(controls);
-
 controls.enableDamping = true;
 controls.minPolarAngle = 0.2;
 controls.maxPolarAngle = 1.85;
@@ -115,25 +114,26 @@ controls.target.set(0, 0.8, 0);
 controls.update();
 
 //  addModel();
+var manager = createManager();
 
 async function main() {
-  const gltfData = await addModel(renderer);
+  const gltfData = await addModel(renderer, manager);
 
   scene.add(gltfData.scene);
 
-  // addLightMap(scene, renderer);
-  addWeather(scene);
+  // addLightMap(scene, renderer,manager);
+  addWeather(scene, manager);
   keyboardLightAnimate(scene);
   computerLightBlink(scene);
-  addArt(scene, renderer);
-  addClock(scene);
+  addArt(scene, renderer, manager);
+  addClock(scene, manager);
 
   addLights(scene);
   addShadow(scene, renderer);
 
   addOutlines(scene);
 
-  addKeywordText(scene);
+  addKeywordText(scene, manager);
 
   // removeShadow(scene)
   // detect mobile
@@ -149,7 +149,7 @@ async function main() {
     addWhiteboard(scene);
     addIFrames(scene);
     addIFramesCV(scene);
-    addAudio(camera, scene);
+    addAudio(camera, scene, manager);
   }
   matrixAutoUpdate(scene);
   // scene.overrideMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );

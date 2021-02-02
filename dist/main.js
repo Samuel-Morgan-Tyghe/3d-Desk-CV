@@ -106834,36 +106834,7 @@ DRACOLoader.getDecoderModule = function () {
 
 
 
-function addArt(scene, renderer) {
-  var manager = new three.LoadingManager();
-  manager.onStart = function (url, itemsLoaded, itemsTotal) {
-    // console.log(
-    //   "Started loading file: " +
-    //     url +
-    //     ".\nLoaded " +
-    //     itemsLoaded +
-    //     " of " +
-    //     itemsTotal +
-    //     " files."
-    // );
-  };
-
-  manager.onLoad = function () {
-    // console.log("Loading complete!");
-  };
-
-  manager.onProgress = function (url, itemsLoaded, itemsTotal) {
-    // console.log(
-    //   "Loading file: " +
-    //     url +
-    //     ".\nLoaded " +
-    //     itemsLoaded +
-    //     " of " +
-    //     itemsTotal +
-    //     " files."
-    // );
-  };
-
+function addArt(scene, renderer, manager) {
   var palantirPlace = scene.getObjectByName("palantirPlace", true);
 
   // var art = new THREE.TextureLoader().load("./assets/img/Palantiri.webp");
@@ -106967,7 +106938,6 @@ function addArt(scene, renderer) {
     const mat = new three.MeshBasicMaterial({ map: texture });
     painting.material = mat;
     painting.name = "painting";
-    console.log(painting);
     function paintingOpen() {
       setTimeout(function () {
         painting.material.map = texture2;
@@ -106991,8 +106961,8 @@ var moment_default = /*#__PURE__*/__webpack_require__.n(moment);
 ;// CONCATENATED MODULE: ./src/addClock.js
 
 
-function addClock(scene) {
-  const loader2 = new three.FontLoader();
+function addClock(scene,manager) {
+  const loader2 = new three.FontLoader(manager);
   const geometry = new three.PlaneBufferGeometry(5, 20, 32);
   const material = new three.MeshBasicMaterial({ color: 0xb01717 });
   const alarmClockText = new three.Mesh(geometry, material);
@@ -111770,8 +111740,8 @@ class KTX2BufferReader {
 
 
 
-function addModel(renderer) {
-  const gltfLoader = new GLTFLoader()
+function addModel(renderer, manager) {
+  const gltfLoader = new GLTFLoader(manager)
     .setCrossOrigin("anonymous")
     .setDRACOLoader(new DRACOLoader().setDecoderPath("../vendor/draco/"))
     .setKTX2Loader(new KTX2Loader().detectSupport(renderer));
@@ -111819,7 +111789,6 @@ function addIFrames(scene) {
   var css3dObject = new CSS3DObject(div);
   css3dObject.name = "projects";
   css3dObject.visible = false;
-  // console.log(css3dObject)
   // css3dObject.position.set(-70, 725, -90);
 
   // obj.scale.copy(objectCopy.getWorldScale());
@@ -111938,7 +111907,6 @@ function addIFramesCV(scene) {
   // obj.name = 'cv'
   // obj.visible = false
 
-  // console.log(obj)
   // //
   var div = document.createElement("div");
   div.style.width = "1080px";
@@ -111992,7 +111960,7 @@ function addIFramesCV(scene) {
 const newtempWorldPosition = new three.Vector3();
 const newtempWorldPosition2 = new three.Vector3();
 
-function addKeywordText(scene) {
+function addKeywordText(scene, manager) {
   let artGroup = scene
     .getObjectByName("NickHarper")
     .getWorldPosition(newtempWorldPosition);
@@ -112002,7 +111970,7 @@ function addKeywordText(scene) {
 
   scene.add(keywordGroup);
 
-  const artistTextLoader = new three.FontLoader();
+  const artistTextLoader = new three.FontLoader(manager);
   artistTextLoader.load("./assets/fonts/Alata_Regular.json", function (font) {
     const artistTextBufferGeometry = new three.TextBufferGeometry(
       "FINE ARTIST",
@@ -112033,7 +112001,7 @@ function addKeywordText(scene) {
     keywordGroup.add(artistText);
   });
 
-  const creativeTextLoader = new three.FontLoader();
+  const creativeTextLoader = new three.FontLoader(manager);
   creativeTextLoader.load("./assets/fonts/Alata_Regular.json", function (font) {
     const creativeTextBufferGeometry = new three.TextBufferGeometry(
       "CREATIVE",
@@ -112065,7 +112033,7 @@ function addKeywordText(scene) {
     keywordGroup.add(creativeText);
   });
 
-  const inventiveTextLoader = new three.FontLoader();
+  const inventiveTextLoader = new three.FontLoader(manager);
   inventiveTextLoader.load(
     "./assets/fonts/Alata_Regular.json",
     function (font) {
@@ -112100,7 +112068,7 @@ function addKeywordText(scene) {
     }
   );
 
-  const adaptiveTextLoader = new three.FontLoader();
+  const adaptiveTextLoader = new three.FontLoader(manager);
   adaptiveTextLoader.load("./assets/fonts/Alata_Regular.json", function (font) {
     const adaptiveTextBufferGeometry = new three.TextBufferGeometry(
       "ADAPTIVE",
@@ -112131,7 +112099,7 @@ function addKeywordText(scene) {
     keywordGroup.add(adaptiveText);
   });
 
-  const weatherAppTextLoader = new three.FontLoader();
+  const weatherAppTextLoader = new three.FontLoader(manager);
   weatherAppTextLoader.load(
     "./assets/fonts/Bebas Neue_Regular (1).json",
     function (font) {
@@ -112278,7 +112246,6 @@ function addLights(scene) {
     bbox.max.z - bbox.min.z
   );
 
-  // console.log(window);
   const whelper = new RectAreaLightHelper(window);
 
   const newtempWorldPosition3 = new Vector3();
@@ -112348,8 +112315,6 @@ function addLights(scene) {
   const paintingSpotLight = new SpotLight(0xffffff, 0.5, 0, 0.35, 0.4);
 
   const painting = scene.getObjectByName("painting");
-  console.log(scene);
-  // console.log(painting);
 
   paintingSpotLight.castShadow = true;
   paintingSpotLight.position.set(
@@ -112537,7 +112502,7 @@ var axios_default = /*#__PURE__*/__webpack_require__.n(axios);
 
 
 
-function addWeather(scene) {
+function addWeather(scene,manager) {
   axios_default().get(
     "https://api.openweathermap.org/data/2.5/weather?q=Edinburgh&appid=ab57b33912fbd3d3015d3f296505d3a8"
   ).then((response) => {
@@ -112549,7 +112514,7 @@ function addWeather(scene) {
 
     let icon = response.data.weather[0].icon;
     icon = "https://openweathermap.org/img/wn/" + icon + "@2x.png";
-    var weatherIcon = new three.TextureLoader().load(icon);
+    var weatherIcon = new three.TextureLoader(manager).load(icon);
 
     weatherIcon.minFilter = three.LinearFilter;
 
@@ -112575,7 +112540,7 @@ function addWeather(scene) {
     weather.name = "weather";
     scene.add(weather);
     ///////////////////////////////////////////////////////////
-    const loaderTemp = new three.FontLoader();
+    const loaderTemp = new three.FontLoader(manager);
     let temp = response.data.main.temp;
     temp = temp - 273.15;
     temp = Math.floor(temp);
@@ -113138,16 +113103,15 @@ RGBELoader.prototype = Object.assign( Object.create( DataTextureLoader.prototype
 
 
 
-function addLightMap(scene, renderer) {
+function addLightMap(scene, renderer, manager) {
   const light = new THREE.AmbientLight(0x404040); // soft white light
   // scene.add( light );
 
   let object = scene.getObjectByName("wall_1");
-  console.log(object);
-  const texture = new THREE.TextureLoader().load(
+  const texture = new THREE.TextureLoader(manager).load(
     "./assets/img/bake/Lightmap_AO_Denoise.png"
   );
-  const texture2 = new THREE.TextureLoader().load(
+  const texture2 = new THREE.TextureLoader(manager).load(
     "./assets/img/bake/Lightmap_NOISY_Denoise.png"
   );
   object.material.side = 2;
@@ -113462,12 +113426,12 @@ PositionalAudioHelper.prototype.dispose = function () {
 
 
 
-function addAudio(camera, scene) {
-  addBirds(camera, scene);
-  addComputer(camera, scene);
+function addAudio(camera, scene, manager) {
+  addBirds(camera, scene, manager);
+  addComputer(camera, scene, manager);
 }
 
-function addBirds(camera, scene) {
+function addBirds(camera, scene, manager) {
   // create an AudioListener and add it to the camera
   const listener = new three.AudioListener();
   camera.add(listener);
@@ -113476,7 +113440,7 @@ function addBirds(camera, scene) {
   const sound = new three.PositionalAudio(listener);
 
   // load a sound and set it as the Audio object's buffer
-  const audioLoader = new three.AudioLoader();
+  const audioLoader = new three.AudioLoader(manager);
   audioLoader.load(
     "./assets/audio/Sunny Day-SoundBible.com-2064222612.mp3",
     function (buffer) {
@@ -113489,7 +113453,6 @@ function addBirds(camera, scene) {
   // sound.context.resume();
 
   sound.setDirectionalCone(180, 230, 0.1);
-  console.log(sound);
   // const helper = new PositionalAudioHelper( sound );
   // sound.add( helper );
 
@@ -113505,7 +113468,7 @@ function addBirds(camera, scene) {
   mesh.add(sound);
 }
 
-function addComputer(camera, scene) {
+function addComputer(camera, scene, manager) {
   // create an AudioListener and add it to the camera
   const listener = new three.AudioListener();
   camera.add(listener);
@@ -113514,7 +113477,7 @@ function addComputer(camera, scene) {
   const sound = new three.PositionalAudio(listener);
 
   // load a sound and set it as the Audio object's buffer
-  const audioLoader = new three.AudioLoader();
+  const audioLoader = new three.AudioLoader(manager);
   audioLoader.load("./assets/audio/computer.mp3", function (buffer) {
     sound.setBuffer(buffer);
     sound.setLoop(true);
@@ -113554,8 +113517,8 @@ function onMouseMove(scene, refArray, mouse, raycaster, camera) {
     //permanent change
     // console.log(intersects)
     if (intersects[0].object.name == "weather") {
-        //replace this
-        scene.getObjectByName("weatherAppText").visible = true;
+      //replace this
+      scene.getObjectByName("weatherAppText").visible = true;
     }
 
     //////////////////////
@@ -113708,6 +113671,43 @@ function onMouseClick(scene, mouse, raycaster, camera, controls) {
   }
 }
 
+;// CONCATENATED MODULE: ./src/createManager.js
+
+
+function createManager() {
+  var manager = new three.LoadingManager(() => {});
+  manager.onStart = function (url, itemsLoaded, itemsTotal) {
+    console.log(
+      "Started loading file: " +
+        url +
+        ".\nLoaded " +
+        itemsLoaded +
+        " of " +
+        itemsTotal +
+        " files."
+    );
+  };
+
+  manager.onLoad = function () {
+    var element = document.getElementById("loading-screen");
+    element.className = "animatedFade";
+    console.log("Loading complete!");
+  };
+
+  manager.onProgress = function (url, itemsLoaded, itemsTotal) {
+    console.log(
+      "Loading file: " +
+        url +
+        ".\nLoaded " +
+        itemsLoaded +
+        " of " +
+        itemsTotal +
+        " files."
+    );
+  };
+  return manager;
+}
+
 // EXTERNAL MODULE: ./vendor/threex.domevents.js
 var threex_domevents = __webpack_require__(552);
 ;// CONCATENATED MODULE: ./src/main.js
@@ -113731,6 +113731,7 @@ var threex_domevents = __webpack_require__(552);
 
 // import { onMouseClick } from "./onMouseClick";
 // import { onMouseMove } from "./onMouseMove";
+
 
 
 
@@ -113815,8 +113816,6 @@ const controls = new OrbitControls(camera, renderer2.domElement);
 controls.maxDistance = 0;
 controls.maxDistance = 5;
 
-console.log(controls);
-
 controls.enableDamping = true;
 controls.minPolarAngle = 0.2;
 controls.maxPolarAngle = 1.85;
@@ -113828,25 +113827,26 @@ controls.target.set(0, 0.8, 0);
 controls.update();
 
 //  addModel();
+var manager = createManager();
 
 async function main() {
-  const gltfData = await addModel(renderer);
+  const gltfData = await addModel(renderer, manager);
 
   scene.add(gltfData.scene);
 
-  // addLightMap(scene, renderer);
-  addWeather(scene);
+  // addLightMap(scene, renderer,manager);
+  addWeather(scene, manager);
   keyboardLightAnimate(scene);
   computerLightBlink(scene);
-  addArt(scene, renderer);
-  addClock(scene);
+  addArt(scene, renderer, manager);
+  addClock(scene, manager);
 
   addLights(scene);
   addShadow(scene, renderer);
 
   addOutlines(scene);
 
-  addKeywordText(scene);
+  addKeywordText(scene, manager);
 
   // removeShadow(scene)
   // detect mobile
@@ -113862,7 +113862,7 @@ async function main() {
     addWhiteboard(scene);
     addIFrames(scene);
     addIFramesCV(scene);
-    addAudio(camera, scene);
+    addAudio(camera, scene, manager);
   }
   matrixAutoUpdate(scene);
   // scene.overrideMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );

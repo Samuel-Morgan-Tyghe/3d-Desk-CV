@@ -1,7 +1,7 @@
 import Axios from "axios";
 import * as THREE from "../vendor/three";
 
-export function addWeather(scene) {
+export function addWeather(scene,manager) {
   Axios.get(
     "https://api.openweathermap.org/data/2.5/weather?q=Edinburgh&appid=ab57b33912fbd3d3015d3f296505d3a8"
   ).then((response) => {
@@ -13,7 +13,7 @@ export function addWeather(scene) {
 
     let icon = response.data.weather[0].icon;
     icon = "https://openweathermap.org/img/wn/" + icon + "@2x.png";
-    var weatherIcon = new THREE.TextureLoader().load(icon);
+    var weatherIcon = new THREE.TextureLoader(manager).load(icon);
 
     weatherIcon.minFilter = THREE.LinearFilter;
 
@@ -39,7 +39,7 @@ export function addWeather(scene) {
     weather.name = "weather";
     scene.add(weather);
     ///////////////////////////////////////////////////////////
-    const loaderTemp = new THREE.FontLoader();
+    const loaderTemp = new THREE.FontLoader(manager);
     let temp = response.data.main.temp;
     temp = temp - 273.15;
     temp = Math.floor(temp);

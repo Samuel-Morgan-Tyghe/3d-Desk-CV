@@ -12,8 +12,8 @@ export function onMouseMove(scene, refArray, mouse, raycaster, camera) {
     //permanent change
     // console.log(intersects)
     if (intersects[0].object.name == "weather") {
-        //replace this
-        scene.getObjectByName("weatherAppText").visible = true;
+      //replace this
+      scene.getObjectByName("weatherAppText").visible = true;
     }
 
     //////////////////////

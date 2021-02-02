@@ -1,7 +1,7 @@
 import moment from "../vendor/moment";
 import * as THREE from "../vendor/three";
-export function addClock(scene) {
-  const loader2 = new THREE.FontLoader();
+export function addClock(scene,manager) {
+  const loader2 = new THREE.FontLoader(manager);
   const geometry = new THREE.PlaneBufferGeometry(5, 20, 32);
   const material = new THREE.MeshBasicMaterial({ color: 0xb01717 });
   const alarmClockText = new THREE.Mesh(geometry, material);
