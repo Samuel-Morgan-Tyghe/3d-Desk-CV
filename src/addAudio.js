@@ -21,7 +21,7 @@ function addBirds(camera, scene, manager) {
     function (buffer) {
       sound.setBuffer(buffer);
       sound.setLoop(true);
-      sound.setVolume(0.05);
+      sound.setVolume(0.2);
       sound.play();
     }
   );
@@ -56,7 +56,7 @@ function addComputer(camera, scene, manager) {
   audioLoader.load("./assets/audio/computer.mp3", function (buffer) {
     sound.setBuffer(buffer);
     sound.setLoop(true);
-    sound.setVolume(0.5);
+    sound.setVolume(1);
     sound.play();
   });
 

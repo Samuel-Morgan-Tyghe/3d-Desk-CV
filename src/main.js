@@ -72,7 +72,7 @@ var container2 = document.getElementById("container2");
 container2.appendChild(renderer2.domElement);
 
 stats = createStats();
-document.body.appendChild(stats.domElement);
+// document.body.appendChild(stats.domElement);
 
 function createStats() {
   var stats = new Stats();

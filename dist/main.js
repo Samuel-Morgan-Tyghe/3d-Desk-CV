@@ -113446,7 +113446,7 @@ function addBirds(camera, scene, manager) {
     function (buffer) {
       sound.setBuffer(buffer);
       sound.setLoop(true);
-      sound.setVolume(0.05);
+      sound.setVolume(0.2);
       sound.play();
     }
   );
@@ -113481,7 +113481,7 @@ function addComputer(camera, scene, manager) {
   audioLoader.load("./assets/audio/computer.mp3", function (buffer) {
     sound.setBuffer(buffer);
     sound.setLoop(true);
-    sound.setVolume(0.5);
+    sound.setVolume(1);
     sound.play();
   });
 
@@ -113691,6 +113691,8 @@ function createManager() {
   manager.onLoad = function () {
     var element = document.getElementById("loading-screen");
     element.className = "animatedFade";
+    document.getElementById("container").style.display = 'block'
+    document.getElementById("container2").style.display = 'block'
     console.log("Loading complete!");
   };
 
@@ -113785,7 +113787,7 @@ var container2 = document.getElementById("container2");
 container2.appendChild(renderer2.domElement);
 
 stats = createStats();
-document.body.appendChild(stats.domElement);
+// document.body.appendChild(stats.domElement);
 
 function createStats() {
   var stats = new stats_module();

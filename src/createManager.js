@@ -17,6 +17,8 @@ export function createManager() {
   manager.onLoad = function () {
     var element = document.getElementById("loading-screen");
     element.className = "animatedFade";
+    document.getElementById("container").style.display = 'block'
+    document.getElementById("container2").style.display = 'block'
     console.log("Loading complete!");
   };
 
