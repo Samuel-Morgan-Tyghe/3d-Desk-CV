@@ -86,7 +86,7 @@ function createStats() {
 }
 
 const scene = new THREE.Scene();
-console.log(scene);
+// console.log(scene);
 scene.background = new THREE.Color("#FFBA70");
 // scene.background = new THREE.Color("grey");
 

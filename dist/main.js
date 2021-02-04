@@ -113681,15 +113681,15 @@ function onMouseClick(scene, mouse, raycaster, camera, controls) {
 function createManager() {
   var manager = new three.LoadingManager(() => {});
   manager.onStart = function (url, itemsLoaded, itemsTotal) {
-    console.log(
-      "Started loading file: " +
-        url +
-        ".\nLoaded " +
-        itemsLoaded +
-        " of " +
-        itemsTotal +
-        " files."
-    );
+    // console.log(
+    //   "Started loading file: " +
+    //     url +
+    //     ".\nLoaded " +
+    //     itemsLoaded +
+    //     " of " +
+    //     itemsTotal +
+    //     " files."
+    // );
   };
 
   manager.onLoad = function () {
@@ -113697,19 +113697,19 @@ function createManager() {
     element.className = "animatedFade";
     document.getElementById("container").style.display = 'block'
     document.getElementById("container2").style.display = 'block'
-    console.log("Loading complete!");
+    // console.log("Loading complete!");
   };
 
   manager.onProgress = function (url, itemsLoaded, itemsTotal) {
-    console.log(
-      "Loading file: " +
-        url +
-        ".\nLoaded " +
-        itemsLoaded +
-        " of " +
-        itemsTotal +
-        " files."
-    );
+    // console.log(
+    //   "Loading file: " +
+    //     url +
+    //     ".\nLoaded " +
+    //     itemsLoaded +
+    //     " of " +
+    //     itemsTotal +
+    //     " files."
+    // );
   };
   return manager;
 }
@@ -113805,7 +113805,7 @@ function createStats() {
 }
 
 const scene = new three.Scene();
-console.log(scene);
+// console.log(scene);
 scene.background = new three.Color("#FFBA70");
 // scene.background = new THREE.Color("grey");
 
