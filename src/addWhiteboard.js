@@ -31,7 +31,8 @@ export function addWhiteboard(scene) {
   iframe.style.frameborder = "0";
   iframe.style.backgroundColor = "rgba(201, 76, 76, 0);";
 
-  iframe.src = "https://editor.p5js.org/automatedartist/embed/ksa1q3ycg";
+  iframe.src = "https://editor.p5js.org/automatedartist/embed/fUvTSyfJo";
+  // <iframe src="https://editor.p5js.org/automatedartist/embed/fUvTSyfJo"></iframe>
   // <iframe src="https://editor.p5js.org/p5/embed/hunPQuESuV"></iframe>
   // <iframe src="https://editor.p5js.org/automatedartist/embed/iq6qLF5vt"></iframe>
   // <iframe src="https://editor.p5js.org/ray.toal/embed/D1xsPtOJl"></iframe>
