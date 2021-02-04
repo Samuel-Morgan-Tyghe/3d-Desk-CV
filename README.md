@@ -8,3 +8,5 @@ An arrangement of projects displayed using three.js Library
 
 
 Technologies & Tools: Blender, Three.js, WebGL, p5js, API, webpack, threex, draco-compression, basis compression, gsap, moment.js, XML, RSS, Photoshop, wordpress.
+
+![screenshot](screenshot.png "Screenshot")
