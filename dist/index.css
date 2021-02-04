@@ -50,11 +50,7 @@
   align-items: center;
   justify-content: center;
 }
-#infoScreen ul {
-}
 
-#infoScreen #title {
-}
 #infoScreen img {
   position: absolute;
   top: 2vw;
