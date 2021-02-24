@@ -111779,7 +111779,7 @@ function addIFrames(scene) {
   iframe.style.width = "1080px";
   iframe.style.height = "890px";
   iframe.style.border = "0px";
-  iframe.src = "https://samuel-morgan-tyghe.github.io/Basic-Website-To-React";
+  iframe.src = "https://samuel-morgan-tyghe.github.io/AAA-Display-Example/";
   // iframe.src = ["https://www.youtube.com/embed/", id, "?rel=0"].join("");
   // iframe.style.backfacevisibility= "hidden";
 
@@ -111788,7 +111788,7 @@ function addIFrames(scene) {
   const objectCopy = scene.getObjectByName("monitor_screen1");
   var css3dObject = new CSS3DObject(div);
   css3dObject.name = "projects";
-  css3dObject.visible = false;
+  // css3dObject.visible = false;
   // css3dObject.position.set(-70, 725, -90);
 
   // obj.scale.copy(objectCopy.getWorldScale());
@@ -111877,7 +111877,7 @@ function addWhiteboard(scene) {
   var css3dObject = new CSS3DObject(div);
 
   css3dObject.name = "whiteboard p5js";
-  css3dObject.visible = false;
+  // css3dObject.visible = false;
   // css3dObject.position.set(-70, 725, -90);
 
   // obj.scale.copy(objectCopy.getWorldScale());
@@ -111934,7 +111934,7 @@ function addIFramesCV(scene) {
   const objectCopy = scene.getObjectByName("monitor_screen2");
   var css3dObject = new CSS3DObject(div);
   css3dObject.name = "cv";
-  css3dObject.visible = false;
+  // css3dObject.visible = false;
 
   // css3dObject.position.set(-70, 725, -90);
 
@@ -113611,13 +113611,14 @@ function onMouseClick(scene, mouse, raycaster, camera, controls) {
     "https://samuel-morgan-tyghe.github.io/Basic-Website-To-React",
     "https://samuel-morgan-tyghe.github.io/Creative-Portfolio/",
     "https://automated-art.co.uk/",
+    "https://samuel-morgan-tyghe.github.io/AAA-Display-Example/",
   ];
   function getSrcNumber(add) {
     number = number + add;
     if (number < 0) {
-      number = 3;
+      number = projectSrcArray.length;
     }
-    if (number > 3) {
+    if (number > projectSrcArray.length) {
       number = 0;
     }
 

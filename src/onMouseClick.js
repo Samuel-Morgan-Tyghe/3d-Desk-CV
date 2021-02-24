@@ -12,13 +12,14 @@ export function onMouseClick(scene, mouse, raycaster, camera, controls) {
     "https://samuel-morgan-tyghe.github.io/Basic-Website-To-React",
     "https://samuel-morgan-tyghe.github.io/Creative-Portfolio/",
     "https://automated-art.co.uk/",
+    "https://samuel-morgan-tyghe.github.io/AAA-Display-Example/",
   ];
   function getSrcNumber(add) {
     number = number + add;
     if (number < 0) {
-      number = 3;
+      number = projectSrcArray.length;
     }
-    if (number > 3) {
+    if (number > projectSrcArray.length) {
       number = 0;
     }
 

@@ -17,7 +17,7 @@ export function addIFrames(scene) {
   iframe.style.width = "1080px";
   iframe.style.height = "890px";
   iframe.style.border = "0px";
-  iframe.src = "https://samuel-morgan-tyghe.github.io/Basic-Website-To-React";
+  iframe.src = "https://samuel-morgan-tyghe.github.io/AAA-Display-Example/";
   // iframe.src = ["https://www.youtube.com/embed/", id, "?rel=0"].join("");
   // iframe.style.backfacevisibility= "hidden";
 
@@ -26,7 +26,7 @@ export function addIFrames(scene) {
   const objectCopy = scene.getObjectByName("monitor_screen1");
   var css3dObject = new CSS3DObject(div);
   css3dObject.name = "projects";
-  css3dObject.visible = false;
+  // css3dObject.visible = false;
   // css3dObject.position.set(-70, 725, -90);
 
   // obj.scale.copy(objectCopy.getWorldScale());

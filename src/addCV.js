@@ -29,7 +29,7 @@ export function addIFramesCV(scene) {
   const objectCopy = scene.getObjectByName("monitor_screen2");
   var css3dObject = new CSS3DObject(div);
   css3dObject.name = "cv";
-  css3dObject.visible = false;
+  // css3dObject.visible = false;
 
   // css3dObject.position.set(-70, 725, -90);
 
