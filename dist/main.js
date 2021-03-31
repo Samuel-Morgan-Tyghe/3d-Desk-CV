@@ -113450,7 +113450,7 @@ function addBirds(camera, scene, manager) {
     function (buffer) {
       sound.setBuffer(buffer);
       sound.setLoop(true);
-      sound.setVolume(0.2);
+      sound.setVolume(1);
       sound.play();
     }
   );
@@ -113485,7 +113485,7 @@ function addComputer(camera, scene, manager) {
   audioLoader.load("./assets/audio/computer.mp3", function (buffer) {
     sound.setBuffer(buffer);
     sound.setLoop(true);
-    sound.setVolume(1);
+    sound.setVolume(4);
     sound.play();
   });
 
